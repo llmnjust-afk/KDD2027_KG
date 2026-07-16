@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.env
+
+# Results / data / models (regenerable, too large)
+results/
+data/MetaQA/
+*.bin
+*.safetensors
+
+# Misc
+.DS_Store
+*.log

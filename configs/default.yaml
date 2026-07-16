@@ -1,0 +1,35 @@
+# Default config for adaptive_graphrag.
+# Run: python run.py --dataset toy  (overrides on CLI take precedence)
+
+dataset: toy          # toy | metaqa
+split: 1-hop
+data_dir: ./data/MetaQA
+
+controllers:
+  - fixed             # naive strong baseline (ToG-style)
+  - adaptive          # our training-free adaptive controller
+
+retrieval:
+  max_hops: 3
+  beam: 4              # baseline fixed beam; also base_beam for adaptive
+  link_topk: 5
+  score_topk_per_hop: 8
+
+backend:
+  kind: hf             # hf | api
+  gen_model: Qwen/Qwen2.5-1.5B-Instruct
+  embed_model: sentence-transformers/all-MiniLM-L6-v2
+  device: cuda
+  dtype: bfloat16
+
+adaptive:              # hyperparameters of our method (all training-free)
+  theta_low: 0.30      # (2a) skip graph if top-1 link cosine below this
+  base_beam: 4
+  min_beam: 1
+  max_beam: 8
+  delta: 0.05          # (3) marginal-relevance-gain stop threshold
+  abs_floor: 0.10
+
+eval:
+  limit: null          # null = all questions
+  out_dir: ./results
