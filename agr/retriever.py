@@ -97,7 +97,7 @@ class GraphRAGRetriever:
         self._ent_index: Optional[List[str]] = None
         self._ent_emb: Optional[np.ndarray] = None
 
-    # ---- entity linking (cheap, embedding-based) ----
+    # ---- entity linking ----
     def _build_entity_index(self):
         if self._ent_index is not None:
             return
@@ -109,11 +109,44 @@ class GraphRAGRetriever:
         self._ent_emb = emb / norms
 
     def link_entities(self, question: str) -> List[Tuple[str, float]]:
+        """Link seed entities.
+
+        MetaQA questions mark the seed entity in [brackets]; we use that exact
+        mention when it matches a KG entity (perfect-link path), which is the
+        standard setup used by ToG/GNN-RAG on MetaQA. Embedding nearest-neighbour
+        over all KG entities serves as a fair fallback for queries without a
+        bracketed mention (and for the toy KG).
+        """
+        import re
+        bracketed = re.findall(r"\[([^\]]+)\]", question)
+        hits: List[Tuple[str, float]] = []
+        if bracketed:
+            ent_set = self.kg.entities
+            for m in bracketed:
+                # exact match preferred; else embedding match of the mention
+                if m in ent_set:
+                    hits.append((m, 1.0))
+                else:
+                    hits.extend(self._embed_link(m, topk=1))
+        if not hits:
+            hits = self._embed_link(question, topk=self.link_topk)
+        # de-dup, cap to link_topk
+        seen = set()
+        out = []
+        for e, s in hits:
+            if e not in seen:
+                seen.add(e)
+                out.append((e, s))
+            if len(out) >= self.link_topk:
+                break
+        return out
+
+    def _embed_link(self, text: str, topk: int) -> List[Tuple[str, float]]:
         self._build_entity_index()
-        q = np.asarray(self.backend.embed([question]), dtype=np.float32)[0]
+        q = np.asarray(self.backend.embed([text]), dtype=np.float32)[0]
         q = q / (np.linalg.norm(q) + 1e-9)
         sims = self._ent_emb @ q
-        k = min(self.link_topk, len(self._ent_index))
+        k = min(topk, len(self._ent_index))
         idx = np.argpartition(-sims, k - 1)[:k]
         idx = idx[np.argsort(-sims[idx])]
         return [(self._ent_index[i], float(sims[i])) for i in idx]

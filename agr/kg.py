@@ -164,7 +164,11 @@ def load_metaqa(data_dir: str, split: str = "1-hop") -> Tuple[KnowledgeGraph, Li
     triples: List[Triple] = []
     with open(kb_path, "r", encoding="utf-8") as f:
         for line in f:
-            parts = [p.strip() for p in line.strip().split("\t") if p.strip()]
+            line = line.strip()
+            if not line:
+                continue
+            # MetaQA kb.txt is pipe-separated: head|relation|tail
+            parts = [p.strip() for p in line.split("|") if p.strip()]
             if len(parts) == 3:
                 triples.append(Triple(parts[0], parts[1], parts[2]))
     kg = KnowledgeGraph.from_triples(triples)
@@ -175,6 +179,7 @@ def load_metaqa(data_dir: str, split: str = "1-hop") -> Tuple[KnowledgeGraph, Li
             line = line.strip()
             if not line:
                 continue
+            # questions are tab-separated: question\tanswer1|answer2|...
             if "\t" in line:
                 q, ans = line.rsplit("\t", 1)
             else:

@@ -81,6 +81,11 @@ class AdaptiveController:
     delta: float = 0.05              # min per-hop top-score improvement to continue
     abs_floor: float = 0.10          # if best hop score below this, nothing useful here
 
+    # ---- ablation toggles (each disables exactly one innovation) ----
+    ablate_use_graph: bool = False     # True => always use graph (disables 2a)
+    ablate_adaptive_beam: bool = False # True => fixed base_beam every hop (disables 2b)
+    ablate_early_stop: bool = False    # True => never stop early (disables 3)
+
     # rolling state across hops (reset per query by the engine creating a fresh
     # controller instance per query is NOT required; we track via ctx instead)
     def __post_init__(self):
@@ -105,6 +110,9 @@ class AdaptiveController:
                          ctx: Dict) -> bool:
         if not entity_hits:
             return False
+        # ablation: force graph use (behaves like baseline on this axis)
+        if self.ablate_use_graph:
+            return True
         scores = [s for _, s in entity_hits]
         top1 = self._top1(scores)
         # Innovation 2a: if the best entity link is too weak, the seed anchor is
@@ -125,6 +133,9 @@ class AdaptiveController:
         so a narrow beam suffices. Flat top-k (high entropy) => many candidates
         look equally relevant, so widen the beam to avoid pruning the true path.
         """
+        # ablation: fixed beam (behaves like baseline on this axis)
+        if self.ablate_adaptive_beam:
+            return self.base_beam
         if not scores:
             return self.base_beam
         H = self._norm_entropy(scores)
@@ -139,13 +150,16 @@ class AdaptiveController:
     def should_stop(self, question: str, hop_idx: int, frontier: List[str],
                     prev_frontier: List[str], score_stats: Dict, ctx: Dict) -> bool:
         top = float(score_stats.get("top_score", 0.0))
+        # frontier collapse is a structural stop, kept even under ablation
+        if not frontier:
+            ctx.setdefault("stop_reasons", []).append("frontier_collapse")
+            return True
+        # ablation: disable early stopping (only structural stops remain)
+        if self.ablate_early_stop:
+            return False
         # absolute floor: nothing retrieved at this hop is worth carrying
         if top < self.abs_floor and hop_idx >= 1:
             ctx.setdefault("stop_reasons", []).append("abs_floor")
-            return True
-        # frontier collapse: no new entities to expand
-        if not frontier:
-            ctx.setdefault("stop_reasons", []).append("frontier_collapse")
             return True
         # marginal-relevance-gain stopping
         if self._prev_top is not None:
@@ -174,4 +188,7 @@ def build_controller(cfg: Dict) -> object:
         max_beam=cfg.get("max_beam", 8),
         delta=cfg.get("delta", 0.05),
         abs_floor=cfg.get("abs_floor", 0.10),
+        ablate_use_graph=cfg.get("ablate_use_graph", False),
+        ablate_adaptive_beam=cfg.get("ablate_adaptive_beam", False),
+        ablate_early_stop=cfg.get("ablate_early_stop", False),
     )

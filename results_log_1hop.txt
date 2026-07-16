@@ -1,0 +1,82 @@
+KG: 134741 triples, 43234 entities | 9947 questions (using 500)
+Backend: HuggingFaceBackend  gen=Qwen/Qwen2.5-1.5B-Instruct  judge_with_llm=True
+
+=== System: fixed  [Fixed (ToG-style)] ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [50/500] F1=0.405 toks/q=1022 calls/q=4.00 hops/q=3.00 t=3.3s
+  [100/500] F1=0.362 toks/q=1016 calls/q=4.00 hops/q=3.00 t=3.9s
+  [150/500] F1=0.343 toks/q=1009 calls/q=4.00 hops/q=3.00 t=3.0s
+  [200/500] F1=0.343 toks/q=1024 calls/q=4.00 hops/q=3.00 t=3.5s
+  [250/500] F1=0.337 toks/q=1023 calls/q=4.00 hops/q=3.00 t=4.1s
+  [300/500] F1=0.343 toks/q=1017 calls/q=4.00 hops/q=3.00 t=3.6s
+  [350/500] F1=0.352 toks/q=1016 calls/q=4.00 hops/q=3.00 t=3.6s
+  [400/500] F1=0.345 toks/q=1015 calls/q=4.00 hops/q=3.00 t=3.9s
+  [450/500] F1=0.342 toks/q=1017 calls/q=4.00 hops/q=3.00 t=3.8s
+  [500/500] F1=0.341 toks/q=1027 calls/q=4.00 hops/q=3.00 t=2.0s
+  -> ./results/metaqa_1-hop_fixed/reports.jsonl
+
+=== System: adaptive  [Adaptive (ours)] ===
+  [50/500] F1=0.434 toks/q=832 calls/q=3.46 hops/q=2.46 t=2.2s
+  [100/500] F1=0.375 toks/q=813 calls/q=3.47 hops/q=2.47 t=2.5s
+  [150/500] F1=0.325 toks/q=813 calls/q=3.51 hops/q=2.51 t=2.9s
+  [200/500] F1=0.340 toks/q=820 calls/q=3.49 hops/q=2.49 t=3.5s
+  [250/500] F1=0.329 toks/q=814 calls/q=3.48 hops/q=2.48 t=2.9s
+  [300/500] F1=0.334 toks/q=804 calls/q=3.46 hops/q=2.46 t=3.6s
+  [350/500] F1=0.339 toks/q=800 calls/q=3.47 hops/q=2.47 t=3.9s
+  [400/500] F1=0.328 toks/q=788 calls/q=3.45 hops/q=2.45 t=3.9s
+  [450/500] F1=0.336 toks/q=797 calls/q=3.46 hops/q=2.46 t=3.7s
+  [500/500] F1=0.332 toks/q=802 calls/q=3.45 hops/q=2.45 t=0.9s
+  -> ./results/metaqa_1-hop_adaptive/reports.jsonl
+
+=== System: abl-nograph  [Abl. no (2a)] ===
+  [50/500] F1=0.434 toks/q=832 calls/q=3.46 hops/q=2.46 t=2.2s
+  [100/500] F1=0.375 toks/q=813 calls/q=3.47 hops/q=2.47 t=2.6s
+  [150/500] F1=0.325 toks/q=813 calls/q=3.51 hops/q=2.51 t=2.9s
+  [200/500] F1=0.340 toks/q=820 calls/q=3.49 hops/q=2.49 t=3.5s
+  [250/500] F1=0.329 toks/q=814 calls/q=3.48 hops/q=2.48 t=2.9s
+  [300/500] F1=0.334 toks/q=804 calls/q=3.46 hops/q=2.46 t=3.6s
+  [350/500] F1=0.339 toks/q=800 calls/q=3.47 hops/q=2.47 t=3.9s
+  [400/500] F1=0.328 toks/q=788 calls/q=3.45 hops/q=2.45 t=3.9s
+  [450/500] F1=0.336 toks/q=797 calls/q=3.46 hops/q=2.46 t=3.8s
+  [500/500] F1=0.332 toks/q=802 calls/q=3.45 hops/q=2.45 t=0.9s
+  -> ./results/metaqa_1-hop_abl-nograph/reports.jsonl
+
+=== System: abl-fixbeam  [Abl. no (2b)] ===
+  [50/500] F1=0.388 toks/q=790 calls/q=3.46 hops/q=2.46 t=2.2s
+  [100/500] F1=0.353 toks/q=779 calls/q=3.47 hops/q=2.47 t=2.5s
+  [150/500] F1=0.331 toks/q=785 calls/q=3.51 hops/q=2.51 t=2.9s
+  [200/500] F1=0.334 toks/q=792 calls/q=3.49 hops/q=2.49 t=3.5s
+  [250/500] F1=0.324 toks/q=788 calls/q=3.48 hops/q=2.48 t=2.8s
+  [300/500] F1=0.341 toks/q=779 calls/q=3.47 hops/q=2.47 t=3.6s
+  [350/500] F1=0.351 toks/q=780 calls/q=3.47 hops/q=2.47 t=3.6s
+  [400/500] F1=0.342 toks/q=769 calls/q=3.46 hops/q=2.46 t=3.9s
+  [450/500] F1=0.349 toks/q=774 calls/q=3.46 hops/q=2.46 t=3.8s
+  [500/500] F1=0.345 toks/q=780 calls/q=3.46 hops/q=2.46 t=0.9s
+  -> ./results/metaqa_1-hop_abl-fixbeam/reports.jsonl
+
+=== System: abl-nostop  [Abl. no (3)] ===
+  [50/500] F1=0.428 toks/q=1107 calls/q=4.00 hops/q=3.00 t=3.3s
+  [100/500] F1=0.357 toks/q=1099 calls/q=4.00 hops/q=3.00 t=4.0s
+  [150/500] F1=0.320 toks/q=1072 calls/q=4.00 hops/q=3.00 t=2.9s
+  [200/500] F1=0.340 toks/q=1092 calls/q=4.00 hops/q=3.00 t=3.5s
+  [250/500] F1=0.337 toks/q=1087 calls/q=3.99 hops/q=2.99 t=4.1s
+  [300/500] F1=0.340 toks/q=1080 calls/q=3.99 hops/q=2.99 t=3.6s
+  [350/500] F1=0.340 toks/q=1074 calls/q=3.99 hops/q=2.99 t=3.9s
+  [400/500] F1=0.328 toks/q=1073 calls/q=4.00 hops/q=3.00 t=3.9s
+  [450/500] F1=0.327 toks/q=1076 calls/q=4.00 hops/q=3.00 t=3.8s
+  [500/500] F1=0.328 toks/q=1086 calls/q=4.00 hops/q=3.00 t=2.0s
+  -> ./results/metaqa_1-hop_abl-nostop/reports.jsonl
+
+========================================================================
+PARETO COMPARISON  [metaqa_1-hop]  (sorted by mean input tokens/query)
+========================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+Abl. no (2b)                   0.345   0.602   0.060       780     3.46    2.46  100.0%
+Adaptive (ours)                0.332   0.556   0.072       802     3.45    2.45  100.0%
+Abl. no (2a)                   0.332   0.556   0.072       802     3.45    2.45  100.0%
+Fixed (ToG-style)              0.341   0.630   0.032      1027     4.00    3.00  100.0%
+Abl. no (3)                    0.328   0.612   0.028      1086     4.00    3.00  100.0%
+
+Pareto table saved to ./results/pareto_metaqa_1-hop.txt

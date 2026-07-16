@@ -6,8 +6,7 @@ __pycache__/
 venv/
 .env
 
-# Results / data / models (regenerable, too large)
-results/
+# Data / models (regenerable, too large) -- results ARE tracked
 data/MetaQA/
 *.bin
 *.safetensors
