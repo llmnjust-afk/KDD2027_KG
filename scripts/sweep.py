@@ -26,22 +26,19 @@ def quick_eval(kg, examples, backend, cfg, limit, split):
     controller = build_controller(cfg)
     retriever = GraphRAGRetriever(kg, backend, controller, link_topk=5,
                                   judge_with_llm=True)
+    from agr import QueryReport
     reports = []
     for ex in examples[:limit]:
         ret = retriever.retrieve(ex.question)
         ans = generate_answer(backend, ex.question, ret)
         pred = extract_answer_entities(ans.text)
         sc = score_query(pred, ex.answers)
-        reports.append({"f1": sc["f1"], "hit1": sc["hit1"],
-                        "n_input_tokens": ret.n_input_tokens,
-                        "n_hops": ret.n_hops_executed})
-    agg = aggregate([type("R", (), r)() for r in reports]) if reports else None
-    from agr import QueryReport
-    qrs = [QueryReport(qid="", question="", gold=[], pred=[], hit1=r["hit1"],
-                       f1=r["f1"], exact=0.0, used_graph=True, n_hops=r["n_hops"],
-                       n_llm_calls=0, n_input_tokens=r["n_input_tokens"],
-                       n_output_tokens=0) for r in reports]
-    agg = aggregate(qrs)
+        reports.append(QueryReport(qid="", question="", gold=[], pred=[],
+                       hit1=sc["hit1"], f1=sc["f1"], exact=sc["exact"],
+                       used_graph=True, n_hops=ret.n_hops_executed,
+                       n_llm_calls=0, n_input_tokens=ret.n_input_tokens,
+                       n_output_tokens=0))
+    agg = aggregate(reports) if reports else None
     return {"f1": agg.mean_f1, "hit1": agg.mean_hit1,
             "toks": agg.mean_n_input_tokens, "hops": agg.mean_n_hops}
 
