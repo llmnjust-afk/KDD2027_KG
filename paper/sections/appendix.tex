@@ -6,6 +6,9 @@
 \paragraph{Hardware and software.}
 All experiments run on a single workstation: NVIDIA RTX~5090 (32\,GB VRAM), 124 CPU cores, 925\,GB RAM, Python~3.10, PyTorch~2.11 (CUDA~12.8), transformers~5.14, sentence-transformers, networkx~3.4. No distributed training or multi-GPU inference is used. The 7B model consumes ${\sim}15.4$\,GB VRAM in bfloat16; the 1.5B model consumes ${\sim}3.6$\,GB.
 
+\paragraph{Models, decoding, and cost accounting.}
+The generator/judge is Qwen2.5-\{1.5B,7B\}-Instruct. Entity linking and the vector-RAG baseline use \texttt{sentence-transformers/all-MiniLM-L6-v2} for embeddings. Decoding is greedy (temperature $0$, \texttt{do\_sample}=false) with \texttt{max\_new\_tokens}${=}64$ for the judge and $32$ for answer generation, making a single seed deterministic for a fixed input; the multi-seed study (\Cref{tab:sig-seeds}) varies the random seed that shuffles the test-split order before sub-sampling, so different seeds evaluate different query subsets. The per-hop candidate cap is $c_{\max}{=}16$ (i.e.\ each judge call scores at most $16$ triples), which bounds judge prompt length and hence per-hop token cost. We report input tokens to judge and generator as the primary cost metric; output tokens are small (judge outputs $\le$ a few dozen integers, answers $\le 32$ tokens) and end-to-end latency tracks judge-call count on our single-GPU setup.
+
 \paragraph{Prompts.}
 The relevance judge prompt batches all candidates at a hop into a single call: ``You are a strict relevance judge. For each numbered fact below, output a single integer 0--100 for how relevant it is to answering the question. Output ONLY a comma-separated list of integers, one per fact, in order. Question: \{q\} Facts: \{candidates\} Scores:''. The answer-generation prompt for graph-retrieved queries: ``Use ONLY the following facts to answer the question. Answer with a short phrase or a pipe-separated list of entities. If the facts are insufficient, answer 'unknown'. Facts: \{subgraph\} Question: \{q\} Answer:''. For graph-free queries (D1 skip): ``Answer the question briefly. Give a short phrase or a pipe-separated list. Question: \{q\} Answer:''.
 
@@ -97,19 +100,13 @@ w/o (D3) & \best{0.106} & \best{0.230} & 1443 & 3.99 & 2.99 & 100\% \\
 \end{tabular}
 \end{table}
 
-At 1-hop (\Cref{tab:abl-15b-1hop}), w/o (D2) edges out the full controller (F1 0.345 vs.\ 0.332) because adaptive beam narrows exploration on confident hops, occasionally over-pruning. At 3-hop (\Cref{tab:abl-15b-3hop}), w/o (D3) achieves the highest F1 (0.106) because the weak 1.5B judge's marginal-gain signal is unreliable at depth---this is the boundary condition discussed in \Cref{sec:exp-boundary}. The 7B judge resolves this: at 7B/2-hop, (D3) is a free lunch (raises F1 \emph{and} cuts cost).
+At 1-hop (\Cref{tab:abl-15b-1hop}), w/o (D2) edges out the full controller (F1 0.345 vs.\ 0.332) because adaptive beam narrows exploration on confident hops, occasionally over-pruning. At 3-hop (\Cref{tab:abl-15b-3hop}), w/o (D3) achieves the highest F1 (0.106) because the weak 1.5B judge's marginal-gain signal is unreliable at depth---this is the boundary condition discussed in \Cref{sec:exp-boundary}. The 7B judge resolves this: at 7B/2-hop, (D3) both raises F1 \emph{and} cuts cost.
 
 
-\section{Proof of Proposition~\ref{prop:cost}}
+\section{Derivation of the Call-Count Accounting (Remark~\ref{prop:cost})}
 \label{app:proof}
 
-\begin{proof}[Proof of Proposition~\ref{prop:cost}]
-Under the fixed controller, every query that uses the graph executes exactly $K$ judge calls, so $C_{\text{fix}} = K$ calls per query (ignoring the single generation call, which is common to both). Under \method{}, a fraction $\rho_u$ of queries are routed to the graph-free path by (D1), incurring $0$ judge calls. The remaining $1-\rho_u$ fraction enters the retrieval loop, where (D3) terminates at hop $k^*(q) \le K$. The mean number of judge calls for these queries is $\mathbb{E}[k^*(q)] = \bar{k}_{\text{stop}} \le K$. Therefore:
-\[
-C_{\text{ada}} = (1-\rho_u)\,\bar{k}_{\text{stop}} \le (1-\rho_u)\,K = (1-\rho_u)\,C_{\text{fix}}.
-\]
-The inequality $\bar{k}_{\text{stop}} \le K$ holds because (D3) can only stop early (at $k < K$) or at the maximum ($k = K$), never later. The bound is tight when (D3) never fires before $K$ (i.e., $\bar{k}_{\text{stop}} = K$), in which case $C_{\text{ada}} = (1-\rho_u)\,C_{\text{fix}}$ and the only savings come from (D1). Token cost scales linearly with call count because each judge call has bounded prompt length (candidates are capped at $c_{\max}$), so the token-cost ratio is bounded by the same expression up to a constant factor.
-\end{proof}
+Under the fixed controller, every query that uses the graph executes exactly $K$ judge calls, so $C_{\text{fix}} = K$ calls per query (ignoring the single generation call, which is common to both). Under \method{}, a fraction $\rho_u$ of queries are routed to the graph-free path by (D1), incurring $0$ judge calls. The remaining $1-\rho_u$ fraction enters the retrieval loop, where (D3) terminates at hop $k^*(q) \le K$. The mean number of judge calls for these queries is $\mathbb{E}[k^*(q)] = \bar{k}_{\text{stop}} \le K$. Therefore $C_{\text{ada}} = (1-\rho_u)\,\bar{k}_{\text{stop}} \le (1-\rho_u)\,K = (1-\rho_u)\,C_{\text{fix}}$. The inequality holds because (D3) can only stop at $k \le K$, never later. This is a direct counting argument, not a theorem: it bounds \emph{call count}, and token cost tracks it only up to per-hop candidate-count variation (candidates are capped at $c_{\max}$, so the token-cost ratio is within a bounded factor of the call-count ratio). It says nothing about accuracy, which we characterize empirically in \Cref{sec:exp,sec:exp-boundary}.
 
 
 \section{Per-Query Cost Analysis}

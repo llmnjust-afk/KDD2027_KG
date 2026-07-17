@@ -139,14 +139,46 @@ def main():
     ap.add_argument("--vector-rag-topk", type=int, default=0,
                     help=">0 enables vector-RAG mode (retrieve top-k triples, no traversal)")
     ap.add_argument("--limit", type=int, default=None)
+    ap.add_argument("--seed", type=int, default=0,
+                    help="random seed: shuffles the test-split order before taking --limit; "
+                         "also sets torch/numpy seeds. Enables multi-seed variance reporting.")
+    ap.add_argument("--mixed", action="store_true",
+                    help="build a mixed 1/2/3-hop query stream (equal parts) instead of a single split")
     ap.add_argument("--out-dir", default="./results")
     args = ap.parse_args()
+
+    # ---- seeds ----
+    import random as _random
+    import numpy as _np
+    _random.seed(args.seed)
+    _np.random.seed(args.seed)
+    try:
+        import torch as _torch
+        _torch.manual_seed(args.seed)
+        if _torch.cuda.is_available():
+            _torch.cuda.manual_seed_all(args.seed)
+    except Exception:
+        pass
 
     # ---- data ----
     if args.dataset == "toy":
         kg, examples = load_toy()
+    elif args.mixed:
+        # mixed query stream: equal parts 1/2/3-hop, sharing the same KG
+        kg, ex1 = load_metaqa(args.data_dir, "1-hop")
+        _, ex2 = load_metaqa(args.data_dir, "2-hop")
+        _, ex3 = load_metaqa(args.data_dir, "3-hop")
+        per = (args.limit or 300) // 3
+        rng_m = _random.Random(args.seed)
+        rng_m.shuffle(ex1); rng_m.shuffle(ex2); rng_m.shuffle(ex3)
+        examples = ex1[:per] + ex2[:per] + ex3[:per]
+        rng_m.shuffle(examples)
+        args.split = "mixed"
     else:
         kg, examples = load_metaqa(args.data_dir, args.split)
+        # shuffle before taking --limit so different seeds see different subsets
+        if args.seed != 0:
+            _random.Random(args.seed).shuffle(examples)
     print(f"KG: {len(kg)} triples, {len(kg.entities)} entities | "
           f"{len(examples)} questions (using {min(len(examples), args.limit or len(examples))})",
           flush=True)
@@ -160,6 +192,8 @@ def main():
 
     # ---- run each system ----
     tag = f"{args.dataset}_{args.split}"
+    if args.seed != 0:
+        tag += f"_s{args.seed}"
     system_aggs = {}
     for sname in args.systems:
         if sname not in SYSTEMS:

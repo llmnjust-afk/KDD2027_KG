@@ -1,0 +1,20 @@
+KG: 134741 triples, 43234 entities | 14872 questions (using 200)
+Backend: HuggingFaceBackend  gen=Qwen/Qwen2.5-7B-Instruct  judge_with_llm=True
+
+=== System: fixed  [Fixed (ToG-style)] ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [50/200] F1=0.327 toks/q=669 calls/q=3.00 hops/q=2.00 t=3.1s
+  [100/200] F1=0.343 toks/q=641 calls/q=3.00 hops/q=2.00 t=3.1s
+  [150/200] F1=0.362 toks/q=627 calls/q=3.00 hops/q=2.00 t=3.1s
+  [200/200] F1=0.355 toks/q=627 calls/q=3.00 hops/q=2.00 t=3.1s
+  -> ./results_fixedK/k2/metaqa_2-hop_fixed/reports.jsonl
+
+========================================================================
+PARETO COMPARISON  [metaqa_2-hop]  (sorted by mean input tokens/query)
+========================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+Fixed (ToG-style)              0.355   0.500   0.170       627     3.00    2.00  100.0%
+
+Pareto table saved to ./results_fixedK/k2/pareto_metaqa_2-hop.txt
