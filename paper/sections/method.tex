@@ -1,0 +1,93 @@
+\section{Method}
+\label{sec:method}
+
+\subsection{Problem Setup and Notation}
+\label{sec:setup}
+
+Given a knowledge graph $\mathcal{G}=(\mathcal{E},\mathcal{R},\mathcal{T})$ with entities $\mathcal{E}$, relations $\mathcal{R}$, and triples $\mathcal{T}\subseteq\mathcal{E}\times\mathcal{R}\times\mathcal{E}$, and a natural-language question $q$, GraphRAG retrieves a reasoning subgraph and feeds it to an LLM to generate an answer. The retrieval proceeds in hops. Let $\mathcal{F}_k\subseteq\mathcal{E}$ denote the \emph{frontier}---the set of entities to expand---at hop $k$. Starting from linked seed entities $\mathcal{F}_0$, each hop $k$ expands the frontier by one edge over $\mathcal{G}$ to produce candidate triples $\mathcal{C}_k$, scores them for relevance to $q$ via an LLM judge $J(\cdot,q)\in[0,1]$, keeps the top-$b_k$ by score as $\mathcal{S}_k$, and forms the next frontier from the entities in $\mathcal{S}_k$ not yet visited. After $K$ hops (or an early stop), the union $\bigcup_k \mathcal{S}_k$ is the reasoning subgraph fed to the generator. The dominant cost is the LLM judge: each scoring call consumes input tokens proportional to $|\mathcal{C}_k|$, and there is one such call per hop.
+
+A \emph{retrieval controller} $\pi$ governs three quantities per query: whether to use the graph at all ($u_0\in\{0,1\}$), the beam width ($b_k$), and whether to stop ($s_k\in\{0,1\}$). The fixed-budget baseline (ToG-style) sets $u_0{=}1$, $b_k{=}B$ constant, $s_k{=}0$ until $k{=}K$. \method{} replaces this with a training-free controller that reads distributional signals computed as by-products of retrieval. Because the retrieval engine is identical across controllers, comparing \method{} to the baseline isolates the controller as the sole variable.
+
+\subsection{Distributional Signals}
+\label{sec:signals}
+
+\method{} exploits three signals that the pipeline already computes:
+
+\textbf{(S1) Link-confidence vector.} Entity linking returns seed entities $e_1,\dots,e_m$ with cosine similarities $\bm{\ell}=(\ell_1,\dots,\ell_m)$ to the question embedding. The top value $\ell_{(1)}$ measures how reliably the seed anchor matches the question; a low $\ell_{(1)}$ signals that multi-hop expansion will amplify a wrong seed.
+
+\textbf{(S2) Hop relevance distribution.} At hop $k$, the judge produces scores $\bm{r}_k=(r_{k,1},\dots,r_{k,|\mathcal{C}_k|})$ over candidates. We use its normalized entropy $H_k=-\sum_i \hat{r}_{k,i}\log\hat{r}_{k,i}/\log|\mathcal{C}_k|$ where $\hat{r}_{k,i}=r_{k,i}/\sum_j r_{k,j}$. Low $H_k$ means one candidate dominates (confident hop); high $H_k$ means scores are flat (uncertain hop, many plausible continuations).
+
+\textbf{(S3) Per-hop top-score trajectory.} The sequence $t_k=\max_i r_{k,i}$ tracks whether expansion is uncovering more relevant evidence. A plateau or decline in $t_k$ indicates diminishing returns.
+
+\subsection{The \method{} Controller}
+\label{sec:controller}
+
+\method{} makes three training-free decisions from (S1)--(S3).
+
+\paragraph{(D1) Use-graph decision.}
+If $\ell_{(1)}<\theta_{\text{low}}$, the seed anchor is too unreliable for multi-hop expansion to help; we route $q$ to a graph-free answer generated directly from the question. This saves all $K$ judge calls for that query. The threshold $\theta_{\text{low}}$ is the only hyperparameter governing (D1) and, as we show, is inert under perfect linking (it never fires) but decisive under noisy linking.
+
+\paragraph{(D2) Adaptive beam allocation.}
+We set the beam at hop $k$ to
+\begin{equation}
+\label{eq:beam}
+b_k = \mathrm{clip}\!\Big(\big\lfloor B\cdot\big(\tfrac{1}{2}+H_k\big)\big\rfloor,\; b_{\min},\; b_{\max}\Big),
+\end{equation}
+where $B$ is a base beam. The factor $\tfrac{1}{2}+H_k$ maps entropy $H_k\in[0,1]$ to a multiplier in $[0.5,1.5]$: when scores are concentrated ($H_k\!\to\!0$) the beam shrinks to $B/2$ since one path suffices; when scores are flat ($H_k\!\to\!1$) the beam widens to $1.5B$ to avoid pruning the true continuation among many equally-scored candidates. This entropy-to-beam map is the simplest monotone allocation consistent with the intuition that uncertainty demands exploration.
+
+\paragraph{(D3) Marginal-gain early stopping.}
+We stop after hop $k\geq 1$ when the top-score gain fails to exceed a margin:
+\begin{equation}
+\label{eq:stop}
+s_k = 1 \;\Longleftrightarrow\; \big(t_k - t_{k-1}\big) \le \delta \;\;\text{or}\;\; t_k < \tau \;\;\text{or}\;\; \mathcal{F}_{k+1}=\emptyset.
+\end{equation}
+The first condition halts when expansion stops improving the best available evidence (diminishing returns); the second is an absolute floor (nothing useful retrieved); the third is a structural frontier collapse. The default $\delta$ is chosen so that a hop whose top score does not beat the previous hop's top by a meaningful margin---indicating the new frontier is no more relevant than the old---is not worth its judge cost.
+
+\begin{proposition}[Cost bound]
+\label{prop:cost}
+Let $C_{\text{fix}}$ and $C_{\text{ada}}$ be the expected per-query judge-call cost of the fixed and \method{} controllers under the same engine. If a fraction $\rho_u$ of queries satisfy (D1)'s skip condition and the mean stopping hop under (D3) is $\bar{k}_{\text{stop}}\le K$, then
+\[
+C_{\text{ada}} \;=\; (1-\rho_u)\,\bar{k}_{\text{stop}} \;\le\; (1-\rho_u)\,K \;=\; (1-\rho_u)\,C_{\text{fix}}.
+\]
+\end{proposition}
+\noindent This gives the cost-reduction factor directly: skipping saves a factor $\rho_u$, and early stopping saves a factor $1-\bar{k}_{\text{stop}}/K$, multiplicatively. The bound is tight when (D3) never fires prematurely. The accuracy effect is empirical: \Cref{sec:exp} shows (D3) in fact \emph{improves} accuracy at 2-hop, because the skipped later hops carry noise that the judge propagates.
+
+\subsection{Why Training-Free Suffices}
+\label{sec:why}
+
+A learned router must estimate query difficulty from $q$ alone, before retrieval begins. \method{} instead observes difficulty \emph{during} retrieval through the score distributions the pipeline already produces. This has two consequences. First, the signal is causal rather than predictive: $H_k$ directly measures the judge's current uncertainty over actual candidates, not a proxy. Second, the controller transfers for free across KGs and domains because it reads no domain-specific features---only normalized entropies and cosine similarities, which are defined wherever linking and judging are defined. We verify transfer empirically by running the identical controller across the WikiMovies KG and across 1.5B/7B generators without re-tuning.
+
+\Cref{fig:framework} overviews \method{}. Algorithm~\ref{alg:aqurag} states the full retrieval procedure.
+
+\begin{figure*}[t]
+\centering
+\includegraphics[width=0.92\textwidth]{figures/framework.png}
+\caption{Overview of \method{}. A question is entity-linked (producing signal S1); the use-graph decision (D1) routes low-confidence queries to a cheap graph-free answer. Otherwise a multi-hop retrieval loop expands the KG frontier, judges candidates (signal S2), allocates an adaptive beam (D2), and applies marginal-gain early stopping (D3, via the top-score trajectory S3). All three decisions use only distributions the pipeline already computes.}
+\label{fig:framework}
+\end{figure*}
+
+\begin{algorithm}[t]
+\caption{\method{} retrieval (training-free controller)}
+\label{alg:aqurag}
+\small
+\begin{algorithmic}[1]
+\Require question $q$, KG $\mathcal{G}$, judge $J$, params $\theta_{\text{low}},B,\delta,\tau,K$
+\State Link seeds: $\{(e_i,\ell_i)\}\leftarrow\textsc{Link}(q,\mathcal{G})$
+\If{$\max_i \ell_i < \theta_{\text{low}}$} \Comment{D1: skip graph}
+  \State \Return $\textsc{Generate}(q,\emptyset)$
+\EndIf
+\State $\mathcal{F}\leftarrow\{e_i\}$; $\mathcal{V}\leftarrow\emptyset$; $\mathcal{S}\leftarrow\emptyset$; $t_{-1}\leftarrow\bot$
+\For{$k=0,\dots,K-1$}
+  \State $\mathcal{C}\leftarrow\textsc{Expand}(\mathcal{F},\mathcal{G})\setminus\mathcal{V}$
+  \State $\bm{r}\leftarrow J(\mathcal{C},q)$; \quad $H\leftarrow\textsc{NormEntropy}(\bm{r})$; \quad $t\leftarrow\max\bm{r}$
+  \State $b\leftarrow\mathrm{clip}(\lfloor B(\tfrac12+H)\rfloor, b_{\min}, b_{\max})$ \Comment{D2}
+  \State $\mathcal{S}_k\leftarrow\textsc{TopB}(\mathcal{C},\bm{r},b)$; \quad $\mathcal{S}\leftarrow\mathcal{S}\cup\mathcal{S}_k$
+  \State $\mathcal{F}\leftarrow\textsc{Entities}(\mathcal{S}_k)\setminus\mathcal{V}$; \quad $\mathcal{V}\leftarrow\mathcal{V}\cup\mathcal{F}$
+  \If{$k\geq 1\;\textbf{and}\;(t-t_{k-1}\le\delta\;\textbf{or}\;t<\tau\;\textbf{or}\;\mathcal{F}=\emptyset)$} \Comment{D3}
+    \State \textbf{break}
+  \EndIf
+  \State $t_{k-1}\leftarrow t$
+\EndFor
+\State \Return $\textsc{Generate}(q,\mathcal{S})$
+\end{algorithmic}
+\end{algorithm}

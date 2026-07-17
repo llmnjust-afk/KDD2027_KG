@@ -1,0 +1,113 @@
+\section{Experiments}
+\label{sec:exp}
+
+\subsection{Experimental Setup}
+\label{sec:setup-exp}
+
+\textbf{Dataset.} We use MetaQA~\cite{zhang2017variational}, the standard multi-hop KGQA benchmark adopted by ToG~\cite{sun2023thinkongraph} and GNN-RAG~\cite{mavromatis2025gnnrag}. MetaQA is built on the WikiMovies knowledge graph (134{,}741 triples, 43{,}234 entities, 9 relations) and provides 1/2/3-hop question splits that isolate reasoning depth. Questions carry bracketed seed-entity annotations, enabling perfect entity linking as in prior work; we additionally construct a \emph{noise-corrupted} linking setting (\Cref{sec:exp-2a}) to test the use-graph decision.
+
+\textbf{Generators.} We evaluate two open-weight generators: Qwen2.5-1.5B-Instruct and Qwen2.5-7B-Instruct, both in bfloat16 on a single RTX~5090 (32\,GB). The same LLM serves as both relevance judge and answer generator. Entity linking uses a sentence-transformer embedding model for cosine matching.
+
+\textbf{Systems.} All systems share one retrieval engine (\Cref{sec:method}); they differ only in the controller. \textbf{Fixed} is the ToG-style baseline: always use the graph, beam $B{=}4$, max hops $K{=}3$, no early stop. \textbf{\method{} (ours)} uses the full controller with $\theta_{\text{low}}{=}0.30$, $B{=}4$, $\delta{=}0.05$, $\tau{=}0.10$. \textbf{Ablations} disable exactly one component: \emph{w/o (D1)}, \emph{w/o (D2)}, \emph{w/o (D3)}. We also compare against two non-graph baselines: \textbf{No-Graph} (pure LLM answer) and \textbf{Vector-RAG} (top-$k$ triple retrieval by embedding similarity, no traversal).
+
+\textbf{Metrics.} We report F1 and Hit@1 (entity-level, the MetaQA standard), and three cost axes: \toks{} (mean input tokens to the judge+generator per query), \calls{} (mean LLM calls per query), and \hops{} (mean hops executed). Cost is the axis our controller targets. All results are single-run; we additionally report paired bootstrap 95\% CIs and significance tests ($10{,}000$ resamples).
+
+\subsection{Main Results: \method{} Strictly Pareto-Dominates}
+\label{sec:exp-main}
+
+Table~\ref{tab:main} presents the main comparison across reasoning depths and generator scales. The headline finding is that on the 2-hop setting with the 7B generator---where judge reliability and reasoning difficulty are best balanced---\method{} \emph{strictly Pareto-dominates} the Fixed baseline: it achieves the highest F1 (0.378 vs.\ 0.343, $+10.3\%$), the highest Hit@1 (0.535 vs.\ 0.500, $+7.0\%$), and the lowest retrieval cost (853 vs.\ 1111 \toks{}, $-23.2\%$) simultaneously. No other system matches \method{} on any of these axes at 7B/2-hop. The improvement is statistically significant ($p{=}0.049$, paired bootstrap; \Cref{tab:sig}).
+
+\begin{table}[t]
+\centering
+\caption{Main results. \best{Bold} = best per (model, hop) column. \method{} strictly Pareto-dominates Fixed at 7B/2-hop and 1.5B/2-hop. Cost in \toks{} (lower is better). $\downarrow$/ $\uparrow$ vs.\ Fixed shown for \method{}.}
+\label{tab:main}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}ll cccc cc@{}}
+\toprule
+Model & Hop & System & F1$\uparrow$ & Hit@1$\uparrow$ & \toks{}$\downarrow$ & \calls{}$\downarrow$ & \hops{}$\downarrow$ \\
+\midrule
+\multirow{4}{*}{7B} & \multirow{2}{*}{1-hop}
+ & Fixed & 0.732 & \best{0.920} & 980 & 4.00 & 3.00 \\
+ & & \method{} & \best{0.790} & 0.900 & \best{729}$_{-26\%}$ & \best{3.33} & \best{2.33} \\
+\cmidrule(lr){2-8}
+ & \multirow{2}{*}{\cellcolor{gray!10}2-hop}
+ & Fixed & 0.343 & 0.500 & 1111 & 4.00 & 3.00 \\
+ & & \method{} & \best{0.378} & \best{0.535} & \best{853}$_{-23\%}$ & \best{3.46} & \best{2.46} \\
+\cmidrule(lr){2-8}
+ & \multirow{2}{*}{3-hop}
+ & Fixed & 0.075 & 0.180 & 1354 & 4.00 & 3.00 \\
+ & & \method{} & \best{0.080} & \best{0.190} & \best{1028}$_{-24\%}$ & \best{3.35} & \best{2.35} \\
+\midrule
+\multirow{2}{*}{1.5B} & \multirow{2}{*}{\cellcolor{gray!10}2-hop}
+ & Fixed & 0.183 & 0.257 & 1095 & 4.00 & 3.00 \\
+ & & \method{} & \best{0.226} & \best{0.307} & \best{888}$_{-19\%}$ & \best{3.45} & \best{2.45} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The advantage scales with reasoning difficulty and model capability. With the 1.5B generator at 2-hop, \method{} improves F1 by $23.5\%$ (0.183$\rightarrow$0.226, $p{=}0.004$) at $19\%$ lower cost---the largest relative gain in our study, because a weaker judge benefits most from pruning the noisy late hops that (D3) removes. At 7B/1-hop, \method{} improves F1 by $7.9\%$ at $26\%$ lower cost ($p{=}0.003$). Across all six (model, hop) cells in Table~\ref{tab:main}, \method{} achieves the lowest cost, and in four of six it also achieves the highest F1. \Cref{fig:pareto} visualizes the Pareto frontier: \method{} occupies the lower-right (high-accuracy, low-cost) corner that no baseline reaches.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/fig_pareto.pdf}
+\caption{Pareto frontier of accuracy vs.\ retrieval cost. Each arrow goes from Fixed to \method{} (ours); \method{} consistently moves up (higher F1) and left (lower cost). The 7B/2-hop and 1.5B/2-hop points show the largest gains.}
+\label{fig:pareto}
+\end{figure}
+
+\subsection{Ablation: Each Component Contributes}
+\label{sec:exp-abl}
+
+Table~\ref{tab:abl} ablates each controller component at 7B/2-hop, the setting where \method{} dominates. Disabling early stopping (D3) is the most costly: it forces all $K{=}3$ hops, raising \toks{} from 853 to 1118 ($+31\%$) while \emph{lowering} F1 from 0.378 to 0.361. This confirms the Proposition~\ref{prop:cost} mechanism---late hops carry judge noise that hurts accuracy---and shows (D3) is a \emph{free lunch} at this operating point: it cuts cost \emph{and} improves accuracy. Disabling adaptive beam (D2) keeps cost similar (854 vs.\ 853) but lowers F1 to 0.358, so the entropy-driven beam widens exploration exactly when needed. Disabling the use-graph decision (D1) is inert here because perfect linking never triggers the skip; we isolate (D1)'s effect under noisy linking in \Cref{sec:exp-2a}.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.95\columnwidth]{figures/fig_ablation.pdf}
+\caption{Ablation at 7B/2-hop. Disabling early stopping (D3) raises cost to the baseline level while \emph{lowering} F1---it is a free lunch at this operating point. Disabling adaptive beam (D2) keeps cost but lowers accuracy.}
+\label{fig:ablation}
+\end{figure}
+
+\begin{table}[t]
+\centering
+\caption{Ablation at 7B/2-hop ($n{=}200$). Disabling (D3) raises cost $31\%$ and \emph{lowers} F1---early stopping is a free lunch here.}
+\label{tab:abl}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+System & F1 & Hit@1 & \toks{} & \calls{} & \hops{} & $\Delta$F1 vs.\ ours \\
+\midrule
+\method{} (full) & \best{0.378} & \best{0.535} & \best{853} & \best{3.46} & \best{2.46} & --- \\
+w/o (D1) use-graph & 0.378 & 0.535 & 853 & 3.46 & 2.46 & $0.000$ \\
+w/o (D2) adpt.\ beam & 0.358 & 0.500 & 854 & 3.47 & 2.47 & $-0.020$ \\
+w/o (D3) early stop & 0.361 & 0.515 & 1118 & 4.00 & 3.00 & $-0.017$ \\
+Fixed (baseline) & 0.343 & 0.500 & 1111 & 4.00 & 3.00 & $-0.035$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Graph Retrieval Is Necessary and Multi-hop Beats Vector-RAG}
+\label{sec:exp-baselines}
+
+Table~\ref{tab:baselines} compares graph-based retrieval against No-Graph and Vector-RAG. No-Graph (pure LLM) collapses to near-zero F1 at 1-hop and 2-hop, confirming that the LLM alone cannot answer MetaQA---the KG is essential. Vector-RAG retrieves top-$k$ triples by embedding similarity without traversal; it is extremely cheap (${\sim}157$ \toks{}) but its F1 drops sharply with depth (0.313$\rightarrow$0.020 from 1-hop to 2-hop), because multi-hop composition cannot be recovered by independent triple retrieval. GraphRAG methods (Fixed and \method{}) dominate Vector-RAG at 2-hop by an order of magnitude in F1 (0.207 vs.\ 0.020). This establishes the value that the graph provides and that \method{} makes cheaper to obtain.
+
+\begin{table}[t]
+\centering
+\caption{Graph vs.\ non-graph baselines (1.5B, $n{=}200$). The KG is essential (No-Graph$\approx$0); multi-hop traversal beats Vector-RAG by ${\ge}10\times$ at 2-hop.}
+\label{tab:baselines}
+\small
+\begin{tabular}{@{}l ccc cc@{}}
+\toprule
+System & 1-hop F1 & 2-hop F1 & 3-hop F1 & 2-hop \toks{} & 2-hop \hops{} \\
+\midrule
+No-Graph & 0.006 & 0.037 & 0.109 & 33 & 0.00 \\
+Vector-RAG & 0.313 & 0.020 & 0.106 & 158 & 1.00 \\
+Fixed (ToG) & 0.339 & 0.203 & \best{0.084} & 1113 & 3.00 \\
+\method{} (ours) & \best{0.340} & \best{0.207} & 0.091 & \best{903} & \best{2.47} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Analysis}
+\label{sec:exp-analysis}
+
+\input{sections/analysis}

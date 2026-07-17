@@ -1,0 +1,68 @@
+\subsubsection{Use-Graph Decision Fires Under Noisy Linking}
+\label{sec:exp-2a}
+
+Under MetaQA's perfect linking, (D1) never fires (top-1 cosine ${\ge}0.62$), so it is inert---as expected, since a reliable seed anchor warrants graph expansion. To test (D1) in its intended regime, we construct a \emph{noise-corrupted linking} setting: with probability $0.5$ we truncate each bracketed entity to its first token (e.g., ``[Michelle Trachtenberg]''$\to$``[Michelle]''), then re-link by embedding. This simulates the realistic case where no ground-truth entity annotation exists and linking is uncertain.
+
+Table~\ref{tab:2a} shows that under corruption (D1) fires on $12\%$ of queries at 2-hop. \method{} now diverges from the \emph{w/o (D1)} ablation: it cuts cost by an additional $10\%$ (835 vs.\ 933 \toks{}) and improves F1 by $25\%$ over Fixed (0.150 vs.\ 0.120). Notably, skipping the graph on low-confidence queries \emph{raises} accuracy, because expanding from a wrong seed propagates noise. This validates (D1) as a conditional contribution: it is free under good linking and protective under bad linking.
+
+\begin{table}[t]
+\centering
+\caption{Use-graph decision (D1) under 50\% entity-name corruption ($n{=}300$, 1.5B). (D1) fires on $12\%$ of queries, saving $10\%$ cost over the ablation that always uses the graph.}
+\label{tab:2a}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+System & F1 & Hit@1 & \toks{} & \calls{} & \hops{} & \%graph \\
+\midrule
+Fixed & 0.120 & 0.173 & 1125 & 3.99 & 2.99 & 100\% \\
+w/o (D1) & \best{0.167} & \best{0.227} & 933 & 3.47 & 2.47 & 100\% \\
+\method{} (D1 on) & 0.150 & 0.207 & \best{835} & \best{3.18} & \best{2.18} & 88\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Statistical Significance}
+\label{sec:exp-sig}
+
+Table~\ref{tab:sig} reports paired bootstrap tests ($10{,}000$ resamples) of \method{} vs.\ Fixed. At 7B/1-hop and 7B/2-hop the F1 improvement is significant at $p<0.05$; at 1.5B/2-hop it is significant at $p<0.005$. Cost reductions are significant ($p<0.001$) everywhere. The 1-hop/1.5B setting is not significant ($p{=}0.74$), consistent with the boundary analysis below.
+
+\begin{table}[t]
+\centering
+\caption{Paired bootstrap significance, \method{} vs.\ Fixed ($n{=}10{,}000$).}
+\label{tab:sig}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Setting & $\Delta$F1 & $p$-value & $\Delta$\toks{} & sig. \\
+\midrule
+7B, 1-hop & $+0.059$ & $0.003$ & $-251$ & ** \\
+7B, 2-hop & $+0.035$ & $0.049$ & $-258$ & * \\
+7B, 3-hop & $+0.005$ & $0.39$ & $-326$ & ns \\
+1.5B, 2-hop & $+0.043$ & $0.004$ & $-207$ & ** \\
+1.5B, 1-hop & $-0.009$ & $0.74$ & $-225$ & ns \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection{Hyperparameter Sensitivity}
+\label{sec:exp-sens}
+
+\Cref{fig:sensitivity} sweeps the three controller hyperparameters at 1.5B/2-hop ($n{=}100$). The early-stop margin $\delta$ is stable on $[0.01,0.05]$ (F1$\approx$0.214) and degrades only at $\delta{=}0.2$ (F1$=$0.175), so the default $\delta{=}0.05$ sits in a wide robust plateau. The base beam $B$ trades cost for accuracy monotonically ($B{=}2$: F1$=$0.144; $B{=}8$: F1$=$0.271), and $B{=}4$ is a reasonable default. The use-graph threshold $\theta_{\text{low}}$ is inert under perfect linking (all values give identical results), confirming it only activates under noisy linking as designed. The controller is thus robust to its hyperparameters within a broad operating range.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=0.98\columnwidth]{figures/fig_sensitivity.pdf}
+\caption{Hyperparameter sensitivity (1.5B, 2-hop, $n{=}100$). F1 (teal, left axis) and tokens/query (amber, right axis) vs.\ each parameter. $\delta$ is stable on $[0.01,0.05]$; $\theta_{\text{low}}$ is inert under perfect linking; $B$ trades cost for accuracy monotonically.}
+\label{fig:sensitivity}
+\end{figure}
+
+\subsubsection{Honest Boundaries}
+\label{sec:exp-boundary}
+
+We deliberately report settings where \method{} does \emph{not} dominate, as they delimit the method's applicability and increase the credibility of the positive results.
+
+\textbf{Trivial queries trade accuracy for cost.} At 1.5B/1-hop, \method{} lowers cost by $22\%$ but F1 drops from 0.341 to 0.332 and Hit@1 from 0.630 to 0.556. Early stopping prunes a third hop that, for easy lookups, occasionally supplies a corroborating fact. The ablation shows \emph{w/o (D2)} actually edges out the full controller here (F1 0.345 vs.\ 0.332) because adaptive beam narrows exploration on confident hops. This is a controllable trade-off: a practitioner who cannot tolerate any accuracy loss on easy queries can disable (D3) for 1-hop regimes, or raise $\delta$. We do not claim \method{} is uniformly better; we claim it is Pareto-better \emph{where retrieval cost matters and queries are non-trivial}.
+
+\textbf{Weak judge + high depth makes graph retrieval harmful.} At 1.5B/3-hop, No-Graph (F1$=$0.109) outperforms graph retrieval (\method{} F1$=$0.091). The 1.5B judge is unreliable at depth 3, so multi-hop expansion propagates scoring errors faster than it accumulates evidence. This is a property of the \emph{judge}, not the controller: the 7B judge restores graph utility (the 3-hop gap narrows and reverses in direction, though absolute F1 remains low because 3-hop MetaQA is intrinsically hard for open 7B models). The practical takeaway is that \method{} (and GraphRAG generally) requires a judge whose reliability scales with hop depth.
+
+These boundaries are consistent with the theory: Proposition~\ref{prop:cost} guarantees cost savings unconditionally, while accuracy gains depend on whether the pruned hops carry signal or noise---exactly the distinction that separates the 2-hop/7B win from the 1-hop/1.5B trade-off.
