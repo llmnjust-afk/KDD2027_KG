@@ -1,0 +1,380 @@
+--- significance 1-hop ---
+================================================================================
+Bootstrap 95% CIs  [1-hop]  (n_boot=10000)
+================================================================================
+
+  abl-fixbeam (n=500):
+    F1         = 0.3452  [0.3178, 0.3730]
+    Hit@1      = 0.6020  [0.5600, 0.6440]
+    toks/q     = 779.5700  [746.1748, 814.5980]
+    calls/q    = 3.4560  [3.4120, 3.5000]
+    hops/q     = 2.4560  [2.4120, 2.5000]
+
+  abl-nograph (n=500):
+    F1         = 0.3324  [0.3034, 0.3618]
+    Hit@1      = 0.5560  [0.5120, 0.5980]
+    toks/q     = 801.9980  [766.7873, 838.8093]
+    calls/q    = 3.4540  [3.4100, 3.4980]
+    hops/q     = 2.4540  [2.4100, 2.4980]
+
+  abl-nostop (n=500):
+    F1         = 0.3275  [0.3022, 0.3532]
+    Hit@1      = 0.6120  [0.5680, 0.6540]
+    toks/q     = 1086.3360  [1058.0059, 1114.2643]
+    calls/q    = 3.9960  [3.9900, 4.0000]
+    hops/q     = 2.9960  [2.9900, 3.0000]
+
+  adaptive (n=500):
+    F1         = 0.3324  [0.3034, 0.3618]
+    Hit@1      = 0.5560  [0.5120, 0.5980]
+    toks/q     = 801.9980  [766.7873, 838.8093]
+    calls/q    = 3.4540  [3.4100, 3.4980]
+    hops/q     = 2.4540  [2.4100, 2.4980]
+
+  fixed (n=500):
+    F1         = 0.3412  [0.3163, 0.3668]
+    Hit@1      = 0.6300  [0.5880, 0.6720]
+    toks/q     = 1026.9320  [1000.6975, 1053.6271]
+    calls/q    = 4.0000  [4.0000, 4.0000]
+    hops/q     = 3.0000  [3.0000, 3.0000]
+
+================================================================================
+Paired bootstrap tests: Adaptive vs Baselines  [1-hop]  (n=500)
+================================================================================
+
+  Adaptive vs fixed:
+    F1        : Δ=-0.0088  p=0.7368  ns  (adaptive )
+    Hit@1     : Δ=-0.0740  p=0.9999  ns  (adaptive )
+    toks/q    : Δ=-224.9340  p=1.0000  ns  (adaptive lower)
+    calls/q   : Δ=-0.5460  p=1.0000  ns  (adaptive lower)
+    hops/q    : Δ=-0.5460  p=1.0000  ns  (adaptive lower)
+
+  Adaptive vs abl-nograph:
+    F1        : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    Hit@1     : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    toks/q    : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    calls/q   : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    hops/q    : Δ=+0.0000  p=1.0000  ns  (adaptive )
+
+  Adaptive vs abl-fixbeam:
+    F1        : Δ=-0.0128  p=0.8591  ns  (adaptive )
+    Hit@1     : Δ=-0.0460  p=0.9960  ns  (adaptive )
+    toks/q    : Δ=+22.4280  p=0.0000  ***  (adaptive )
+    calls/q   : Δ=-0.0020  p=0.8135  ns  (adaptive lower)
+    hops/q    : Δ=-0.0020  p=0.8135  ns  (adaptive lower)
+
+  Adaptive vs abl-nostop:
+    F1        : Δ=+0.0048  p=0.3172  ns  (adaptive higher)
+    Hit@1     : Δ=-0.0560  p=0.9998  ns  (adaptive )
+    toks/q    : Δ=-284.3380  p=1.0000  ns  (adaptive lower)
+    calls/q   : Δ=-0.5420  p=1.0000  ns  (adaptive lower)
+    hops/q    : Δ=-0.5420  p=1.0000  ns  (adaptive lower)
+--- analysis 1-hop ---
+======================================================================
+Hop-count distribution  [1-hop]
+======================================================================
+
+  fixed (n=500):
+    3 hops:  500 (100.0%) ########################################
+
+  adaptive (n=500):
+    2 hops:  273 ( 54.6%) #####################
+    3 hops:  227 ( 45.4%) ##################
+
+  abl-nograph (n=500):
+    2 hops:  273 ( 54.6%) #####################
+    3 hops:  227 ( 45.4%) ##################
+
+  abl-fixbeam (n=500):
+    2 hops:  272 ( 54.4%) #####################
+    3 hops:  228 ( 45.6%) ##################
+
+  abl-nostop (n=500):
+    2 hops:    2 (  0.4%) 
+    3 hops:  498 ( 99.6%) #######################################
+
+======================================================================
+Cost-savings attribution by innovation  [1-hop]
+======================================================================
+
+  Baseline (fixed) mean toks/q = 1027
+
+  Innovation (3) early-stop:
+    abl-nostop: toks/q=1086, F1=0.328
+    adaptive: toks/q=802, F1=0.332
+    -> enabling this innovation saves +26.2% toks, ΔF1=+0.005
+
+  Innovation (2b) adaptive beam:
+    abl-fixbeam: toks/q=780, F1=0.345
+    adaptive: toks/q=802, F1=0.332
+    -> enabling this innovation saves -2.9% toks, ΔF1=-0.013
+
+  Innovation (2a) use-graph decision:
+    abl-nograph: toks/q=802, F1=0.332
+    adaptive: toks/q=802, F1=0.332
+    -> enabling this innovation saves +0.0% toks, ΔF1=+0.000
+
+======================================================================
+Per-query win/loss/tie: Adaptive vs Fixed  [1-hop]
+======================================================================
+
+  n=500
+  Adaptive wins:    151 ( 30.2%)
+  Adaptive ties:    207 ( 41.4%)
+  Adaptive losses:  142 ( 28.4%)
+  Total tokens saved: 112467 (225/query)
+
+--- significance 2-hop ---
+================================================================================
+Bootstrap 95% CIs  [2-hop]  (n_boot=10000)
+================================================================================
+
+  abl-fixbeam (n=300):
+    F1         = 0.1899  [0.1513, 0.2298]
+    Hit@1      = 0.2600  [0.2100, 0.3100]
+    toks/q     = 854.6267  [809.4763, 898.4841]
+    calls/q    = 3.4700  [3.4133, 3.5267]
+    hops/q     = 2.4700  [2.4133, 2.5267]
+
+  abl-nograph (n=300):
+    F1         = 0.2256  [0.1859, 0.2680]
+    Hit@1      = 0.3067  [0.2567, 0.3600]
+    toks/q     = 887.8133  [838.3589, 936.6512]
+    calls/q    = 3.4500  [3.3933, 3.5067]
+    hops/q     = 2.4500  [2.3933, 2.5067]
+
+  abl-nostop (n=300):
+    F1         = 0.2015  [0.1635, 0.2414]
+    Hit@1      = 0.2833  [0.2333, 0.3333]
+    toks/q     = 1161.9133  [1122.8496, 1199.6173]
+    calls/q    = 3.9733  [3.9533, 3.9900]
+    hops/q     = 2.9733  [2.9533, 2.9900]
+
+  adaptive (n=300):
+    F1         = 0.2256  [0.1859, 0.2680]
+    Hit@1      = 0.3067  [0.2567, 0.3600]
+    toks/q     = 887.8133  [838.3589, 936.6512]
+    calls/q    = 3.4500  [3.3933, 3.5067]
+    hops/q     = 2.4500  [2.3933, 2.5067]
+
+  fixed (n=300):
+    F1         = 0.1826  [0.1448, 0.2227]
+    Hit@1      = 0.2567  [0.2067, 0.3067]
+    toks/q     = 1095.1300  [1059.8531, 1129.5675]
+    calls/q    = 3.9967  [3.9900, 4.0000]
+    hops/q     = 2.9967  [2.9900, 3.0000]
+
+================================================================================
+Paired bootstrap tests: Adaptive vs Baselines  [2-hop]  (n=300)
+================================================================================
+
+  Adaptive vs fixed:
+    F1        : Δ=+0.0429  p=0.0044  **  (adaptive higher)
+    Hit@1     : Δ=+0.0500  p=0.0189  *  (adaptive higher)
+    toks/q    : Δ=-207.3167  p=1.0000  ns  (adaptive lower)
+    calls/q   : Δ=-0.5467  p=1.0000  ns  (adaptive lower)
+    hops/q    : Δ=-0.5467  p=1.0000  ns  (adaptive lower)
+
+  Adaptive vs abl-nograph:
+    F1        : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    Hit@1     : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    toks/q    : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    calls/q   : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    hops/q    : Δ=+0.0000  p=1.0000  ns  (adaptive )
+
+  Adaptive vs abl-fixbeam:
+    F1        : Δ=+0.0357  p=0.0087  **  (adaptive higher)
+    Hit@1     : Δ=+0.0467  p=0.0270  *  (adaptive higher)
+    toks/q    : Δ=+33.1867  p=0.0007  ***  (adaptive )
+    calls/q   : Δ=-0.0200  p=0.9648  ns  (adaptive lower)
+    hops/q    : Δ=-0.0200  p=0.9648  ns  (adaptive lower)
+
+  Adaptive vs abl-nostop:
+    F1        : Δ=+0.0241  p=0.0162  *  (adaptive higher)
+    Hit@1     : Δ=+0.0233  p=0.0746  ns  (adaptive higher)
+    toks/q    : Δ=-274.1000  p=1.0000  ns  (adaptive lower)
+    calls/q   : Δ=-0.5233  p=1.0000  ns  (adaptive lower)
+    hops/q    : Δ=-0.5233  p=1.0000  ns  (adaptive lower)
+--- analysis 2-hop ---
+======================================================================
+Hop-count distribution  [2-hop]
+======================================================================
+
+  fixed (n=300):
+    2 hops:    1 (  0.3%) 
+    3 hops:  299 ( 99.7%) #######################################
+
+  adaptive (n=300):
+    2 hops:  165 ( 55.0%) ######################
+    3 hops:  135 ( 45.0%) ##################
+
+  abl-nograph (n=300):
+    2 hops:  165 ( 55.0%) ######################
+    3 hops:  135 ( 45.0%) ##################
+
+  abl-fixbeam (n=300):
+    2 hops:  159 ( 53.0%) #####################
+    3 hops:  141 ( 47.0%) ##################
+
+  abl-nostop (n=300):
+    2 hops:    8 (  2.7%) #
+    3 hops:  292 ( 97.3%) ######################################
+
+======================================================================
+Cost-savings attribution by innovation  [2-hop]
+======================================================================
+
+  Baseline (fixed) mean toks/q = 1095
+
+  Innovation (3) early-stop:
+    abl-nostop: toks/q=1162, F1=0.202
+    adaptive: toks/q=888, F1=0.226
+    -> enabling this innovation saves +23.6% toks, ΔF1=+0.024
+
+  Innovation (2b) adaptive beam:
+    abl-fixbeam: toks/q=855, F1=0.190
+    adaptive: toks/q=888, F1=0.226
+    -> enabling this innovation saves -3.9% toks, ΔF1=+0.036
+
+  Innovation (2a) use-graph decision:
+    abl-nograph: toks/q=888, F1=0.226
+    adaptive: toks/q=888, F1=0.226
+    -> enabling this innovation saves +0.0% toks, ΔF1=+0.000
+
+======================================================================
+Per-query win/loss/tie: Adaptive vs Fixed  [2-hop]
+======================================================================
+
+  n=300
+  Adaptive wins:     54 ( 18.0%)
+  Adaptive ties:    222 ( 74.0%)
+  Adaptive losses:   24 (  8.0%)
+  Total tokens saved: 62195 (207/query)
+
+--- significance 3-hop ---
+================================================================================
+Bootstrap 95% CIs  [3-hop]  (n_boot=10000)
+================================================================================
+
+  abl-fixbeam (n=300):
+    F1         = 0.0843  [0.0614, 0.1094]
+    Hit@1      = 0.1800  [0.1400, 0.2233]
+    toks/q     = 1139.7967  [1103.5199, 1176.3070]
+    calls/q    = 3.5633  [3.5067, 3.6200]
+    hops/q     = 2.5633  [2.5067, 2.6200]
+
+  abl-nograph (n=300):
+    F1         = 0.0992  [0.0743, 0.1250]
+    Hit@1      = 0.2133  [0.1667, 0.2600]
+    toks/q     = 1200.0733  [1159.1363, 1240.4305]
+    calls/q    = 3.5600  [3.5033, 3.6167]
+    hops/q     = 2.5600  [2.5033, 2.6167]
+
+  abl-nostop (n=300):
+    F1         = 0.1058  [0.0811, 0.1323]
+    Hit@1      = 0.2300  [0.1833, 0.2800]
+    toks/q     = 1442.7433  [1416.2630, 1468.2102]
+    calls/q    = 3.9867  [3.9733, 3.9967]
+    hops/q     = 2.9867  [2.9733, 2.9967]
+
+  adaptive (n=300):
+    F1         = 0.0992  [0.0743, 0.1250]
+    Hit@1      = 0.2133  [0.1667, 0.2600]
+    toks/q     = 1200.0733  [1159.1363, 1240.4305]
+    calls/q    = 3.5600  [3.5033, 3.6167]
+    hops/q     = 2.5600  [2.5033, 2.6167]
+
+  fixed (n=300):
+    F1         = 0.0907  [0.0673, 0.1154]
+    Hit@1      = 0.2033  [0.1600, 0.2500]
+    toks/q     = 1360.7833  [1336.6821, 1383.9468]
+    calls/q    = 3.9900  [3.9767, 4.0000]
+    hops/q     = 2.9900  [2.9767, 3.0000]
+
+================================================================================
+Paired bootstrap tests: Adaptive vs Baselines  [3-hop]  (n=300)
+================================================================================
+
+  Adaptive vs fixed:
+    F1        : Δ=+0.0085  p=0.2577  ns  (adaptive higher)
+    Hit@1     : Δ=+0.0100  p=0.3620  ns  (adaptive higher)
+    toks/q    : Δ=-160.7100  p=1.0000  ns  (adaptive lower)
+    calls/q   : Δ=-0.4300  p=1.0000  ns  (adaptive lower)
+    hops/q    : Δ=-0.4300  p=1.0000  ns  (adaptive lower)
+
+  Adaptive vs abl-nograph:
+    F1        : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    Hit@1     : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    toks/q    : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    calls/q   : Δ=+0.0000  p=1.0000  ns  (adaptive )
+    hops/q    : Δ=+0.0000  p=1.0000  ns  (adaptive )
+
+  Adaptive vs abl-fixbeam:
+    F1        : Δ=+0.0149  p=0.0957  ns  (adaptive higher)
+    Hit@1     : Δ=+0.0333  p=0.0539  ns  (adaptive higher)
+    toks/q    : Δ=+60.2767  p=0.0000  ***  (adaptive )
+    calls/q   : Δ=-0.0033  p=0.6269  ns  (adaptive lower)
+    hops/q    : Δ=-0.0033  p=0.6269  ns  (adaptive lower)
+
+  Adaptive vs abl-nostop:
+    F1        : Δ=-0.0066  p=0.9103  ns  (adaptive )
+    Hit@1     : Δ=-0.0167  p=0.9450  ns  (adaptive )
+    toks/q    : Δ=-242.6700  p=1.0000  ns  (adaptive lower)
+    calls/q   : Δ=-0.4267  p=1.0000  ns  (adaptive lower)
+    hops/q    : Δ=-0.4267  p=1.0000  ns  (adaptive lower)
+--- analysis 3-hop ---
+======================================================================
+Hop-count distribution  [3-hop]
+======================================================================
+
+  fixed (n=300):
+    2 hops:    3 (  1.0%) 
+    3 hops:  297 ( 99.0%) #######################################
+
+  adaptive (n=300):
+    2 hops:  132 ( 44.0%) #################
+    3 hops:  168 ( 56.0%) ######################
+
+  abl-nograph (n=300):
+    2 hops:  132 ( 44.0%) #################
+    3 hops:  168 ( 56.0%) ######################
+
+  abl-fixbeam (n=300):
+    2 hops:  131 ( 43.7%) #################
+    3 hops:  169 ( 56.3%) ######################
+
+  abl-nostop (n=300):
+    2 hops:    4 (  1.3%) 
+    3 hops:  296 ( 98.7%) #######################################
+
+======================================================================
+Cost-savings attribution by innovation  [3-hop]
+======================================================================
+
+  Baseline (fixed) mean toks/q = 1361
+
+  Innovation (3) early-stop:
+    abl-nostop: toks/q=1443, F1=0.106
+    adaptive: toks/q=1200, F1=0.099
+    -> enabling this innovation saves +16.8% toks, ΔF1=-0.007
+
+  Innovation (2b) adaptive beam:
+    abl-fixbeam: toks/q=1140, F1=0.084
+    adaptive: toks/q=1200, F1=0.099
+    -> enabling this innovation saves -5.3% toks, ΔF1=+0.015
+
+  Innovation (2a) use-graph decision:
+    abl-nograph: toks/q=1200, F1=0.099
+    adaptive: toks/q=1200, F1=0.099
+    -> enabling this innovation saves +0.0% toks, ΔF1=+0.000
+
+======================================================================
+Per-query win/loss/tie: Adaptive vs Fixed  [3-hop]
+======================================================================
+
+  n=300
+  Adaptive wins:     31 ( 10.3%)
+  Adaptive ties:    239 ( 79.7%)
+  Adaptive losses:   30 ( 10.0%)
+  Total tokens saved: 48213 (161/query)
+

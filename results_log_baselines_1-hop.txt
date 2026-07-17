@@ -18,3 +18,27 @@ Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF
   -> ./results_baselines/metaqa_1-hop_vector-rag/reports.jsonl
 
 === System: fixed  [Fixed (ToG-style)] ===
+  [50/200] F1=0.383 toks/q=1045 calls/q=4.00 hops/q=3.00 t=3.4s
+  [100/200] F1=0.370 toks/q=1030 calls/q=4.00 hops/q=3.00 t=2.3s
+  [150/200] F1=0.345 toks/q=1016 calls/q=4.00 hops/q=3.00 t=2.5s
+  [200/200] F1=0.339 toks/q=1036 calls/q=4.00 hops/q=3.00 t=3.2s
+  -> ./results_baselines/metaqa_1-hop_fixed/reports.jsonl
+
+=== System: adaptive  [Adaptive (ours)] ===
+  [50/200] F1=0.384 toks/q=829 calls/q=3.44 hops/q=2.44 t=2.1s
+  [100/200] F1=0.379 toks/q=816 calls/q=3.47 hops/q=2.47 t=2.3s
+  [150/200] F1=0.349 toks/q=793 calls/q=3.47 hops/q=2.47 t=2.8s
+  [200/200] F1=0.340 toks/q=810 calls/q=3.46 hops/q=2.46 t=3.2s
+  -> ./results_baselines/metaqa_1-hop_adaptive/reports.jsonl
+
+========================================================================
+PARETO COMPARISON  [metaqa_1-hop]  (sorted by mean input tokens/query)
+========================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+No-Graph (pure LLM)            0.006   0.000   0.000        31     1.00    0.00    0.0%
+Vector-RAG (no traversal)      0.313   0.545   0.005       157     1.00    1.00  100.0%
+Adaptive (ours)                0.340   0.565   0.090       810     3.46    2.46  100.0%
+Fixed (ToG-style)              0.339   0.645   0.025      1036     4.00    3.00  100.0%
+
+Pareto table saved to ./results_baselines/pareto_metaqa_1-hop.txt

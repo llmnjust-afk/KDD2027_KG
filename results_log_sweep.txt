@@ -1,0 +1,17 @@
+KG: 134741 triples | 14872 questions (using 100)
+
+=== Sweeping delta ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+Traceback (most recent call last):
+  File "/data/lab/adaptive_graphrag/scripts/sweep.py", line 95, in <module>
+    main()
+  File "/data/lab/adaptive_graphrag/scripts/sweep.py", line 82, in main
+    r = quick_eval(kg, examples, backend, cfg, args.limit, args.split)
+  File "/data/lab/adaptive_graphrag/scripts/sweep.py", line 38, in quick_eval
+    agg = aggregate([type("R", (), r)() for r in reports]) if reports else None
+  File "/data/lab/adaptive_graphrag/agr/evaluate.py", line 91, in aggregate
+    mean_exact=float(np.mean([r.exact for r in reports])),
+  File "/data/lab/adaptive_graphrag/agr/evaluate.py", line 91, in <listcomp>
+    mean_exact=float(np.mean([r.exact for r in reports])),
+AttributeError: 'R' object has no attribute 'exact'
