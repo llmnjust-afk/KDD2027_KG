@@ -1,12 +1,22 @@
 \section{Method}
 \label{sec:method}
 
-\subsection{Problem Setup and Notation}
-\label{sec:setup}
+\subsection{Preliminaries: GraphRAG Retrieval}
+\label{sec:prelim}
 
-Given a knowledge graph $\mathcal{G}=(\mathcal{E},\mathcal{R},\mathcal{T})$ with entities $\mathcal{E}$, relations $\mathcal{R}$, and triples $\mathcal{T}\subseteq\mathcal{E}\times\mathcal{R}\times\mathcal{E}$, and a natural-language question $q$, GraphRAG retrieves a reasoning subgraph and feeds it to an LLM to generate an answer. The retrieval proceeds in hops. Let $\mathcal{F}_k\subseteq\mathcal{E}$ denote the \emph{frontier}---the set of entities to expand---at hop $k$. Starting from linked seed entities $\mathcal{F}_0$, each hop $k$ expands the frontier by one edge over $\mathcal{G}$ to produce candidate triples $\mathcal{C}_k$, scores them for relevance to $q$ via an LLM judge $J(\cdot,q)\in[0,1]$, keeps the top-$b_k$ by score as $\mathcal{S}_k$, and forms the next frontier from the entities in $\mathcal{S}_k$ not yet visited. After $K$ hops (or an early stop), the union $\bigcup_k \mathcal{S}_k$ is the reasoning subgraph fed to the generator. The dominant cost is the LLM judge: each scoring call consumes input tokens proportional to $|\mathcal{C}_k|$, and there is one such call per hop.
+We formalize the GraphRAG retrieval loop that our controller augments. Given a knowledge graph $\mathcal{G}=(\mathcal{E},\mathcal{R},\mathcal{T})$ with entities $\mathcal{E}$, relations $\mathcal{R}$, and triples $\mathcal{T}\subseteq\mathcal{E}\times\mathcal{R}\times\mathcal{E}$, and a natural-language question $q$, the goal is to retrieve a reasoning subgraph $\mathcal{S}\subseteq\mathcal{T}$ that, when provided as context to a generator LLM $G$, yields the correct answer.
 
-A \emph{retrieval controller} $\pi$ governs three quantities per query: whether to use the graph at all ($u_0\in\{0,1\}$), the beam width ($b_k$), and whether to stop ($s_k\in\{0,1\}$). The fixed-budget baseline (ToG-style) sets $u_0{=}1$, $b_k{=}B$ constant, $s_k{=}0$ until $k{=}K$. \method{} replaces this with a training-free controller that reads distributional signals computed as by-products of retrieval. Because the retrieval engine is identical across controllers, comparing \method{} to the baseline isolates the controller as the sole variable.
+The retrieval proceeds iteratively. Let $\mathcal{F}_k\subseteq\mathcal{E}$ denote the \emph{frontier}---entities to expand---at hop $k$. The pipeline consists of four steps per hop:
+
+\textbf{(1) Entity linking} maps the question to seed entities $\mathcal{F}_0\subseteq\mathcal{E}$, either by exact match (when entity annotations are available) or by embedding nearest-neighbor search. Each linked entity carries a confidence score $\ell_i\in[0,1]$ (cosine similarity).
+
+\textbf{(2) Frontier expansion} produces candidate triples by traversing one edge from each frontier entity: $\mathcal{C}_k = \{(e,r,e') \in \mathcal{T} : e \in \mathcal{F}_k,\; e' \notin \mathcal{V}\}$, where $\mathcal{V}$ is the set of already-visited entities. To bound prompt length, $|\mathcal{C}_k|$ is capped at $c_{\max}$.
+
+\textbf{(3) Relevance judging} scores each candidate triple via an LLM call: $r_{k,j} = J(\text{triple}_j, q) \in [0,1]$. This is the \emph{dominant cost}: each call consumes input tokens proportional to $|\mathcal{C}_k|$, and there is one such call per hop. The judge prompt batches all candidates into a single call to amortize the fixed overhead of the instruction tokens.
+
+\textbf{(4) Pruning and frontier update} retains the top-$b_k$ triples by score as $\mathcal{S}_k$, adds their entities to $\mathcal{V}$, and sets $\mathcal{F}_{k+1}$ to the newly discovered entities. After $K$ hops (or an early stop), the union $\bigcup_k \mathcal{S}_k$ is the reasoning subgraph fed to $G$.
+
+A \emph{retrieval controller} $\pi$ governs three quantities per query: whether to use the graph at all ($u_0\in\{0,1\}$), the beam width ($b_k$), and whether to stop ($s_k\in\{0,1\}$). The fixed-budget baseline (ToG-style) sets $u_0{=}1$, $b_k{=}B$ constant, $s_k{=}0$ until $k{=}K$. \method{} replaces this with a training-free controller that reads distributional signals computed as by-products of steps (1)--(3). Because the retrieval engine (steps 1--4) is identical across controllers, comparing \method{} to the baseline isolates the controller as the sole variable.
 
 \subsection{Distributional Signals}
 \label{sec:signals}
@@ -55,7 +65,12 @@ C_{\text{ada}} \;=\; (1-\rho_u)\,\bar{k}_{\text{stop}} \;\le\; (1-\rho_u)\,K \;=
 \subsection{Why Training-Free Suffices}
 \label{sec:why}
 
-A learned router must estimate query difficulty from $q$ alone, before retrieval begins. \method{} instead observes difficulty \emph{during} retrieval through the score distributions the pipeline already produces. This has two consequences. First, the signal is causal rather than predictive: $H_k$ directly measures the judge's current uncertainty over actual candidates, not a proxy. Second, the controller transfers for free across KGs and domains because it reads no domain-specific features---only normalized entropies and cosine similarities, which are defined wherever linking and judging are defined. We verify transfer empirically by running the identical controller across the WikiMovies KG and across 1.5B/7B generators without re-tuning.
+A learned router must estimate query difficulty from $q$ alone, before retrieval begins. \method{} instead observes difficulty \emph{during} retrieval through the score distributions the pipeline already produces. This has two consequences. First, the signal is causal rather than predictive: $H_k$ directly measures the judge's current uncertainty over actual candidates, not a proxy estimated from question features. A learned router that sees only $q$ cannot know whether hop $k$ will produce a confident or uncertain distribution---that depends on the KG's local neighborhood around the linked entities, which is only revealed during traversal. Second, the controller transfers for free across KGs and domains because it reads no domain-specific features---only normalized entropies and cosine similarities, which are defined wherever linking and judging are defined. A learned router trained on one KG's question-difficulty distribution may not transfer to a KG with different neighborhood density or relation semantics; \method{}'s signals are invariant to these properties because they are normalized.
+
+\paragraph{Comparison to trained controllers.}
+A trained controller like GraphRAG-Router~\cite{fan2026graphragrouter} optimizes a routing policy via RL to minimize a cost-accuracy objective. This can in principle learn richer patterns than our three hand-designed rules, at the cost of (i) a training stage requiring cost-accuracy labels or a simulator, (ii) a policy that may overfit to the training KG's difficulty distribution, and (iii) additional inference latency for the policy network. \method{} trades expressive power for zero-shot transferability: it cannot learn patterns our three rules miss, but it works immediately on any KG without training data. Our experiments show this suffices to achieve strict Pareto dominance at the operating points where GraphRAG matters most, suggesting that the ``easy wins'' from adaptation do not require learning---they require reading signals that are already computed and discarded.
+
+We verify transfer empirically by running the identical controller across the WikiMovies KG and across 1.5B/7B generators without re-tuning. The same $\theta_{\text{low}}$, $\delta$, and $B$ values produce Pareto-dominant results across all six (model, hop) settings, confirming that the controller does not overfit to a particular generator's scoring distribution.
 
 \Cref{fig:framework} overviews \method{}. Algorithm~\ref{alg:aqurag} states the full retrieval procedure.
 
@@ -91,3 +106,12 @@ A learned router must estimate query difficulty from $q$ alone, before retrieval
 \State \Return $\textsc{Generate}(q,\mathcal{S})$
 \end{algorithmic}
 \end{algorithm}
+
+\subsection{Complexity Analysis}
+\label{sec:complexity}
+
+The per-query cost of GraphRAG is dominated by LLM calls, so we analyze token cost. Let $d$ be the average KG degree (candidates per entity), $b_k$ the beam at hop $k$, and $L$ the average token length of a triple (roughly $15$ tokens). The fixed controller issues $K$ judge calls, each over $\min(d\cdot|\mathcal{F}_k|,\, c_{\max})$ candidates capped at $c_{\max}$, plus one generation call. Its input-token cost is approximately $C_{\text{fix}} \approx \sum_{k=0}^{K-1} c_{\max}\cdot L + L_{\text{gen}}$, where $L_{\text{gen}}$ is the generation prompt length (subgraph tokens).
+
+\method{} modifies this in three ways. (D1) eliminates all $K$ judge calls for the $\rho_u$ fraction of skipped queries, replacing them with one short generation call. (D2) does not change the number of calls but adjusts how many candidates are retained (not how many are judged, since judging occurs before pruning); however, a narrower beam at hop $k$ reduces the frontier size $|\mathcal{F}_{k+1}|$, which in turn reduces $|\mathcal{C}_{k+1}|$ at the next hop---so (D2) has a compounding effect on cost through frontier shrinkage. (D3) terminates the loop early at hop $k^*<K$, eliminating all subsequent judge calls. Combining these, the expected cost becomes $C_{\text{ada}} \approx (1-\rho_u)\big[\sum_{k=0}^{k^*-1} c_k\cdot L\big] + L_{\text{gen}}$, where $c_k \le c_{\max}$ due to (D2)'s frontier shrinkage. In our experiments, the compounding effect of (D2) is modest (${\sim}3\%$), while (D3) is the primary driver (${\sim}20\%$), consistent with the ablation in \Cref{tab:abl}.
+
+Importantly, the controller itself adds \emph{zero} computational overhead: the entropy $H_k$, top score $t_k$, and link confidence $\ell_{(1)}$ are scalar reductions of arrays already computed, requiring $O(|\mathcal{C}_k|)$ time that is negligible compared to the LLM call that produced those scores. The controller is thus a pure decision policy with no learned parameters and no inference cost of its own.

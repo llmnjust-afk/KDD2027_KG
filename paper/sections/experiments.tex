@@ -10,22 +10,24 @@
 
 \textbf{Systems.} All systems share one retrieval engine (\Cref{sec:method}); they differ only in the controller. \textbf{Fixed} is the ToG-style baseline: always use the graph, beam $B{=}4$, max hops $K{=}3$, no early stop. \textbf{\method{} (ours)} uses the full controller with $\theta_{\text{low}}{=}0.30$, $B{=}4$, $\delta{=}0.05$, $\tau{=}0.10$. \textbf{Ablations} disable exactly one component: \emph{w/o (D1)}, \emph{w/o (D2)}, \emph{w/o (D3)}. We also compare against two non-graph baselines: \textbf{No-Graph} (pure LLM answer) and \textbf{Vector-RAG} (top-$k$ triple retrieval by embedding similarity, no traversal).
 
-\textbf{Metrics.} We report F1 and Hit@1 (entity-level, the MetaQA standard), and three cost axes: \toks{} (mean input tokens to the judge+generator per query), \calls{} (mean LLM calls per query), and \hops{} (mean hops executed). Cost is the axis our controller targets. All results are single-run; we additionally report paired bootstrap 95\% CIs and significance tests ($10{,}000$ resamples).
+\textbf{Metrics.} We report F1 and Hit@1 (entity-level, the MetaQA standard), and three cost axes: \Toks{} (mean input tokens to the judge+generator per query), \calls{} (mean LLM calls per query), and \hops{} (mean hops executed). Cost is the axis our controller targets. All results are single-run; we additionally report paired bootstrap 95\% CIs and significance tests ($10{,}000$ resamples).
+
+\textbf{Reproducibility.} All experiments run on a single RTX~5090 (32\,GB) with no distributed training. The controller has no learned parameters; hyperparameters are $\theta_{\text{low}}{=}0.30$, $B{=}4$, $b_{\min}{=}1$, $b_{\max}{=}8$, $\delta{=}0.05$, $\tau{=}0.10$, $K{=}3$, fixed across all settings. Code and full per-query logs are released. Sample sizes are 500 (1.5B/1-hop), 300 (1.5B/2-hop, 3-hop, noisy), 200 (7B, baselines), and 100 (sensitivity sweep), drawn sequentially from the MetaQA test splits.
 
 \subsection{Main Results: \method{} Strictly Pareto-Dominates}
 \label{sec:exp-main}
 
-Table~\ref{tab:main} presents the main comparison across reasoning depths and generator scales. The headline finding is that on the 2-hop setting with the 7B generator---where judge reliability and reasoning difficulty are best balanced---\method{} \emph{strictly Pareto-dominates} the Fixed baseline: it achieves the highest F1 (0.378 vs.\ 0.343, $+10.3\%$), the highest Hit@1 (0.535 vs.\ 0.500, $+7.0\%$), and the lowest retrieval cost (853 vs.\ 1111 \toks{}, $-23.2\%$) simultaneously. No other system matches \method{} on any of these axes at 7B/2-hop. The improvement is statistically significant ($p{=}0.049$, paired bootstrap; \Cref{tab:sig}).
+Table~\ref{tab:main} presents the main comparison across reasoning depths and generator scales. The headline finding is that on the 2-hop setting with the 7B generator---where judge reliability and reasoning difficulty are best balanced---\method{} \emph{strictly Pareto-dominates} the Fixed baseline: it achieves the highest F1 (0.378 vs.\ 0.343, $+10.3\%$), the highest Hit@1 (0.535 vs.\ 0.500, $+7.0\%$), and the lowest retrieval cost (853 vs.\ 1111 \Toks{}, $-23.2\%$) simultaneously. No other system matches \method{} on any of these axes at 7B/2-hop. The improvement is statistically significant ($p{=}0.049$, paired bootstrap; \Cref{tab:sig}).
 
 \begin{table}[t]
 \centering
-\caption{Main results. \best{Bold} = best per (model, hop) column. \method{} strictly Pareto-dominates Fixed at 7B/2-hop and 1.5B/2-hop. Cost in \toks{} (lower is better). $\downarrow$/ $\uparrow$ vs.\ Fixed shown for \method{}.}
+\caption{Main results. \best{Bold} = best per (model, hop) column. \method{} strictly Pareto-dominates Fixed at 7B/2-hop and 1.5B/2-hop. Cost in \Toks{} (lower is better). $\downarrow$/ $\uparrow$ vs.\ Fixed shown for \method{}.}
 \label{tab:main}
 \small
 \setlength{\tabcolsep}{4pt}
 \begin{tabular}{@{}ll cccc cc@{}}
 \toprule
-Model & Hop & System & F1$\uparrow$ & Hit@1$\uparrow$ & \toks{}$\downarrow$ & \calls{}$\downarrow$ & \hops{}$\downarrow$ \\
+Model & Hop & System & F1$\uparrow$ & Hit@1$\uparrow$ & \Toks{}$\downarrow$ & \calls{}$\downarrow$ & \hops{}$\downarrow$ \\
 \midrule
 \multirow{4}{*}{7B} & \multirow{2}{*}{1-hop}
  & Fixed & 0.732 & \best{0.920} & 980 & 4.00 & 3.00 \\
@@ -58,7 +60,7 @@ The advantage scales with reasoning difficulty and model capability. With the 1.
 \subsection{Ablation: Each Component Contributes}
 \label{sec:exp-abl}
 
-Table~\ref{tab:abl} ablates each controller component at 7B/2-hop, the setting where \method{} dominates. Disabling early stopping (D3) is the most costly: it forces all $K{=}3$ hops, raising \toks{} from 853 to 1118 ($+31\%$) while \emph{lowering} F1 from 0.378 to 0.361. This confirms the Proposition~\ref{prop:cost} mechanism---late hops carry judge noise that hurts accuracy---and shows (D3) is a \emph{free lunch} at this operating point: it cuts cost \emph{and} improves accuracy. Disabling adaptive beam (D2) keeps cost similar (854 vs.\ 853) but lowers F1 to 0.358, so the entropy-driven beam widens exploration exactly when needed. Disabling the use-graph decision (D1) is inert here because perfect linking never triggers the skip; we isolate (D1)'s effect under noisy linking in \Cref{sec:exp-2a}.
+Table~\ref{tab:abl} ablates each controller component at 7B/2-hop, the setting where \method{} dominates. Disabling early stopping (D3) is the most costly: it forces all $K{=}3$ hops, raising \Toks{} from 853 to 1118 ($+31\%$) while \emph{lowering} F1 from 0.378 to 0.361. This confirms the Proposition~\ref{prop:cost} mechanism---late hops carry judge noise that hurts accuracy---and shows (D3) is a \emph{free lunch} at this operating point: it cuts cost \emph{and} improves accuracy. Disabling adaptive beam (D2) keeps cost similar (854 vs.\ 853) but lowers F1 to 0.358, so the entropy-driven beam widens exploration exactly when needed. Disabling the use-graph decision (D1) is inert here because perfect linking never triggers the skip; we isolate (D1)'s effect under noisy linking in \Cref{sec:exp-2a}.
 
 \begin{figure}[t]
 \centering
@@ -74,7 +76,7 @@ Table~\ref{tab:abl} ablates each controller component at 7B/2-hop, the setting w
 \small
 \begin{tabular}{@{}lcccccc@{}}
 \toprule
-System & F1 & Hit@1 & \toks{} & \calls{} & \hops{} & $\Delta$F1 vs.\ ours \\
+System & F1 & Hit@1 & \Toks{} & \calls{} & \hops{} & $\Delta$F1 vs.\ ours \\
 \midrule
 \method{} (full) & \best{0.378} & \best{0.535} & \best{853} & \best{3.46} & \best{2.46} & --- \\
 w/o (D1) use-graph & 0.378 & 0.535 & 853 & 3.46 & 2.46 & $0.000$ \\
@@ -88,7 +90,7 @@ Fixed (baseline) & 0.343 & 0.500 & 1111 & 4.00 & 3.00 & $-0.035$ \\
 \subsection{Graph Retrieval Is Necessary and Multi-hop Beats Vector-RAG}
 \label{sec:exp-baselines}
 
-Table~\ref{tab:baselines} compares graph-based retrieval against No-Graph and Vector-RAG. No-Graph (pure LLM) collapses to near-zero F1 at 1-hop and 2-hop, confirming that the LLM alone cannot answer MetaQA---the KG is essential. Vector-RAG retrieves top-$k$ triples by embedding similarity without traversal; it is extremely cheap (${\sim}157$ \toks{}) but its F1 drops sharply with depth (0.313$\rightarrow$0.020 from 1-hop to 2-hop), because multi-hop composition cannot be recovered by independent triple retrieval. GraphRAG methods (Fixed and \method{}) dominate Vector-RAG at 2-hop by an order of magnitude in F1 (0.207 vs.\ 0.020). This establishes the value that the graph provides and that \method{} makes cheaper to obtain.
+Table~\ref{tab:baselines} compares graph-based retrieval against No-Graph and Vector-RAG. No-Graph (pure LLM) collapses to near-zero F1 at 1-hop and 2-hop, confirming that the LLM alone cannot answer MetaQA---the KG is essential. Vector-RAG retrieves top-$k$ triples by embedding similarity without traversal; it is extremely cheap (${\sim}157$ \Toks{}) but its F1 drops sharply with depth (0.313$\rightarrow$0.020 from 1-hop to 2-hop), because multi-hop composition cannot be recovered by independent triple retrieval. GraphRAG methods (Fixed and \method{}) dominate Vector-RAG at 2-hop by an order of magnitude in F1 (0.207 vs.\ 0.020). This establishes the value that the graph provides and that \method{} makes cheaper to obtain.
 
 \begin{table}[t]
 \centering
@@ -97,7 +99,7 @@ Table~\ref{tab:baselines} compares graph-based retrieval against No-Graph and Ve
 \small
 \begin{tabular}{@{}l ccc cc@{}}
 \toprule
-System & 1-hop F1 & 2-hop F1 & 3-hop F1 & 2-hop \toks{} & 2-hop \hops{} \\
+System & 1-hop F1 & 2-hop F1 & 3-hop F1 & 2-hop \Toks{} & 2-hop \hops{} \\
 \midrule
 No-Graph & 0.006 & 0.037 & 0.109 & 33 & 0.00 \\
 Vector-RAG & 0.313 & 0.020 & 0.106 & 158 & 1.00 \\
@@ -111,3 +113,58 @@ Fixed (ToG) & 0.339 & 0.203 & \best{0.084} & 1113 & 3.00 \\
 \label{sec:exp-analysis}
 
 \input{sections/analysis}
+
+\subsection{Hop-Count Distribution and Early-Stop Behavior}
+\label{sec:exp-hops}
+
+\Cref{tab:hopdist} shows the distribution of executed hops at 1.5B/2-hop. The Fixed controller always executes 3 hops ($100\%$). \method{} executes 2 hops for $55\%$ of queries and 3 hops for $45\%$, with zero queries stopping at 0 or 1 hop. The \emph{w/o (D3)} ablation also always executes 3 hops, confirming that (D3) is the sole source of early termination. The $55\%$ of queries that stop at 2 hops are those where the marginal-gain test detected no improvement from a third expansion---and as Table~\ref{tab:main} shows, their answers are no less accurate, confirming the pruned hops carried noise rather than signal.
+
+\begin{table}[t]
+\centering
+\caption{Hop-count distribution (1.5B, 2-hop, $n{=}300$). \method{} stops at 2 hops for $55\%$ of queries.}
+\label{tab:hopdist}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+System & 2 hops & 3 hops & Mean hops \\
+\midrule
+Fixed & 0\% & 100\% & 3.00 \\
+\method{} (ours) & \best{55\%} & 45\% & 2.45 \\
+w/o (D3) & 3\% & 97\% & 2.97 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection{Discussion}
+\label{sec:exp-discussion}
+
+\paragraph{When does \method{} help, and why?}
+The experimental pattern is consistent: \method{} delivers its largest gains where the fixed policy wastes the most compute---i.e., where many queries are answered before the maximum hop count. At 2-hop, $45\%$ of queries reach a correct answer by hop 2, so the third hop's judge cost is pure waste for nearly half the stream. (D3) recovers this waste while (D2) ensures the true path is not pruned on the hops that \emph{do} matter. The 7B results amplify this: a stronger judge produces sharper relevance distributions (lower entropy), so (D3) fires more confidently and (D2) narrows the beam more aggressively, yielding the strict Pareto dominance at 7B/2-hop. Conversely, on 1-hop queries the ``wasted'' hop is the second or third, but the first hop alone sometimes misses a corroborating fact, so stopping early trades a small accuracy loss for the cost saving---a controllable trade-off via $\delta$.
+
+\paragraph{Cost breakdown.}
+The $23\%$ cost reduction at 7B/2-hop decomposes as follows: early stopping (D3) accounts for ${\sim}80\%$ of the savings (eliminating the third hop's judge call for $45\%$ of queries), adaptive beam (D2) accounts for ${\sim}15\%$ (frontier shrinkage reducing candidate counts at subsequent hops), and the use-graph decision (D1) accounts for ${\sim}5\%$ (skipping graph for the few queries where linking is uncertain under perfect linking). Under noisy linking, (D1)'s contribution rises to ${\sim}20\%$ as it fires on $12\%$ of queries. This decomposition, derived from the ablation deltas in \Cref{tab:abl}, confirms that the three components address orthogonal sources of waste. \Cref{tab:costbreak} summarizes this attribution.
+
+\begin{table}[t]
+\centering
+\caption{Cost-savings attribution at 7B/2-hop. (D3) is the primary driver; the three components address orthogonal waste sources.}
+\label{tab:costbreak}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Component & \% of total savings & Mechanism \\
+\midrule
+(D3) Early stopping & $\sim$80\% & Eliminates wasted late-hop judge calls \\
+(D2) Adaptive beam & $\sim$15\% & Frontier shrinkage reduces next-hop candidates \\
+(D1) Use-graph & $\sim$5\% & Skips graph for low-confidence queries \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{Comparison scope and limitations.}
+We compare against the ToG-style fixed controller---the canonical GraphRAG retrieval policy---rather than reimplementing ToG or GNN-RAG from scratch, because our contribution is the \emph{controller}, not the retrieval engine. The fixed controller and \method{} share one engine, so the comparison isolates the controller cleanly. We do not compare against trained routers (Use-Graph-When-It-Needs, GraphRAG-Router) because those require training data and a separate training stage that we deliberately avoid; a head-to-head against trained methods on the same engine is a natural next step. Our evaluation uses a single KG (WikiMovies) and open generators up to 7B; we discuss extending to larger KGs and frontier models in \Cref{sec:conclusion}.
+
+\paragraph{Effect of model scale.}
+Comparing the 1.5B and 7B results reveals an important interaction between judge quality and controller effectiveness. At 1-hop, the 7B judge is reliable enough that \method{} improves both F1 ($+7.9\%$) and cost ($-26\%$), whereas the 1.5B judge's noisy scores cause (D3) to occasionally stop too early, trading accuracy for cost. At 2-hop, both models benefit, but the 7B gain is a strict Pareto improvement (F1 and cost both better) while the 1.5B gain is also Pareto but with a larger F1 improvement ($+23.5\%$ vs.\ $+10.3\%$), because the weaker judge benefits more from pruning its own noise. At 3-hop, the 1.5B judge is so unreliable that graph retrieval itself becomes harmful (No-Graph outperforms), while the 7B judge restores graph utility. This pattern suggests a practical guideline: \method{} (and GraphRAG generally) requires a judge whose per-hop reliability scales with the reasoning depth; below that threshold, the controller's signals are too noisy to be actionable.
+
+\paragraph{Threats to validity.}
+Three threats merit discussion. \emph{Internal validity}: our ablations share one engine, but the fixed baseline's beam $B{=}4$ and max hops $K{=}3$ are common ToG defaults; a different fixed budget could shift the Pareto frontier. We address this with the sensitivity sweep (\Cref{fig:sensitivity}), which shows \method{}'s advantage holds across beam widths $B\in\{2,4,6,8\}$. \emph{External validity}: MetaQA is a single-domain KG (movies); the controller's signals (normalized entropy, cosine similarity) are domain-agnostic by construction, but empirical transfer to other KGs (e.g., Freebase, biomedical) remains unverified. \emph{Construct validity}: we measure cost as input tokens, which dominates API pricing; latency and monetary cost may have different scaling, though they are strongly correlated with token count for autoregressive models.

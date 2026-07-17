@@ -4,7 +4,7 @@
 
 %% ---------- packages ----------
 \usepackage{booktabs}
-\usepackage{amsmath,amssymb}
+\usepackage{amsmath}
 \usepackage{graphicx}
 \usepackage{placeins}
 \usepackage{xcolor}
@@ -26,11 +26,10 @@
 %% ---------- custom commands ----------
 \newcommand{\ours}{Adaptive}
 \newcommand{\method}{AquaRAG}
-\newcommand{\toks}{\textsc{toks/q}}
+\newcommand{\Toks}{\textsc{toks/q}}
 \newcommand{\calls}{\textsc{calls/q}}
 \newcommand{\hops}{\textsc{hops/q}}
 \newcommand{\best}[1]{\textbf{#1}}
-\newcommand{\Cref}[1]{\autoref{#1}}
 
 \begin{document}
 
@@ -57,5 +56,7 @@
 \FloatBarrier
 \bibliographystyle{ACM-Reference-Format}
 \bibliography{refs}
+
+\input{sections/appendix}
 
 \end{document}

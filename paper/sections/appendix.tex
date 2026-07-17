@@ -1,0 +1,139 @@
+\appendix
+
+\section{Experimental Details}
+\label{app:setup}
+
+\paragraph{Hardware and software.}
+All experiments run on a single workstation: NVIDIA RTX~5090 (32\,GB VRAM), 124 CPU cores, 925\,GB RAM, Python~3.10, PyTorch~2.11 (CUDA~12.8), transformers~5.14, sentence-transformers, networkx~3.4. No distributed training or multi-GPU inference is used. The 7B model consumes ${\sim}15.4$\,GB VRAM in bfloat16; the 1.5B model consumes ${\sim}3.6$\,GB.
+
+\paragraph{Prompts.}
+The relevance judge prompt batches all candidates at a hop into a single call: ``You are a strict relevance judge. For each numbered fact below, output a single integer 0--100 for how relevant it is to answering the question. Output ONLY a comma-separated list of integers, one per fact, in order. Question: \{q\} Facts: \{candidates\} Scores:''. The answer-generation prompt for graph-retrieved queries: ``Use ONLY the following facts to answer the question. Answer with a short phrase or a pipe-separated list of entities. If the facts are insufficient, answer 'unknown'. Facts: \{subgraph\} Question: \{q\} Answer:''. For graph-free queries (D1 skip): ``Answer the question briefly. Give a short phrase or a pipe-separated list. Question: \{q\} Answer:''.
+
+\paragraph{Entity linking.}
+Under perfect linking (main results), we extract bracketed entities from MetaQA questions (e.g., ``[Michelle Trachtenberg]'') and match them exactly against KG entities. Under noisy linking (\Cref{sec:exp-2a}), brackets are stripped and linking falls back to cosine similarity between the question embedding and all KG entity embeddings (43{,}234 entities, embedded once and cached). Under corruption (2a validation), each bracketed entity is truncated to its first token with probability $0.5$ before exact matching, simulating partial-name recognition.
+
+\paragraph{Hyperparameters.}
+\Cref{tab:hyper} lists all controller hyperparameters. None are learned; all are fixed across all experiments (1.5B, 7B, all hops) except $\theta_{\text{low}}$ which is raised to $0.75$ only in the corruption study to activate (D1).
+
+\begin{table}[h]
+\centering
+\caption{Controller hyperparameters (all fixed, none learned).}
+\label{tab:hyper}
+\small
+\begin{tabular}{@{}lll@{}}
+\toprule
+Symbol & Description & Default value \\
+\midrule
+$\theta_{\text{low}}$ & Use-graph threshold (D1) & $0.30$ ($0.75$ in corruption) \\
+$B$ & Base beam (D2) & $4$ \\
+$b_{\min}, b_{\max}$ & Beam clip range (D2) & $1,\;8$ \\
+$\delta$ & Marginal-gain stop margin (D3) & $0.05$ \\
+$\tau$ & Absolute score floor (D3) & $0.10$ \\
+$K$ & Maximum hops & $3$ \\
+\midrule
+\multicolumn{3}{l}{\emph{Fixed baseline (ToG-style)}} \\
+$B_{\text{fix}}$ & Fixed beam & $4$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+
+\section{Full Ablation Tables}
+\label{app:ablation}
+
+\Cref{tab:abl-15b-1hop,tab:abl-15b-2hop,tab:abl-15b-3hop} report the complete ablation results for the 1.5B generator across all three hop depths, complementing the 7B/2-hop ablation in the main text (\Cref{tab:abl}).
+
+\begin{table}[h]
+\centering
+\caption{Full ablation, 1.5B, 1-hop ($n{=}500$).}
+\label{tab:abl-15b-1hop}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+System & F1 & Hit@1 & \Toks{} & \calls{} & \hops{} & \%graph \\
+\midrule
+Fixed & 0.341 & \best{0.630} & 1027 & 4.00 & 3.00 & 100\% \\
+w/o (D1) & 0.332 & 0.556 & 802 & 3.45 & 2.45 & 100\% \\
+w/o (D2) & \best{0.345} & 0.602 & \best{780} & \best{3.46} & \best{2.46} & 100\% \\
+w/o (D3) & 0.328 & 0.612 & 1086 & 4.00 & 3.00 & 100\% \\
+\method{} (full) & 0.332 & 0.556 & 802 & 3.45 & 2.45 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Full ablation, 1.5B, 2-hop ($n{=}300$).}
+\label{tab:abl-15b-2hop}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+System & F1 & Hit@1 & \Toks{} & \calls{} & \hops{} & \%graph \\
+\midrule
+Fixed & 0.183 & 0.257 & 1095 & 4.00 & 3.00 & 100\% \\
+w/o (D1) & 0.226 & 0.307 & 888 & 3.45 & 2.45 & 100\% \\
+w/o (D2) & 0.190 & 0.260 & \best{855} & 3.47 & 2.47 & 100\% \\
+w/o (D3) & 0.202 & 0.283 & 1162 & 3.97 & 2.97 & 100\% \\
+\method{} (full) & \best{0.226} & \best{0.307} & 888 & \best{3.45} & \best{2.45} & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[h]
+\centering
+\caption{Full ablation, 1.5B, 3-hop ($n{=}300$).}
+\label{tab:abl-15b-3hop}
+\small
+\begin{tabular}{@{}lcccccc@{}}
+\toprule
+System & F1 & Hit@1 & \Toks{} & \calls{} & \hops{} & \%graph \\
+\midrule
+Fixed & 0.091 & 0.203 & 1361 & 3.99 & 2.99 & 100\% \\
+w/o (D1) & 0.099 & 0.213 & 1200 & 3.56 & 2.56 & 100\% \\
+w/o (D2) & 0.084 & 0.180 & \best{1140} & \best{3.56} & \best{2.56} & 100\% \\
+w/o (D3) & \best{0.106} & \best{0.230} & 1443 & 3.99 & 2.99 & 100\% \\
+\method{} (full) & 0.099 & 0.213 & 1200 & 3.56 & 2.56 & 100\% \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+At 1-hop (\Cref{tab:abl-15b-1hop}), w/o (D2) edges out the full controller (F1 0.345 vs.\ 0.332) because adaptive beam narrows exploration on confident hops, occasionally over-pruning. At 3-hop (\Cref{tab:abl-15b-3hop}), w/o (D3) achieves the highest F1 (0.106) because the weak 1.5B judge's marginal-gain signal is unreliable at depth---this is the boundary condition discussed in \Cref{sec:exp-boundary}. The 7B judge resolves this: at 7B/2-hop, (D3) is a free lunch (raises F1 \emph{and} cuts cost).
+
+
+\section{Proof of Proposition~\ref{prop:cost}}
+\label{app:proof}
+
+\begin{proof}[Proof of Proposition~\ref{prop:cost}]
+Under the fixed controller, every query that uses the graph executes exactly $K$ judge calls, so $C_{\text{fix}} = K$ calls per query (ignoring the single generation call, which is common to both). Under \method{}, a fraction $\rho_u$ of queries are routed to the graph-free path by (D1), incurring $0$ judge calls. The remaining $1-\rho_u$ fraction enters the retrieval loop, where (D3) terminates at hop $k^*(q) \le K$. The mean number of judge calls for these queries is $\mathbb{E}[k^*(q)] = \bar{k}_{\text{stop}} \le K$. Therefore:
+\[
+C_{\text{ada}} = (1-\rho_u)\,\bar{k}_{\text{stop}} \le (1-\rho_u)\,K = (1-\rho_u)\,C_{\text{fix}}.
+\]
+The inequality $\bar{k}_{\text{stop}} \le K$ holds because (D3) can only stop early (at $k < K$) or at the maximum ($k = K$), never later. The bound is tight when (D3) never fires before $K$ (i.e., $\bar{k}_{\text{stop}} = K$), in which case $C_{\text{ada}} = (1-\rho_u)\,C_{\text{fix}}$ and the only savings come from (D1). Token cost scales linearly with call count because each judge call has bounded prompt length (candidates are capped at $c_{\max}$), so the token-cost ratio is bounded by the same expression up to a constant factor.
+\end{proof}
+
+
+\section{Per-Query Cost Analysis}
+\label{app:perquery}
+
+\Cref{tab:perquery} reports the per-query win/loss/tie breakdown of \method{} vs.\ Fixed at 1.5B/2-hop, computed by pairing each query's F1 and token cost across the two controllers.
+
+\begin{table}[h]
+\centering
+\caption{Per-query comparison: \method{} vs.\ Fixed (1.5B, 2-hop, $n{=}300$).}
+\label{tab:perquery}
+\small
+\begin{tabular}{@{}lrr@{}}
+\toprule
+Outcome & Count & Percentage \\
+\midrule
+\method{} wins (higher F1) & 54 & 18.0\% \\
+Tie (same F1) & 222 & 74.0\% \\
+\method{} loses (lower F1) & 24 & 8.0\% \\
+\midrule
+Total tokens saved & 62{,}195 & --- \\
+Tokens saved / query & 207 & --- \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+The $74\%$ tie rate reflects that many queries produce identical (often empty) answer sets under both controllers; among the non-tied queries, \method{} wins $54$ vs.\ loses $24$ ($69\%$ win rate among decided queries), while saving $207$ tokens per query on average. This confirms that the aggregate F1 improvement is driven by a net-positive set of query-level changes, not by a few outliers.
