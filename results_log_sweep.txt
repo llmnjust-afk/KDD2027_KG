@@ -1,17 +1,25 @@
 KG: 134741 triples | 14872 questions (using 100)
 
 === Sweeping delta ===
-Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
 [transformers] `torch_dtype` is deprecated! Use `dtype` instead!
-Traceback (most recent call last):
-  File "/data/lab/adaptive_graphrag/scripts/sweep.py", line 95, in <module>
-    main()
-  File "/data/lab/adaptive_graphrag/scripts/sweep.py", line 82, in main
-    r = quick_eval(kg, examples, backend, cfg, args.limit, args.split)
-  File "/data/lab/adaptive_graphrag/scripts/sweep.py", line 38, in quick_eval
-    agg = aggregate([type("R", (), r)() for r in reports]) if reports else None
-  File "/data/lab/adaptive_graphrag/agr/evaluate.py", line 91, in aggregate
-    mean_exact=float(np.mean([r.exact for r in reports])),
-  File "/data/lab/adaptive_graphrag/agr/evaluate.py", line 91, in <listcomp>
-    mean_exact=float(np.mean([r.exact for r in reports])),
-AttributeError: 'R' object has no attribute 'exact'
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+  delta=0.01         F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (285s)
+  delta=0.03         F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (277s)
+  delta=0.05         F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (276s)
+  delta=0.1          F1=0.204 Hit@1=0.320 toks=720 hops=2.42  (273s)
+  delta=0.2          F1=0.175 Hit@1=0.250 toks=561 hops=2.08  (235s)
+
+=== Sweeping theta_low ===
+  theta_low=0.1      F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (275s)
+  theta_low=0.2      F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (276s)
+  theta_low=0.3      F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (276s)
+  theta_low=0.4      F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (276s)
+  theta_low=0.5      F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (278s)
+
+=== Sweeping base_beam ===
+  base_beam=2        F1=0.144 Hit@1=0.220 toks=642 hops=2.41  (265s)
+  base_beam=4        F1=0.214 Hit@1=0.330 toks=737 hops=2.45  (279s)
+  base_beam=6        F1=0.249 Hit@1=0.340 toks=745 hops=2.44  (278s)
+  base_beam=8        F1=0.271 Hit@1=0.360 toks=754 hops=2.44  (278s)
+
+Saved to ./results/sweep/sweep_2-hop.json
