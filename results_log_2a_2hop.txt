@@ -1,0 +1,42 @@
+KG: 134741 triples, 43234 entities | 14872 questions (using 300)
+Backend: HuggingFaceBackend  gen=Qwen/Qwen2.5-1.5B-Instruct  judge_with_llm=True
+
+=== System: fixed  [Fixed (ToG-style)] ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [50/300] F1=0.116 toks/q=1127 calls/q=4.00 hops/q=3.00 t=2.6s
+  [100/300] F1=0.119 toks/q=1121 calls/q=3.99 hops/q=2.99 t=3.8s
+  [150/300] F1=0.116 toks/q=1126 calls/q=3.99 hops/q=2.99 t=3.5s
+  [200/300] F1=0.117 toks/q=1126 calls/q=4.00 hops/q=3.00 t=4.2s
+  [250/300] F1=0.130 toks/q=1130 calls/q=4.00 hops/q=3.00 t=4.0s
+  [300/300] F1=0.120 toks/q=1125 calls/q=3.99 hops/q=2.99 t=3.9s
+  -> ./results_2a/metaqa_2-hop_fixed/reports.jsonl
+
+=== System: adaptive  [Adaptive (ours)] ===
+  [50/300] F1=0.195 toks/q=885 calls/q=3.24 hops/q=2.24 t=2.6s
+  [100/300] F1=0.130 toks/q=897 calls/q=3.30 hops/q=2.30 t=3.8s
+  [150/300] F1=0.126 toks/q=833 calls/q=3.17 hops/q=2.17 t=3.6s
+  [200/300] F1=0.146 toks/q=847 calls/q=3.21 hops/q=2.21 t=2.5s
+  [250/300] F1=0.152 toks/q=843 calls/q=3.18 hops/q=2.18 t=2.9s
+  [300/300] F1=0.150 toks/q=835 calls/q=3.18 hops/q=2.18 t=4.2s
+  -> ./results_2a/metaqa_2-hop_adaptive/reports.jsonl
+
+=== System: abl-nograph  [Abl. no (2a)] ===
+  [50/300] F1=0.195 toks/q=986 calls/q=3.54 hops/q=2.54 t=2.7s
+  [100/300] F1=0.140 toks/q=976 calls/q=3.55 hops/q=2.55 t=3.7s
+  [150/300] F1=0.146 toks/q=939 calls/q=3.49 hops/q=2.49 t=3.4s
+  [200/300] F1=0.166 toks/q=942 calls/q=3.49 hops/q=2.49 t=2.5s
+  [250/300] F1=0.170 toks/q=942 calls/q=3.48 hops/q=2.48 t=3.0s
+  [300/300] F1=0.167 toks/q=933 calls/q=3.47 hops/q=2.47 t=4.3s
+  -> ./results_2a/metaqa_2-hop_abl-nograph/reports.jsonl
+
+========================================================================
+PARETO COMPARISON  [metaqa_2-hop]  (sorted by mean input tokens/query)
+========================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+Adaptive (ours)                0.150   0.207   0.073       835     3.18    2.18   88.0%
+Abl. no (2a)                   0.167   0.227   0.093       933     3.47    2.47  100.0%
+Fixed (ToG-style)              0.120   0.173   0.070      1125     3.99    2.99  100.0%
+
+Pareto table saved to ./results_2a/pareto_metaqa_2-hop.txt
