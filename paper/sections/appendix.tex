@@ -44,6 +44,25 @@ $B_{\text{fix}}$ & Fixed beam & $4$ \\
 \section{Full Ablation Tables}
 \label{app:ablation}
 
+\Cref{tab:baselines} (referenced in Sec.~\ref{sec:exp-baselines}) and \Cref{tab:abl-15b-1hop,tab:abl-15b-2hop,tab:abl-15b-3hop} report supplementary results.
+
+\begin{table}[h]
+\centering
+\caption{Graph vs.\ non-graph baselines (1.5B, $n{=}200$).}
+\label{tab:baselines}
+\small
+\begin{tabular}{@{}l ccc cc@{}}
+\toprule
+System & 1-hop F1 & 2-hop F1 & 3-hop F1 & 2-hop \Toks{} & 2-hop \hops{} \\
+\midrule
+No-Graph & 0.006 & 0.037 & 0.109 & 33 & 0.00 \\
+Vector-RAG & 0.313 & 0.020 & 0.106 & 158 & 1.00 \\
+Fixed (ToG) & 0.339 & 0.203 & \best{0.084} & 1113 & 3.00 \\
+\method{} (ours) & \best{0.340} & \best{0.207} & 0.091 & \best{903} & \best{2.47} \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \Cref{tab:abl-15b-1hop,tab:abl-15b-2hop,tab:abl-15b-3hop} report the complete ablation results for the 1.5B generator across all three hop depths, complementing the 7B/2-hop ablation in the main text (\Cref{tab:abl}).
 
 \begin{table}[h]

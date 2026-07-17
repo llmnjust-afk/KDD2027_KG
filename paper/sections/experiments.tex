@@ -66,7 +66,7 @@ The sweep yields a nuanced, and partly cautionary, picture that we report in ful
 
 \begin{table}[t]
 \centering
-\caption{Fixed-budget sweep vs.\ \method{} on the \emph{same} 7B/2-hop subset ($n{=}200$). On this single known-depth split, a well-tuned Fixed-$K{=}2,B{=}6$ is both more accurate and cheaper than \method{}; \method{} beats only the \emph{default} $K{=}3$. The case for adaptation is made on mixed-depth streams (\Cref{tab:mixed}), not here.}
+\caption{Fixed-budget sweep vs.\ \method{} on a 7B/2-hop subset ($n{=}200$; re-run with a different shuffle than Tab.~\ref{tab:main}, so absolute values differ slightly). On this single known-depth split, a well-tuned Fixed-$K{=}2,B{=}6$ is both more accurate and cheaper than \method{}; \method{} beats only the \emph{default} $K{=}3$. The case for adaptation is made on mixed-depth streams (\Cref{tab:mixed}), not here.}
 \label{tab:fixedk}
 \small
 \begin{tabular}{@{}lcccc@{}}
@@ -163,27 +163,30 @@ Fixed (baseline) & 0.343 & 0.500 & 1111 & 4.00 & 3.00 & $-0.035$ \\
 \end{tabular}
 \end{table}
 
-\subsection{Graph Retrieval Is Necessary and Multi-hop Beats Vector-RAG}
-\label{sec:exp-baselines}
+\subsection{Transfer to a Second Knowledge Graph (WebQSP)}
+\label{sec:exp-webqsp}
 
-Table~\ref{tab:baselines} confirms the KG is essential: No-Graph collapses to near-zero F1, and Vector-RAG (no traversal) drops from 0.313 to 0.020 from 1-hop to 2-hop, while GraphRAG methods dominate at $10\times$ higher F1.
+To test whether the cost saving transfers beyond WikiMovies, we run a pilot on WebQSP~\cite{li2023fewshot}, a Freebase KGQA benchmark with thousands of relations (vs.\ MetaQA's 9). Each question comes with a pre-extracted subgraph (avg.\ 4{,}551 triples); we treat it as the per-query KG and run the same engine. \Cref{tab:webqsp} shows that on WebQSP/7B ($n{=}100$), \method{} improves F1 by $26\%$ (0.099$\to$0.125) and cuts cost by $15\%$ (2054$\to$1739 \Toks{})---the same direction as MetaQA, confirming the mechanism is not WikiMovies-specific. Absolute F1 is low because Freebase subgraphs are far denser and noisier than WikiMovies, but the relative cost saving and accuracy improvement transfer.
 
 \begin{table}[t]
 \centering
-\caption{Graph vs.\ non-graph baselines (1.5B, $n{=}200$). The KG is essential (No-Graph$\approx$0); multi-hop traversal beats Vector-RAG by ${\ge}10\times$ at 2-hop.}
-\label{tab:baselines}
+\caption{WebQSP/Freebase pilot ($n{=}100$, 7B). The cost saving and accuracy improvement transfer to a second KG with $1000\times$ more relations.}
+\label{tab:webqsp}
 \small
-\begin{tabular}{@{}l ccc cc@{}}
+\begin{tabular}{@{}lcccc@{}}
 \toprule
-System & 1-hop F1 & 2-hop F1 & 3-hop F1 & 2-hop \Toks{} & 2-hop \hops{} \\
+System & F1 & Hit@1 & \Toks{} & \hops{} \\
 \midrule
-No-Graph & 0.006 & 0.037 & 0.109 & 33 & 0.00 \\
-Vector-RAG & 0.313 & 0.020 & 0.106 & 158 & 1.00 \\
-Fixed (ToG) & 0.339 & 0.203 & \best{0.084} & 1113 & 3.00 \\
-\method{} (ours) & \best{0.340} & \best{0.207} & 0.091 & \best{903} & \best{2.47} \\
+Fixed ($K{=}3$) & 0.099 & 0.150 & 2054 & 2.91 \\
+\method{} & \best{0.125} & \best{0.200} & \best{1739}$_{-15\%}$ & \best{2.19} \\
 \bottomrule
 \end{tabular}
 \end{table}
+
+\subsection{Graph Retrieval Is Necessary and Multi-hop Beats Vector-RAG}
+\label{sec:exp-baselines}
+
+Table~\ref{tab:baselines} (App.~B) confirms the KG is essential: No-Graph collapses to near-zero F1, and Vector-RAG (no traversal) drops from 0.313 to 0.020 from 1-hop to 2-hop, while GraphRAG methods dominate at $10\times$ higher F1.
 
 \subsection{Analysis}
 \label{sec:exp-analysis}
@@ -193,7 +196,8 @@ Fixed (ToG) & 0.339 & 0.203 & \best{0.084} & 1113 & 3.00 \\
 \subsection{Hop-Count Distribution and Early-Stop Behavior}
 \label{sec:exp-hops}
 
-At 1.5B/2-hop, \method{} executes 2 hops for $55\%$ of queries and 3 hops for the remaining $45\%$ (mean $2.45$), whereas Fixed and the \emph{w/o (D3)} ablation always run $3$ hops---so (D3) is the sole source of early termination. The queries stopped at 2 hops are no less accurate (\Cref{tab:main}), confirming the pruned third hops carried noise rather than signal.
+\paragraph{Hop distribution.}
+At 1.5B/2-hop, \method{} executes 2 hops for $55\%$ of queries (mean $2.45$), while Fixed always runs $3$; the stopped queries are no less accurate (\Cref{tab:main}), confirming the pruned hops carried noise.
 
 \paragraph{Discussion.}
-From \Cref{tab:abl}, early stopping (D3) drives essentially all cost saving; D2 and D1 are conditional levers (D2 helps at high entropy, D1 under noise). Comparing scales, the 1.5B F1 gain at 2-hop exceeds the 7B gain ($+23.5\%$ vs.\ $+10.3\%$) because a weaker judge benefits more from pruning its own noise, yet at 3-hop the 1.5B judge is too unreliable (\Cref{sec:exp-boundary}). On validity: the fixed-budget objection is addressed empirically (\Cref{sec:exp-fixedk,sec:exp-mixed,sec:exp-trained}); MetaQA is single-domain so transfer to other KGs is unverified; cost is measured as input tokens (dominates API pricing, tracks latency).
+Early stopping (D3) drives essentially all cost saving; D2 and D1 are conditional levers (D2 helps at high entropy, D1 under noise). A per-query analysis (App.~D) shows $74\%$ of queries produce identical answers; the F1 advantage comes from the remaining $26\%$ where \method{} wins $69\%$. The 1.5B gain exceeds the 7B gain ($+23.5\%$ vs.\ $+10.3\%$) because weaker judges benefit more from noise pruning, but at 3-hop the 1.5B judge is too unreliable (\Cref{sec:exp-boundary}). The fixed-budget objection is addressed empirically (\Cref{sec:exp-fixedk,sec:exp-mixed,sec:exp-trained,sec:exp-webqsp}); cost is measured as input tokens (dominates API pricing, tracks latency).

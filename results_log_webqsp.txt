@@ -1,0 +1,25 @@
+Loading WebQSP...
+Loaded 100 WebQSP questions (avg KG size: 4551 triples)
+Backend: Qwen/Qwen2.5-7B-Instruct
+
+=== Fixed (K=3) ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [Fixed 25/100] F1=0.147 toks=2020 hops=2.96 t=4.7s
+  [Fixed 50/100] F1=0.074 toks=1999 hops=2.90 t=3.5s
+  [Fixed 75/100] F1=0.092 toks=2023 hops=2.91 t=4.8s
+  [Fixed 100/100] F1=0.099 toks=2054 hops=2.91 t=4.5s
+
+=== Adaptive (ours) ===
+  [Adaptive 25/100] F1=0.227 toks=1732 hops=2.16 t=3.5s
+  [Adaptive 50/100] F1=0.154 toks=1735 hops=2.18 t=3.5s
+  [Adaptive 75/100] F1=0.120 toks=1731 hops=2.20 t=3.5s
+  [Adaptive 100/100] F1=0.125 toks=1739 hops=2.19 t=3.3s
+
+======================================================================
+WebQSP COMPARISON [n=100]
+======================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+Adaptive (ours)                0.125   0.200   0.100      1739     3.19    2.19  100.0%
+Fixed (K=3)                    0.099   0.170   0.070      2054     3.91    2.91  100.0%

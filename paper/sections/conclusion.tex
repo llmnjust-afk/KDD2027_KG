@@ -1,7 +1,4 @@
 \section{Conclusion}
 \label{sec:conclusion}
 
-We presented \method{}, a training-free retrieval controller whose primary mechanism is marginal-gain early stopping, augmented by conditional adaptive-beam and use-graph levers. On multi-hop reasoning with a strong judge it improves both accuracy and cost over the fixed baseline (7B/2-hop: F1 $+10.3\%$, cost $-23.2\%$, $p{=}0.049$), and on mixed-depth streams it outperforms a trained router by $8.9\%$ F1 without training data. We report honest boundaries: a tuned fixed budget beats it on single-depth splits, and weak judges at depth make graph retrieval harmful. The takeaway is a zero-training controller most valuable where deployments are hardest: heterogeneous streams of unknown per-query depth.
-
-\paragraph{Future work.}
-Larger KGs and frontier models would test scaling; a calibrated judge could sharpen the signals; and training-free adaptation from pipeline-internal distributions may transfer to other multi-step LLM pipelines.
+We presented \method{}, a training-free retrieval controller whose primary mechanism is marginal-gain early stopping, augmented by conditional adaptive-beam and use-graph levers. On multi-hop reasoning with a strong judge it improves both accuracy and cost over the fixed baseline (F1 $+10.3\%$, cost $-23.2\%$, $p{=}0.049$), on mixed-depth streams it outperforms a trained router by $8.9\%$ F1 without training data, and the cost saving transfers to a second KG (WebQSP, $-15\%$). We report honest boundaries: a tuned fixed budget beats it on single-depth splits, and weak judges at depth make graph retrieval harmful. Future work: larger KGs, frontier models, calibrated judges.
