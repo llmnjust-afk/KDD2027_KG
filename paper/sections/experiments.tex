@@ -12,7 +12,7 @@
 
 \textbf{Metrics.} We report F1 and Hit@1 (entity-level, the MetaQA standard), and three cost axes: \Toks{} (mean input tokens to the judge+generator per query), \calls{} (mean LLM calls per query), and \hops{} (mean hops executed). Cost is the axis our controller targets. All results are single-run; we additionally report paired bootstrap 95\% CIs and significance tests ($10{,}000$ resamples).
 
-\textbf{Reproducibility.} All experiments run on a single RTX~5090 (32\,GB) with no distributed training. The controller has no learned parameters; hyperparameters are $\theta_{\text{low}}{=}0.30$, $B{=}4$, $b_{\min}{=}1$, $b_{\max}{=}8$, $\delta{=}0.05$, $\tau{=}0.10$, $K{=}3$, fixed across all settings. Code and full per-query logs are released. Sample sizes are 500 (1.5B/1-hop), 300 (1.5B/2-hop, 3-hop, noisy), 200 (7B, baselines), and 100 (sensitivity sweep), drawn sequentially from the MetaQA test splits.
+\textbf{Reproducibility.} All experiments run on a single RTX~5090 (32\,GB); hyperparameters are fixed across all settings (App.~A). Code and per-query logs are released. Sample sizes: 500 (1.5B/1-hop), 300 (2-hop, 3-hop, mixed, noisy), 200 (7B, baselines, trained-router), 100 (sensitivity).
 
 \subsection{Main Results}
 \label{sec:exp-main}
@@ -110,17 +110,40 @@ Model & System & F1 & Hit@1 & \Toks{} & \hops{} \\
 \end{tabular}
 \end{table}
 
+\subsection{Comparison to a Trained Router}
+\label{sec:exp-trained}
+
+A central motivation of \method{} is that training-free adaptation can substitute for a learned difficulty router. To test this directly, we implement a \emph{trained-K classifier}: a logistic regression on question embeddings (30k training questions, 98\% train accuracy) that predicts the hop depth $\hat{K}\in\{1,2,3\}$ per query, then runs Fixed-style retrieval with that per-query $K$. This is a fair, lightweight instantiation of the ``trained router'' paradigm---it uses labeled training data that \method{} does not need.
+
+\Cref{tab:trained} reports the comparison on both the single-depth 2-hop split and the mixed-depth stream. On the \emph{2-hop split}, the trained router is competitive with \method{} (F1 0.334 vs.\ 0.333) at lower cost (636 vs.\ 868 \Toks{}), because it correctly predicts $K{=}2$ for most queries---but this is precisely the setting where oracle depth knowledge makes a global budget optimal (\Cref{sec:exp-fixedk}). On the \emph{mixed stream}, the picture reverses: \method{} improves F1 by $8.9\%$ over Trained-K (0.379 vs.\ 0.348) and Hit@1 by $9.2\%$ (0.473 vs.\ 0.433), because the classifier mispredicts $K$ for a fraction of mixed-depth queries, whereas \method{} adapts from the actual retrieval signal rather than a question-only prediction. This is the key comparison for the paper's value proposition: training-free, signal-driven adaptation outperforms a question-only trained router exactly where deployment matters---heterogeneous streams of unknown per-query depth.
+
+\begin{table}[t]
+\centering
+\caption{Trained router vs.\ \method{} vs.\ Fixed. On the single 2-hop split the trained router matches \method{} (it benefits from oracle depth). On the mixed stream \method{} improves F1 by $8.9\%$ over the trained router, because signal-driven adaptation does not mispredict depth.}
+\label{tab:trained}
+\small
+\begin{tabular}{@{}llccc@{}}
+\toprule
+Stream & System & F1 & Hit@1 & \Toks{} \\
+\midrule
+\multirow{3}{*}{2-hop only}
+ & Fixed ($K{=}3$) & 0.312 & 0.455 & 1107 \\
+ & Trained-K & 0.334 & 0.490 & 636 \\
+ & \method{} & 0.333 & 0.485 & 868 \\
+\cmidrule(lr){2-5}
+\multirow{3}{*}{Mixed 1/2/3-hop}
+ & Fixed ($K{=}3$) & \best{0.382} & \best{0.493} & 1209 \\
+ & Trained-K & 0.348 & 0.433 & \best{733} \\
+ & \method{} & \best{0.379} & \best{0.473} & 917 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
 \subsection{Ablation: Each Component Contributes}
 \label{sec:exp-abl}
 
-Table~\ref{tab:abl} ablates each controller component at 7B/2-hop. Disabling early stopping (D3) is by far the most costly: it forces all $K{=}3$ hops, raising \Toks{} from 853 to 1118 ($+31\%$) while \emph{lowering} F1 from 0.378 to 0.361. At this operating point D3 therefore both cuts cost and slightly improves accuracy, because the pruned late hops carry judge noise rather than useful evidence (we caution this is specific to the strong-judge regime; \Cref{sec:exp-boundary} shows the opposite at 1.5B/3-hop). Disabling adaptive beam (D2) keeps cost essentially unchanged (854 vs.\ 853) but lowers F1 to 0.358, so the entropy-driven beam contributes accuracy, not cost, here. Disabling the use-graph decision (D1) is inert because perfect linking never triggers the skip; we isolate (D1)'s effect under noisy linking in \Cref{sec:exp-2a}.
+Table~\ref{tab:abl} ablates each controller component at 7B/2-hop. The dominant mechanism is \textbf{early stopping (D3)}: disabling it forces all $K{=}3$ hops, raising \Toks{} from 853 to 1118 ($+31\%$) while \emph{lowering} F1 from 0.378 to 0.361. At this operating point D3 both cuts cost and slightly improves accuracy, because the pruned late hops carry judge noise rather than useful evidence (this is specific to the strong-judge regime; \Cref{sec:exp-boundary} shows the opposite at 1.5B/3-hop). \textbf{Adaptive beam (D2)} is a \emph{secondary, regime-dependent} mechanism: here it contributes $+0.020$ F1 at no cost (854 vs.\ 853 \Toks{}), but at 1.5B/1-hop it \emph{hurts} (App.~B, Tab.~B1: w/o D2 gets F1 0.345 vs.\ full 0.332), because narrowing the beam on confident hops occasionally over-prunes. We therefore characterize D2 as an auxiliary that helps when hop scores are genuinely uncertain (high entropy) and can hurt when they are sharp. \textbf{Use-graph (D1)} is inert under perfect linking (never fires); we isolate its conditional contribution under noisy linking in \Cref{sec:exp-2a}, where it becomes a cost--accuracy trade-off. The honest picture is that \method{} is primarily an early-stopping mechanism, augmented by two conditional levers (D2, D1) whose value depends on the linking and judging regime.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=0.95\columnwidth]{figures/fig_ablation.pdf}
-\caption{Ablation at 7B/2-hop. Disabling early stopping (D3) raises cost to the baseline level while \emph{lowering} F1---it both cuts cost and improves accuracy in this strong-judge setting. Disabling adaptive beam (D2) keeps cost but lowers accuracy.}
-\label{fig:ablation}
-\end{figure}
 
 \begin{table}[t]
 \centering
@@ -143,7 +166,7 @@ Fixed (baseline) & 0.343 & 0.500 & 1111 & 4.00 & 3.00 & $-0.035$ \\
 \subsection{Graph Retrieval Is Necessary and Multi-hop Beats Vector-RAG}
 \label{sec:exp-baselines}
 
-Table~\ref{tab:baselines} compares graph-based retrieval against No-Graph and Vector-RAG. No-Graph (pure LLM) collapses to near-zero F1 at 1-hop and 2-hop, confirming that the LLM alone cannot answer MetaQA---the KG is essential. Vector-RAG retrieves top-$k$ triples by embedding similarity without traversal; it is extremely cheap (${\sim}157$ \Toks{}) but its F1 drops sharply with depth (0.313$\rightarrow$0.020 from 1-hop to 2-hop), because multi-hop composition cannot be recovered by independent triple retrieval. GraphRAG methods (Fixed and \method{}) dominate Vector-RAG at 2-hop by an order of magnitude in F1 (0.207 vs.\ 0.020). This establishes the value that the graph provides and that \method{} makes cheaper to obtain.
+Table~\ref{tab:baselines} confirms the KG is essential: No-Graph collapses to near-zero F1, and Vector-RAG (no traversal) drops from 0.313 to 0.020 from 1-hop to 2-hop, while GraphRAG methods dominate at $10\times$ higher F1.
 
 \begin{table}[t]
 \centering
@@ -173,4 +196,4 @@ Fixed (ToG) & 0.339 & 0.203 & \best{0.084} & 1113 & 3.00 \\
 At 1.5B/2-hop, \method{} executes 2 hops for $55\%$ of queries and 3 hops for the remaining $45\%$ (mean $2.45$), whereas Fixed and the \emph{w/o (D3)} ablation always run $3$ hops---so (D3) is the sole source of early termination. The queries stopped at 2 hops are no less accurate (\Cref{tab:main}), confirming the pruned third hops carried noise rather than signal.
 
 \paragraph{Discussion.}
-The cost saving is driven almost entirely by early stopping: from \Cref{tab:abl}, removing D3 raises cost from $853$ to $1118$ \Toks{} while removing D2 or D1 changes it by $\le1$ \Toks{} (D1 is inert under perfect linking, becoming a cost lever only under noise, \Cref{sec:exp-2a}). Comparing scales reveals a judge-quality interaction: the 1.5B F1 gain at 2-hop is larger than the 7B gain ($+23.5\%$ vs.\ $+10.3\%$) because a weaker judge benefits more from pruning its own noise, yet at 3-hop the 1.5B judge is too unreliable and graph retrieval becomes harmful (\Cref{sec:exp-boundary}); \method{} thus needs a judge whose per-hop reliability scales with depth. On validity, the fixed-budget objection is addressed empirically (\Cref{sec:exp-fixedk,sec:exp-mixed}) rather than dismissed; MetaQA is single-domain, so transfer to structurally different KGs is unverified; and cost is measured as input tokens, which dominates API pricing and tracks latency for autoregressive decoding.
+From \Cref{tab:abl}, early stopping (D3) drives essentially all cost saving; D2 and D1 are conditional levers (D2 helps at high entropy, D1 under noise). Comparing scales, the 1.5B F1 gain at 2-hop exceeds the 7B gain ($+23.5\%$ vs.\ $+10.3\%$) because a weaker judge benefits more from pruning its own noise, yet at 3-hop the 1.5B judge is too unreliable (\Cref{sec:exp-boundary}). On validity: the fixed-budget objection is addressed empirically (\Cref{sec:exp-fixedk,sec:exp-mixed,sec:exp-trained}); MetaQA is single-domain so transfer to other KGs is unverified; cost is measured as input tokens (dominates API pricing, tracks latency).

@@ -1,0 +1,35 @@
+KG: 134741 triples | 14872 test Q (using 200)
+Backend: Qwen/Qwen2.5-7B-Instruct
+
+=== Training classifier ===
+Embedding 30000 train questions...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Train accuracy: 0.980
+
+=== Fixed (K=3) ===
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [Fixed 50/200] F1=0.277 toks=1152 t=4.6s
+  [Fixed 100/200] F1=0.286 toks=1134 t=4.6s
+  [Fixed 150/200] F1=0.317 toks=1107 t=4.5s
+  [Fixed 200/200] F1=0.312 toks=1107 t=4.6s
+
+=== Adaptive (ours) ===
+  [Adaptive 50/200] F1=0.275 toks=948 t=3.2s
+  [Adaptive 100/200] F1=0.310 toks=875 t=3.2s
+  [Adaptive 150/200] F1=0.342 toks=853 t=4.5s
+  [Adaptive 200/200] F1=0.333 toks=868 t=3.2s
+
+=== Trained-K ===
+  [Trained-K 50/200] F1=0.289 toks=692 t=3.3s
+  [Trained-K 100/200] F1=0.322 toks=659 t=3.3s
+  [Trained-K 150/200] F1=0.339 toks=638 t=3.1s
+  [Trained-K 200/200] F1=0.334 toks=636 t=3.3s
+
+======================================================================
+COMPARISON [2-hop, n=200]
+======================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+Trained-K (logreg)             0.334   0.490   0.170       636     3.02    2.02  100.0%
+Adaptive (ours)                0.333   0.485   0.160       868     3.49    2.49  100.0%
+Fixed (K=3)                    0.312   0.455   0.145      1107     4.00    3.00  100.0%

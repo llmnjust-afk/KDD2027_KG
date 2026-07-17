@@ -1,0 +1,35 @@
+Training classifier...
+Embedding 30000 train questions...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+Train accuracy: 0.980
+=== Fixed ===
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [Fixed 50/300] F1=0.418 toks=1162 t=4.1s
+  [Fixed 100/300] F1=0.415 toks=1208 t=3.2s
+  [Fixed 150/300] F1=0.389 toks=1205 t=4.1s
+  [Fixed 200/300] F1=0.377 toks=1213 t=4.1s
+  [Fixed 250/300] F1=0.387 toks=1206 t=2.7s
+  [Fixed 300/300] F1=0.382 toks=1209 t=4.1s
+=== Adaptive ===
+  [Adaptive 50/300] F1=0.407 toks=832 t=2.9s
+  [Adaptive 100/300] F1=0.410 toks=895 t=2.1s
+  [Adaptive 150/300] F1=0.376 toks=910 t=2.9s
+  [Adaptive 200/300] F1=0.375 toks=923 t=4.1s
+  [Adaptive 250/300] F1=0.384 toks=923 t=2.0s
+  [Adaptive 300/300] F1=0.379 toks=917 t=2.9s
+=== Trained-K ===
+  [Trained-K 50/300] F1=0.358 toks=705 t=1.8s
+  [Trained-K 100/300] F1=0.363 toks=710 t=3.2s
+  [Trained-K 150/300] F1=0.357 toks=736 t=2.9s
+  [Trained-K 200/300] F1=0.338 toks=736 t=2.9s
+  [Trained-K 250/300] F1=0.355 toks=712 t=0.4s
+  [Trained-K 300/300] F1=0.348 toks=733 t=1.7s
+
+======================================================================
+MIXED COMPARISON
+======================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+Trained-K                      0.348   0.433   0.250       733     2.99    1.99  100.0%
+Adaptive                       0.379   0.473   0.273       917     3.39    2.39  100.0%
+Fixed                          0.382   0.493   0.273      1209     3.98    2.98  100.0%
