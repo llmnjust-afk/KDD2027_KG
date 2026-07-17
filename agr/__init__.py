@@ -11,7 +11,7 @@ Package layout:
 from .kg import KnowledgeGraph, Triple, QAExample, load_toy, load_metaqa
 from .llm_backend import LLMBackend, HuggingFaceBackend, APIBackend, Usage, build_backend
 from .retriever import GraphRAGRetriever, RetrievalResult, Subgraph
-from .controller import FixedController, AdaptiveController, build_controller
+from .controller import FixedController, AdaptiveController, NoGraphController, build_controller
 from .answer import generate_answer, extract_answer_entities, AnswerResult
 from .evaluate import (QueryReport, Aggregate, score_query, aggregate,
                        pareto_table, save_reports)
@@ -20,7 +20,7 @@ __all__ = [
     "KnowledgeGraph", "Triple", "QAExample", "load_toy", "load_metaqa",
     "LLMBackend", "HuggingFaceBackend", "APIBackend", "Usage", "build_backend",
     "GraphRAGRetriever", "RetrievalResult", "Subgraph",
-    "FixedController", "AdaptiveController", "build_controller",
+    "FixedController", "AdaptiveController", "NoGraphController", "build_controller",
     "generate_answer", "extract_answer_entities", "AnswerResult",
     "QueryReport", "Aggregate", "score_query", "aggregate", "pareto_table",
     "save_reports",

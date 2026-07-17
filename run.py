@@ -53,18 +53,48 @@ SYSTEMS = {
     "abl-nograph": ({"name": "adaptive", "base_beam": 4, "ablate_use_graph": True},    "Abl. no (2a)"),
     "abl-fixbeam": ({"name": "adaptive", "base_beam": 4, "ablate_adaptive_beam": True}, "Abl. no (2b)"),
     "abl-nostop":  ({"name": "adaptive", "base_beam": 4, "ablate_early_stop": True},   "Abl. no (3)"),
+    "nograph":     ({"name": "nograph"}, "No-Graph (pure LLM)"),
+    "vector-rag":  ({"name": "vector-rag"}, "Vector-RAG (no traversal)"),
 }
 
 
-def run_one(retriever, backend, examples, limit=None):
+def _corrupt_question(question, rng, rate):
+    """Corrupt [Entity] mentions to simulate noisy entity linking.
+
+    With probability `rate`, each bracketed entity is corrupted by truncating
+    to its first word or dropping a random character. This creates genuinely
+    uncertain links where embedding matching may pick the wrong entity.
+    """
+    import re
+    def _corrupt(m):
+        if rng.random() > rate:
+            return m.group(0)
+        ent = m.group(1)
+        words = ent.split()
+        if len(words) > 1:
+            return f"[{rng.choice(words)}]"  # partial name
+        if len(ent) > 3:
+            idx = rng.randint(1, len(ent) - 2)
+            return f"[{ent[:idx]}{ent[idx+1:]}]"  # drop a char (typo)
+        return m.group(0)
+    return re.sub(r"\[([^\]]+)\]", _corrupt, question)
+
+
+def run_one(retriever, backend, examples, limit=None, corrupt_rate=0.0):
     reports = []
     n = len(examples) if limit is None else min(limit, len(examples))
+    import random
+    rng = random.Random(42)
     for i, ex in enumerate(examples[:n]):
         t0 = time.time()
         call0 = backend.usage.n_calls
         tok0 = backend.usage.n_input_tokens
-        retrieval = retriever.retrieve(ex.question)
-        ans = generate_answer(backend, ex.question, retrieval)
+        # optionally corrupt entity mentions to simulate noisy linking
+        question = ex.question
+        if corrupt_rate > 0:
+            question = _corrupt_question(ex.question, rng, corrupt_rate)
+        retrieval = retriever.retrieve(question)
+        ans = generate_answer(backend, question, retrieval)
         pred = extract_answer_entities(ans.text)
         sc = score_query(pred, ex.answers)
         reports.append(QueryReport(
@@ -100,6 +130,14 @@ def main():
                     help="use embedding relevance instead of LLM judge (fast smoke test)")
     ap.add_argument("--no-gen-model", action="store_true",
                     help="skip loading the HF generator; relevance via embeddings only")
+    ap.add_argument("--noisy-linking", action="store_true",
+                    help="strip [Entity] brackets -> embedding linking (activates 2a)")
+    ap.add_argument("--theta-low", type=float, default=0.30,
+                    help="use-graph threshold (raise to activate 2a under noisy linking)")
+    ap.add_argument("--corrupt-rate", type=float, default=0.0,
+                    help="probability of corrupting entity mentions in questions (simulates noisy linking)")
+    ap.add_argument("--vector-rag-topk", type=int, default=0,
+                    help=">0 enables vector-RAG mode (retrieve top-k triples, no traversal)")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--out-dir", default="./results")
     args = ap.parse_args()
@@ -134,13 +172,19 @@ def main():
             cfg["beam"] = args.beam
         if "base_beam" in cfg:
             cfg["base_beam"] = args.beam
+        # pass theta_low for adaptive variants
+        if cfg.get("name") == "adaptive":
+            cfg["theta_low"] = args.theta_low
         print(f"\n=== System: {sname}  [{label}] ===", flush=True)
         controller = build_controller(cfg)
         retriever = GraphRAGRetriever(
             kg, backend, controller, link_topk=args.link_topk,
             judge_with_llm=not args.no_llm_judge,
+            noisy_linking=args.noisy_linking,
+            vector_rag_topk=args.vector_rag_topk if sname == "vector-rag" else 0,
         )
-        reports = run_one(retriever, backend, examples, limit=args.limit)
+        reports = run_one(retriever, backend, examples, limit=args.limit,
+                          corrupt_rate=args.corrupt_rate)
         agg = aggregate(reports)
         system_aggs[label] = agg
         out_path = os.path.join(args.out_dir, f"{tag}_{sname}", "reports.jsonl")

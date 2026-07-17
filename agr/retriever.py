@@ -87,6 +87,8 @@ class GraphRAGRetriever:
         link_topk: int = 5,
         score_topk_per_hop: int = 8,
         judge_with_llm: bool = True,
+        noisy_linking: bool = False,
+        vector_rag_topk: int = 0,
     ):
         self.kg = kg
         self.backend = backend
@@ -94,8 +96,12 @@ class GraphRAGRetriever:
         self.link_topk = link_topk
         self.score_topk_per_hop = score_topk_per_hop
         self.judge_with_llm = judge_with_llm
+        self.noisy_linking = noisy_linking  # strip [Entity] brackets -> test 2a
+        self.vector_rag_topk = vector_rag_topk  # >0 => vector-RAG mode (no graph traversal)
         self._ent_index: Optional[List[str]] = None
         self._ent_emb: Optional[np.ndarray] = None
+        self._triple_index: Optional[List[Tuple[str, str, str]]] = None
+        self._triple_emb: Optional[np.ndarray] = None
 
     # ---- entity linking ----
     def _build_entity_index(self):
@@ -116,9 +122,14 @@ class GraphRAGRetriever:
         standard setup used by ToG/GNN-RAG on MetaQA. Embedding nearest-neighbour
         over all KG entities serves as a fair fallback for queries without a
         bracketed mention (and for the toy KG).
+
+        With `noisy_linking=True`, brackets are stripped so linking falls back to
+        embedding matching -- simulating real-world noisy entity linking where no
+        ground-truth entity annotation is available. This is the setting that
+        activates Innovation 2a (use-graph decision).
         """
         import re
-        bracketed = re.findall(r"\[([^\]]+)\]", question)
+        bracketed = [] if self.noisy_linking else re.findall(r"\[([^\]]+)\]", question)
         hits: List[Tuple[str, float]] = []
         if bracketed:
             ent_set = self.kg.entities
@@ -180,8 +191,39 @@ class GraphRAGRetriever:
         e = emb[1:] / (np.linalg.norm(emb[1:], axis=1, keepdims=True) + 1e-9)
         return (e @ q).tolist()
 
+    # ---- vector-RAG: retrieve top-k triples by embedding similarity (no graph traversal) ----
+    def _vector_rag(self, question: str, topk: int) -> RetrievalResult:
+        if self._triple_index is None:
+            self._triple_index = [(t.head, t.relation, t.tail) for t in self.kg.triples]
+            texts = [f"{h} {r} {t}" for (h, r, t) in self._triple_index]
+            emb = np.asarray(self.backend.embed(texts), dtype=np.float32)
+            norms = np.linalg.norm(emb, axis=1, keepdims=True) + 1e-9
+            self._triple_emb = emb / norms
+        q = np.asarray(self.backend.embed([question]), dtype=np.float32)[0]
+        q = q / (np.linalg.norm(q) + 1e-9)
+        sims = self._triple_emb @ q
+        k = min(topk, len(self._triple_index))
+        idx = np.argpartition(-sims, k - 1)[:k]
+        idx = idx[np.argsort(-sims[idx])]
+        triples = [tuple(self._triple_index[i]) for i in idx]
+        before = (self.backend.usage.n_input_tokens, self.backend.usage.n_output_tokens,
+                  self.backend.usage.n_calls)
+        sub = Subgraph(triples=triples, entities=sorted({e for t in triples for e in (t[0], t[2])}))
+        after = self.backend.usage
+        return RetrievalResult(
+            subgraph=sub, used_graph=True, n_hops_executed=1,  # single retrieval pass
+            n_llm_calls=after.n_calls - before[2],
+            n_input_tokens=after.n_input_tokens - before[0],
+            n_output_tokens=after.n_output_tokens - before[1],
+            entity_link_scores=[float(sims[i]) for i in idx],
+        )
+
     # ---- main retrieval ----
     def retrieve(self, question: str) -> RetrievalResult:
+        # vector-RAG shortcut: no entity linking, no multi-hop, no LLM judge
+        if self.vector_rag_topk > 0:
+            return self._vector_rag(question, self.vector_rag_topk)
+
         hits = self.link_entities(question)
         link_scores = [s for _, s in hits]
         ctx: Dict = {"link_scores": link_scores,

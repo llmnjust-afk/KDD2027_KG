@@ -56,8 +56,30 @@ class FixedController:
 
     def should_stop(self, question: str, hop_idx: int, frontier: List[str],
                     prev_frontier: List[str], score_stats: Dict, ctx: Dict) -> bool:
-        # baseline: never stop early (engine handles max_hops cap)
         return False
+
+
+# --------------------------------------------------------------------------- no-graph baseline
+@dataclass
+class NoGraphController:
+    """Pure-LLM baseline: never use the graph, answer directly from the question.
+
+    Establishes the lower bound -- shows that the graph itself contributes value
+    (the motivation for GraphRAG rather than plain LLM QA).
+    """
+    max_hops: int = 0
+
+    def decide_use_graph(self, question: str, entity_hits: List[Tuple[str, float]],
+                         ctx: Dict) -> bool:
+        return False
+
+    def beam_for_hop(self, question: str, hop_idx: int, frontier_size: int,
+                     scores: List[float], ctx: Dict) -> int:
+        return 0
+
+    def should_stop(self, question: str, hop_idx: int, frontier: List[str],
+                    prev_frontier: List[str], score_stats: Dict, ctx: Dict) -> bool:
+        return True
 
 
 # --------------------------------------------------------------------------- method
@@ -180,6 +202,10 @@ def build_controller(cfg: Dict) -> object:
     if name == "fixed":
         return FixedController(max_hops=common["max_hops"],
                                beam=cfg.get("beam", 4))
+    if name == "nograph":
+        return NoGraphController()
+    if name == "vector-rag":
+        return NoGraphController()  # vector-RAG handled in retriever, not controller
     return AdaptiveController(
         max_hops=common["max_hops"],
         theta_low=cfg.get("theta_low", 0.30),
