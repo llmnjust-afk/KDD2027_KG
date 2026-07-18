@@ -1,0 +1,59 @@
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+downloaded data/test-00000-of-00002-9ee8d68f7d951e1f.parquet
+downloaded data/test-00001-of-00002-773a7b8213e159f5.parquet
+Loading WebQSP...
+Loaded 500 WebQSP questions (avg KG size: 4408 triples)
+Backend: Qwen/Qwen2.5-7B-Instruct
+
+=== Fixed (K=3) ===
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [Fixed 25/500] F1=0.160 toks=2548 hops=2.92 t=4.8s
+  [Fixed 50/500] F1=0.114 toks=2457 hops=2.88 t=3.5s
+  [Fixed 75/500] F1=0.149 toks=2451 hops=2.88 t=4.8s
+  [Fixed 100/500] F1=0.120 toks=2477 hops=2.89 t=4.7s
+  [Fixed 125/500] F1=0.136 toks=2448 hops=2.90 t=4.4s
+  [Fixed 150/500] F1=0.131 toks=2440 hops=2.90 t=4.6s
+  [Fixed 175/500] F1=0.122 toks=2441 hops=2.90 t=4.5s
+  [Fixed 200/500] F1=0.130 toks=2429 hops=2.90 t=4.9s
+  [Fixed 225/500] F1=0.142 toks=2417 hops=2.90 t=4.5s
+  [Fixed 250/500] F1=0.131 toks=2415 hops=2.91 t=4.6s
+  [Fixed 275/500] F1=0.129 toks=2419 hops=2.91 t=4.8s
+  [Fixed 300/500] F1=0.126 toks=2416 hops=2.91 t=3.5s
+  [Fixed 325/500] F1=0.123 toks=2425 hops=2.92 t=4.5s
+  [Fixed 350/500] F1=0.119 toks=2425 hops=2.92 t=4.5s
+  [Fixed 375/500] F1=0.120 toks=2421 hops=2.92 t=4.9s
+  [Fixed 400/500] F1=0.116 toks=2425 hops=2.92 t=4.9s
+  [Fixed 425/500] F1=0.111 toks=2418 hops=2.92 t=5.0s
+  [Fixed 450/500] F1=0.112 toks=2416 hops=2.92 t=4.5s
+  [Fixed 475/500] F1=0.108 toks=2411 hops=2.92 t=3.5s
+  [Fixed 500/500] F1=0.113 toks=2403 hops=2.92 t=4.8s
+
+=== Adaptive (ours) ===
+  [Adaptive 25/500] F1=0.160 toks=1966 hops=2.28 t=3.6s
+  [Adaptive 50/500] F1=0.104 toks=1977 hops=2.24 t=4.9s
+  [Adaptive 75/500] F1=0.126 toks=1943 hops=2.19 t=3.6s
+  [Adaptive 100/500] F1=0.101 toks=2001 hops=2.21 t=3.3s
+  [Adaptive 125/500] F1=0.113 toks=1995 hops=2.20 t=3.0s
+  [Adaptive 150/500] F1=0.114 toks=1999 hops=2.19 t=3.3s
+  [Adaptive 175/500] F1=0.106 toks=2004 hops=2.18 t=4.5s
+  [Adaptive 200/500] F1=0.113 toks=2008 hops=2.18 t=4.8s
+  [Adaptive 225/500] F1=0.123 toks=1997 hops=2.17 t=3.3s
+  [Adaptive 250/500] F1=0.113 toks=1997 hops=2.16 t=3.4s
+  [Adaptive 275/500] F1=0.114 toks=1992 hops=2.16 t=3.7s
+  [Adaptive 300/500] F1=0.110 toks=1982 hops=2.15 t=3.5s
+  [Adaptive 325/500] F1=0.109 toks=1983 hops=2.14 t=3.3s
+  [Adaptive 350/500] F1=0.108 toks=1974 hops=2.14 t=3.3s
+  [Adaptive 375/500] F1=0.110 toks=1970 hops=2.14 t=3.6s
+  [Adaptive 400/500] F1=0.106 toks=1972 hops=2.13 t=3.6s
+  [Adaptive 425/500] F1=0.100 toks=1961 hops=2.12 t=3.7s
+  [Adaptive 450/500] F1=0.101 toks=1962 hops=2.12 t=3.4s
+  [Adaptive 475/500] F1=0.096 toks=1964 hops=2.13 t=3.5s
+  [Adaptive 500/500] F1=0.099 toks=1957 hops=2.12 t=3.6s
+
+======================================================================
+WebQSP COMPARISON [n=500]
+======================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+Adaptive (ours)                0.099   0.154   0.058      1957     3.12    2.12   99.8%
+Fixed (K=3)                    0.113   0.166   0.076      2403     3.92    2.92  100.0%

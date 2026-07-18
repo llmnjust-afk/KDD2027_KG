@@ -168,17 +168,23 @@ class GraphRAGRetriever:
         if not candidates:
             return []
         if self.judge_with_llm:
-            # Batch all candidates into one judge prompt to amortise token cost,
-            # exactly as ToG-style baselines do. Each call still counts as the
-            # dominant cost; the controller's job is to make fewer of them.
+            # Few-shot judge prompt: 2 examples calibrate the scoring scale,
+            # improving judge accuracy and thus downstream QA F1.
             cand_lines = "\n".join(
                 f"{i}. {h} | {r} | {t}" for i, (h, r, t) in enumerate(candidates)
             )
             prompt = (
-                "You are a strict relevance judge. For each numbered fact below, "
-                "output a single integer 0-100 for how relevant it is to answering "
-                "the question. Output ONLY a comma-separated list of integers, "
-                "one per fact, in order.\n\n"
+                "You are a strict relevance judge. For each numbered fact, output an integer 0-100 "
+                "for how relevant it is to answering the question. 100=directly answers it, 50=partially "
+                "relevant, 0=irrelevant. Output ONLY a comma-separated list of integers.\n\n"
+                "Example 1:\n"
+                "Question: who directed Inception?\n"
+                "Facts:\n1. Inception | directed_by | Christopher Nolan\n2. Titanic | directed_by | James Cameron\n3. Inception | has_genre | Science Fiction\n\n"
+                "Scores: 100, 0, 20\n\n"
+                "Example 2:\n"
+                "Question: what movies star Leonardo DiCaprio?\n"
+                "Facts:\n1. Inception | starred_actors | Leonardo DiCaprio\n2. The Dark Knight | starred_actors | Christian Bale\n\n"
+                "Scores: 100, 0\n\n"
                 f"Question: {question}\nFacts:\n{cand_lines}\n\nScores:"
             )
             out = self.backend.generate(prompt, max_new_tokens=64, temperature=0.0)

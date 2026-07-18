@@ -1,0 +1,70 @@
+KG: 134741 triples | 14872 test Q (using 200)
+Backend: Qwen/Qwen2.5-7B-Instruct
+
+=== Training MLP classifier ===
+Embedding 30000 train questions...
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+MLP train accuracy: 0.998
+
+=== Fixed ===
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [Fixed 50/200] F1=0.284 toks=1500 t=4.1s
+  [Fixed 100/200] F1=0.341 toks=1483 t=4.3s
+  [Fixed 150/200] F1=0.359 toks=1472 t=4.1s
+  [Fixed 200/200] F1=0.364 toks=1479 t=4.2s
+
+=== Adaptive ===
+  [Adaptive 50/200] F1=0.300 toks=1082 t=3.0s
+  [Adaptive 100/200] F1=0.359 toks=1066 t=3.0s
+  [Adaptive 150/200] F1=0.361 toks=1037 t=2.9s
+  [Adaptive 200/200] F1=0.364 toks=1042 t=4.2s
+
+=== MLP-Trained-K ===
+  [MLP-Trained-K 50/200] F1=0.328 toks=922 t=3.0s
+  [MLP-Trained-K 100/200] F1=0.407 toks=901 t=3.0s
+  [MLP-Trained-K 150/200] F1=0.416 toks=896 t=3.0s
+  [MLP-Trained-K 200/200] F1=0.407 toks=898 t=3.0s
+
+======================================================================
+MLP BASELINE COMPARISON [2-hop, n=200]
+======================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+MLP-Trained-K                  0.407   0.590   0.215       898     3.02    2.02  100.0%
+Adaptive                       0.364   0.520   0.180      1042     3.33    2.33  100.0%
+Fixed                          0.364   0.530   0.185      1479     4.00    3.00  100.0%
+
+=== MLP on mixed stream ===
+
+=== Fixed (mixed) ===
+  [Fixed 50/300] F1=0.390 toks=1586 t=4.2s
+  [Fixed 100/300] F1=0.431 toks=1597 t=4.2s
+  [Fixed 150/300] F1=0.415 toks=1590 t=4.1s
+  [Fixed 200/300] F1=0.407 toks=1595 t=3.7s
+  [Fixed 250/300] F1=0.415 toks=1593 t=4.2s
+  [Fixed 300/300] F1=0.403 toks=1598 t=4.2s
+
+=== Adaptive (mixed) ===
+  [Adaptive 50/300] F1=0.397 toks=1075 t=3.0s
+  [Adaptive 100/300] F1=0.438 toks=1072 t=3.0s
+  [Adaptive 150/300] F1=0.423 toks=1063 t=2.9s
+  [Adaptive 200/300] F1=0.405 toks=1084 t=3.0s
+  [Adaptive 250/300] F1=0.411 toks=1064 t=2.6s
+  [Adaptive 300/300] F1=0.399 toks=1066 t=3.0s
+
+=== MLP-Trained-K (mixed) ===
+  [MLP-Trained-K 50/300] F1=0.418 toks=971 t=1.8s
+  [MLP-Trained-K 100/300] F1=0.455 toks=974 t=4.2s
+  [MLP-Trained-K 150/300] F1=0.437 toks=1008 t=3.0s
+  [MLP-Trained-K 200/300] F1=0.402 toks=1013 t=3.1s
+  [MLP-Trained-K 250/300] F1=0.409 toks=988 t=1.3s
+  [MLP-Trained-K 300/300] F1=0.390 toks=1005 t=1.8s
+
+======================================================================
+MLP MIXED COMPARISON
+======================================================================
+system                            F1   Hit@1   Exact    toks/q  calls/q  hops/q  %graph
+---------------------------------------------------------------------------------------
+MLP-Trained-K                  0.390   0.477   0.277      1005     3.02    2.02  100.0%
+Adaptive                       0.399   0.480   0.273      1066     3.17    2.17  100.0%
+Fixed                          0.403   0.503   0.273      1598     3.99    2.99  100.0%

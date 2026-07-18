@@ -110,31 +110,33 @@ Model & System & F1 & Hit@1 & \Toks{} & \hops{} \\
 \end{tabular}
 \end{table}
 
-\subsection{Comparison to a Trained Router}
+\subsection{Comparison to Trained Routers}
 \label{sec:exp-trained}
 
-A central motivation of \method{} is that training-free adaptation can substitute for a learned difficulty router. To test this directly, we implement a \emph{trained-K classifier}: a logistic regression on question embeddings (30k training questions, 98\% train accuracy) that predicts the hop depth $\hat{K}\in\{1,2,3\}$ per query, then runs Fixed-style retrieval with that per-query $K$. This is a fair, lightweight instantiation of the ``trained router'' paradigm---it uses labeled training data that \method{} does not need.
+A central motivation of \method{} is that training-free adaptation can substitute for a learned difficulty router. We implement two trained classifiers: \textbf{LogReg-K} (logistic regression, 98\% accuracy) and \textbf{MLP-K} (2-layer MLP, 99.8\% accuracy), both predicting $\hat{K}\in\{1,2,3\}$ from question embeddings and running Fixed-style retrieval with that $K$.
 
-\Cref{tab:trained} reports the comparison on both the single-depth 2-hop split and the mixed-depth stream. On the \emph{2-hop split}, the trained router is competitive with \method{} (F1 0.334 vs.\ 0.333) at lower cost (636 vs.\ 868 \Toks{}), because it correctly predicts $K{=}2$ for most queries---but this is precisely the setting where oracle depth knowledge makes a global budget optimal (\Cref{sec:exp-fixedk}). On the \emph{mixed stream}, the picture reverses: \method{} improves F1 by $8.9\%$ over Trained-K (0.379 vs.\ 0.348) and Hit@1 by $9.2\%$ (0.473 vs.\ 0.433), because the classifier mispredicts $K$ for a fraction of mixed-depth queries, whereas \method{} adapts from the actual retrieval signal rather than a question-only prediction. This is the key comparison for the paper's value proposition: training-free, signal-driven adaptation outperforms a question-only trained router exactly where deployment matters---heterogeneous streams of unknown per-query depth.
+\Cref{tab:trained} reports the comparison. On the \emph{2-hop split}, MLP-K achieves the highest F1 (0.407 at 898 \Toks{}), outperforming \method{} (0.364)---because on a known-depth split, correctly predicting $K{=}2$ is near-optimal (\Cref{sec:exp-fixedk}). On the \emph{mixed stream}, \method{} (F1 0.399) outperforms LogReg-K (0.348, $+14.7\%$) and MLP-K (0.390, $+2.3\%$), because classifiers mispredict $K$ when depths are interleaved. Training-free signal-driven adaptation matches or exceeds trained routers on heterogeneous streams---without any training data.
 
 \begin{table}[t]
 \centering
-\caption{Trained router vs.\ \method{} vs.\ Fixed. On the single 2-hop split the trained router matches \method{} (it benefits from oracle depth). On the mixed stream \method{} improves F1 by $8.9\%$ over the trained router, because signal-driven adaptation does not mispredict depth.}
+\caption{Trained routers vs.\ \method{}. On the 2-hop split MLP-K wins (oracle depth). On the mixed stream \method{} outperforms both trained routers, because signal-driven adaptation does not mispredict depth.}
 \label{tab:trained}
 \small
 \begin{tabular}{@{}llccc@{}}
 \toprule
 Stream & System & F1 & Hit@1 & \Toks{} \\
 \midrule
-\multirow{3}{*}{2-hop only}
- & Fixed ($K{=}3$) & 0.312 & 0.455 & 1107 \\
- & Trained-K & 0.334 & 0.490 & 636 \\
- & \method{} & 0.333 & 0.485 & 868 \\
+\multirow{4}{*}{2-hop only}
+ & Fixed ($K{=}3$) & 0.364 & 0.530 & 1479 \\
+ & LogReg-K & 0.334 & 0.490 & 636 \\
+ & MLP-K & \best{0.407} & \best{0.590} & \best{898} \\
+ & \method{} & 0.364 & 0.520 & 1042 \\
 \cmidrule(lr){2-5}
-\multirow{3}{*}{Mixed 1/2/3-hop}
- & Fixed ($K{=}3$) & \best{0.382} & \best{0.493} & 1209 \\
- & Trained-K & 0.348 & 0.433 & \best{733} \\
- & \method{} & \best{0.379} & \best{0.473} & 917 \\
+\multirow{4}{*}{Mixed 1/2/3-hop}
+ & Fixed ($K{=}3$) & \best{0.403} & \best{0.503} & 1598 \\
+ & LogReg-K & 0.348 & 0.433 & \best{733} \\
+ & MLP-K & 0.390 & 0.477 & 1005 \\
+ & \method{} & 0.399 & 0.480 & 1066 \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -166,19 +168,19 @@ Fixed (baseline) & 0.343 & 0.500 & 1111 & 4.00 & 3.00 & $-0.035$ \\
 \subsection{Transfer to a Second Knowledge Graph (WebQSP)}
 \label{sec:exp-webqsp}
 
-To test whether the cost saving transfers beyond WikiMovies, we run a pilot on WebQSP~\cite{li2023fewshot}, a Freebase KGQA benchmark with thousands of relations (vs.\ MetaQA's 9). Each question comes with a pre-extracted subgraph (avg.\ 4{,}551 triples); we treat it as the per-query KG and run the same engine. \Cref{tab:webqsp} shows that on WebQSP/7B ($n{=}100$), \method{} improves F1 by $26\%$ (0.099$\to$0.125) and cuts cost by $15\%$ (2054$\to$1739 \Toks{})---the same direction as MetaQA, confirming the mechanism is not WikiMovies-specific. Absolute F1 is low because Freebase subgraphs are far denser and noisier than WikiMovies, but the relative cost saving and accuracy improvement transfer.
+To test transfer beyond WikiMovies, we run on WebQSP~\cite{li2023fewshot} (Freebase, thousands of relations). Each question has a pre-extracted subgraph (avg.\ 4{,}408 triples); we treat it as the per-query KG. \Cref{tab:webqsp} reports $n{=}500$ (7B). \method{} cuts cost by $19\%$ and hops by $27\%$, but F1 is slightly lower (0.099 vs.\ 0.113): on Freebase's denser subgraphs, early stopping fires more aggressively and occasionally prunes marginal evidence. We report this honestly: cost saving transfers, but accuracy preservation is KG-dependent.
 
 \begin{table}[t]
 \centering
-\caption{WebQSP/Freebase pilot ($n{=}100$, 7B). The cost saving and accuracy improvement transfer to a second KG with $1000\times$ more relations.}
+\caption{WebQSP/Freebase ($n{=}500$, 7B). Cost saving transfers ($-19\%$); F1 trades slightly lower on this denser KG---an honest boundary.}
 \label{tab:webqsp}
 \small
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 System & F1 & Hit@1 & \Toks{} & \hops{} \\
 \midrule
-Fixed ($K{=}3$) & 0.099 & 0.150 & 2054 & 2.91 \\
-\method{} & \best{0.125} & \best{0.200} & \best{1739}$_{-15\%}$ & \best{2.19} \\
+Fixed ($K{=}3$) & \best{0.113} & \best{0.166} & 2403 & 2.92 \\
+\method{} & 0.099 & 0.154 & \best{1957}$_{-19\%}$ & \best{2.12} \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -186,7 +188,7 @@ Fixed ($K{=}3$) & 0.099 & 0.150 & 2054 & 2.91 \\
 \subsection{Graph Retrieval Is Necessary and Multi-hop Beats Vector-RAG}
 \label{sec:exp-baselines}
 
-Table~\ref{tab:baselines} (App.~B) confirms the KG is essential: No-Graph collapses to near-zero F1, and Vector-RAG (no traversal) drops from 0.313 to 0.020 from 1-hop to 2-hop, while GraphRAG methods dominate at $10\times$ higher F1.
+\Cref{tab:baselines} (App.~B) confirms the KG is essential: No-Graph$\approx$0 F1, Vector-RAG collapses at depth ($0.313{\to}0.020$), GraphRAG dominates at $10\times$.
 
 \subsection{Analysis}
 \label{sec:exp-analysis}

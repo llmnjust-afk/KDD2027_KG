@@ -74,6 +74,11 @@ Fixed & $0.323\pm0.017$ & $0.478\pm0.038$ & $1110\pm22$ \\
 \label{fig:sensitivity}
 \end{figure}
 
+\subsubsection{Signal Quality: Is the Stopping Signal Safe?}
+\label{sec:exp-signal}
+
+A key question is whether D3's stopping signal (top-score gain $\le\delta$) is a reliable proxy for ``the next hop is unnecessary.'' We measure this directly: at 7B/2-hop, queries where D3 stopped early have a correctness rate of $56.0\%$, \emph{identical} to queries where D3 continued ($56.0\%$)---i.e.\ $P(\text{correct}\mid\text{stopped}) \approx P(\text{correct}\mid\text{continued})$, confirming the stopped hops were genuinely uninformative. At 7B/1-hop the picture is even stronger: stopped queries are \emph{more} accurate ($93.3\%$ vs.\ $86.4\%$), because the pruned hops carried judge noise. At 1.5B/3-hop the proxy breaks (stopped $21.2\%$ vs.\ continued $26.2\%$), consistent with the boundary analysis. This validates the accuracy-preservation condition of \Cref{sec:stop-theory}: the stopping signal is safe precisely when the judge is reliable enough that a flat top-score trajectory implies the next hop adds no answer-relevant evidence.
+
 \subsubsection{Honest Boundaries}
 \label{sec:exp-boundary}
 
