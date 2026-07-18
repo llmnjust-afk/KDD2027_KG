@@ -53,69 +53,59 @@ The advantage scales with reasoning difficulty and model capability. With the 1.
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.95\columnwidth]{figures/fig_pareto.pdf}
-\caption{Pareto frontier of accuracy vs.\ retrieval cost. Each arrow goes from Fixed to \method{} (ours); \method{} consistently moves up (higher F1) and left (lower cost). The 7B/2-hop and 1.5B/2-hop points show the largest gains.}
+\caption{Adaptive vs.\ Fixed across four (model, hop) settings. Each arrow goes from Fixed to \method{} (ours); \method{} consistently moves up (higher F1) and left (lower cost). This is an overview, not a tuned frontier---\Cref{fig:pareto-tuned} shows the full tuned Fixed-$K{\times}B$ frontier on the 2-hop split.}
 \label{fig:pareto}
 \end{figure}
 
 \subsection{Comparison to Tuned Fixed-Budget Baselines}
 \label{sec:exp-fixedk}
 
-A natural objection to the main result is that the default Fixed baseline uses $K{=}3$ hops on a nominally 2-hop split, so \method{}'s savings might reflect an untuned baseline rather than genuine per-query adaptation. We take this objection seriously and sweep the fixed budget on the \emph{same} query subset ($n{=}200$, 7B/2-hop): Fixed-$K{\in}\{1,2,3\}$ and, at $K{=}2$, beam widths $B{\in}\{2,4,6\}$ (\Cref{tab:fixedk}).
+A natural objection to the main result is that the default Fixed baseline uses $K{=}3$ hops on a nominally 2-hop split, so \method{}'s savings might reflect an untuned baseline. We sweep the fixed budget on the \emph{same} query subset ($n{=}200$, 7B/2-hop): Fixed-$K{\in}\{1,2,3\}$ and, at $K{=}2$, beam widths $B{\in}\{2,4,6\}$ (App.~C, \Cref{tab:fixedk}).
 
-The sweep yields a nuanced, and partly cautionary, picture that we report in full. First, the budget matters enormously: Fixed-$K{=}1$ collapses (F1 $0.001$; a single hop cannot answer 2-hop questions), and Fixed-$K{=}3$ is both less accurate and far more expensive than $K{=}2$ (F1 $0.310$ vs.\ $0.355$ at $1118$ vs.\ $627$ \Toks{}), because the third hop injects judge noise on this split. So the \emph{default} $K{=}3$ baseline that \method{} beats on all axes is indeed a poorly-tuned operating point. Second, and importantly, a \emph{well-tuned} fixed baseline is strong: Fixed-$K{=}2,B{=}6$ reaches F1 $0.399$ at $684$ \Toks{}, which is \emph{both more accurate and cheaper} than \method{} ($0.366$, $853$ \Toks{}). We therefore do \emph{not} claim \method{} Pareto-dominates a fully tuned fixed budget on a single known-depth split; on such a split, budget tuning is a strong and cheaper alternative. \method{}'s advantage over the default $K{=}3$ is real (higher F1 at $24\%$ lower cost), but its value proposition is not ``beat the best fixed budget you could have picked with oracle knowledge of the split depth''---it is ``perform well \emph{without} knowing the right budget per query.'' We make this precise in \Cref{sec:exp-mixed}: on a mixed-depth stream where no single $K$ is correct for all queries, tuning a global budget is not an option, and this is where per-query adaptation pays off.
+The sweep yields a cautionary picture we report in full. Fixed-$K{=}1$ collapses (F1 $0.001$; a single hop cannot answer 2-hop questions), and Fixed-$K{=}3$ is both less accurate and more expensive than $K{=}2$ (F1 $0.310$ vs.\ $0.355$), because the third hop injects judge noise. So the default $K{=}3$ baseline that \method{} beats is indeed poorly tuned. Importantly, a \emph{well-tuned} fixed baseline is strong: Fixed-$K{=}2,B{=}6$ reaches F1 $0.399$ at $684$ \Toks{}, both more accurate and cheaper than \method{} ($0.366$, $853$ \Toks{}). We do \emph{not} claim \method{} Pareto-dominates a tuned fixed budget on a single known-depth split (\Cref{fig:pareto-tuned}, App.~C). Adaptation pays off under a stronger judge instead (\Cref{sec:exp-strong}).
+
+\subsection{A Stronger Judge Restores Adaptation: 14B Engine}
+\label{sec:exp-strong}
+
+A central question raised by \Cref{sec:exp-fixedk} is whether \method{}'s failure to dominate a tuned fixed budget reflects a limitation of the \emph{controller} or of the \emph{judge}: a noisy 7B judge makes the per-hop top-score trajectory $t_k$ unreliable, so (D3) sometimes stops on queries where a later hop would have helped. We test this by swapping the generator/judge to Qwen2.5-14B-Instruct (Qwen3-8B was unavailable) and re-running 2-hop retrieval ($n{=}150$, same KG and questions). \Cref{tab:strong} shows the result: on the stronger judge, \method{} \emph{simultaneously} improves F1 by $4.7\%$ (0.506$\to$0.530) while reducing cost by $15\%$ (1487$\to$1266 \Toks{}) and hops by $12\%$. This is the cleanest evidence that training-free signal-driven adaptation succeeds when the judge is reliable enough that a flat score trajectory genuinely implies the next hop is uninformative.
 
 \begin{table}[t]
 \centering
-\caption{Fixed-budget sweep vs.\ \method{} on a 7B/2-hop subset ($n{=}200$; re-run with a different shuffle than Tab.~\ref{tab:main}, so absolute values differ slightly). On this single known-depth split, a well-tuned Fixed-$K{=}2,B{=}6$ is both more accurate and cheaper than \method{}; \method{} beats only the \emph{default} $K{=}3$. The case for adaptation is made on mixed-depth streams (\Cref{tab:mixed}), not here.}
-\label{tab:fixedk}
+\caption{Stronger judge (14B, 2-hop, $n{=}150$). \method{} improves F1 $+4.7\%$ and reduces cost $15\%$ simultaneously---adaptation succeeds when the judge is reliable.}
+\label{tab:strong}
 \small
 \begin{tabular}{@{}lcccc@{}}
 \toprule
 System & F1 & Hit@1 & \Toks{} & \hops{} \\
 \midrule
-Fixed-$K{=}1$, $B{=}4$ & 0.001 & 0.000 & 235 & 1.00 \\
-Fixed-$K{=}2$, $B{=}2$ & 0.207 & 0.360 & 523 & 2.00 \\
-Fixed-$K{=}2$, $B{=}4$ & 0.355 & 0.500 & 627 & 2.00 \\
-Fixed-$K{=}2$, $B{=}6$ & \best{0.399} & \best{0.525} & 684 & 2.00 \\
-Fixed-$K{=}3$, $B{=}4$ & 0.310 & 0.480 & 1118 & 3.00 \\
-\method{} (ours) & 0.366 & 0.520 & 853 & 2.42 \\
+Fixed ($K{=}3$) & 0.506 & \best{0.780} & 1487 & 2.99 \\
+\method{} (ours) & \best{0.530} & 0.773 & \best{1266}$_{-15\%}$ & \best{2.62} \\
 \bottomrule
 \end{tabular}
 \end{table}
 
-\subsection{Mixed-Depth Query Streams: Where Adaptation Pays Off}
+\subsection{Mixed-Depth Streams: A Judge-Dependent Boundary}
 \label{sec:exp-mixed}
 
-The single-depth splits above let a practitioner tune one global budget with oracle knowledge of the depth. Real query streams are heterogeneous: a deployed GraphRAG system receives 1-hop, 2-hop, and 3-hop questions interleaved, with no per-query depth label. To model this, we build a \emph{mixed} stream of equal parts 1/2/3-hop questions ($n{=}300$, shuffled) sharing one KG, and evaluate the default Fixed ($K{=}3$, the only safe choice when depth is unknown, since \Cref{tab:fixedk} shows $K{=}1,2$ fail on deeper questions) against \method{}.
+Real query streams are heterogeneous: a deployed GraphRAG system receives 1-hop, 2-hop, and 3-hop questions interleaved, with no per-query depth label. We build a mixed stream of equal parts 1/2/3-hop questions ($n{=}240$, shuffled) sharing one KG, and sweep the full fixed-budget grid ($K{\in}\{1,2,3\}\times B{\in}\{2,4,6,8\}$), simple stopping heuristics (patience, margin, confidence-threshold, random-budget), an Oracle-depth upper bound (uses true per-query depth as max-hops), and \method{} (\Cref{fig:pareto-mixed}).
 
-\Cref{tab:mixed} shows the payoff. On the mixed 7B stream, \method{} matches Fixed's F1 (0.390 vs.\ 0.392, a difference within seed noise) and Hit@1 (0.490 vs.\ 0.497) while cutting cost by $24\%$ ($920$ vs.\ $1211$ \Toks{}); on the mixed 1.5B stream it \emph{exceeds} Fixed on F1 (0.273 vs.\ 0.223) \emph{and} cost ($-20\%$). Here \method{} sits on the Pareto frontier against the only admissible fixed baseline: with unknown per-query depth, a practitioner must set $K{=}3$ to avoid catastrophic failure on 3-hop queries (recall Fixed-$K{=}1{,}2$ fail on deeper questions), and \method{} recovers or improves that accuracy at $76$--$80\%$ of the cost by spending the full budget only on the queries that need it. This is the deployment setting the method is designed for, and where the single-split tuning advantage of \Cref{tab:fixedk} vanishes because no single budget is correct for the whole stream.
+The result is a boundary, not a win, and we report it honestly. On the 7B mixed stream, a tuned Fixed-$K{=}2,B{=}8$ achieves F1 $0.474$ at $1103$ \Toks{}, \emph{dominating} \method{} ($0.395$, $1084$ \Toks{}) and every signal-driven variant (Patience $0.404$, Margin $0.416$, Conf-threshold $0.411$, Oracle-depth $0.392$). Strikingly, even Oracle-depth---which cheats using the true hop label---is dominated: when the 7B judge is noisy at depth 3, doing two hops for \emph{every} query beats adapting per query, because exploration past hop 2 is harmful regardless of the query's true depth. Widening \method{}'s beam does not rescue it (App.~D: sweeping $B{\in}\{4,6,8,10\}$, \method{} reaches F1 $0.462$ at $1235$ \Toks{}, still dominated). The bottleneck is (D3)'s early stopping, not the beam.
 
-\begin{table}[t]
+\begin{figure}[t]
 \centering
-\caption{Mixed 1/2/3-hop stream ($n{=}300$, equal parts, shuffled). With unknown per-query depth, Fixed must use $K{=}3$; \method{} matches its accuracy at $24\%$ lower cost. This is where per-query adaptation is decisive.}
-\label{tab:mixed}
-\small
-\begin{tabular}{@{}llcccc@{}}
-\toprule
-Model & System & F1 & Hit@1 & \Toks{} & \hops{} \\
-\midrule
-\multirow{2}{*}{7B}
- & Fixed ($K{=}3$) & \best{0.392} & \best{0.497} & 1211 & 2.99 \\
- & \method{} & 0.390 & 0.490 & \best{920}$_{-24\%}$ & \best{2.38} \\
-\cmidrule(lr){2-6}
-\multirow{2}{*}{1.5B}
- & Fixed ($K{=}3$) & 0.223 & 0.313 & 1250 & 3.00 \\
- & \method{} & \best{0.273} & \best{0.347} & \best{998}$_{-20\%}$ & \best{2.40} \\
-\bottomrule
-\end{tabular}
-\end{table}
+\includegraphics[width=0.95\columnwidth]{figures/fig_pareto_mixed.pdf}
+\caption{Mixed-stream Pareto frontier (7B, 240 queries, 1/2/3-hop equal parts). Fixed-$K{=}2,B{=}8$ (top) dominates \method{}, all stopping heuristics, and the Oracle-depth upper bound. Under a noisy 7B judge, a tuned global $K{=}2$ beats per-query adaptation---the key boundary condition. \method{} wins on the stronger 14B judge (\Cref{tab:strong}).}
+\label{fig:pareto-mixed}
+\end{figure}
+
+This boundary is judge-dependent, not fundamental: on the 14B judge (\Cref{sec:exp-strong}) \method{} \emph{does} dominate Fixed (higher F1 at lower cost), and a counterfactual force-continue analysis (App.~E, \Cref{sec:exp-counterfactual}) shows the stopping signal is safe on 7B/2-hop (false-stop rate $7.8\%$; stopping \emph{raises} F1 by $+2.1$ over forced continuation). The mixed-stream result isolates the scope condition: training-free adaptation is valuable when the judge is reliable enough that a flat score trajectory implies the next hop is uninformative, and is \emph{not} a substitute for budget tuning when the judge is noisy at depth. We previously reported a mixed-stream win against the default $K{=}3$ on the 1.5B judge (App.~C, \Cref{tab:mixed-old}); that win is real but does not survive a full 7B budget sweep, and we retract the stronger Pareto-optimality claim.
 
 \subsection{Comparison to Trained Routers}
 \label{sec:exp-trained}
 
 A central motivation of \method{} is that training-free adaptation can substitute for a learned difficulty router. We implement two trained classifiers: \textbf{LogReg-K} (logistic regression, 98\% accuracy) and \textbf{MLP-K} (2-layer MLP, 99.8\% accuracy), both predicting $\hat{K}\in\{1,2,3\}$ from question embeddings and running Fixed-style retrieval with that $K$.
 
-\Cref{tab:trained} reports the comparison. On the \emph{2-hop split}, MLP-K achieves the highest F1 (0.407 at 898 \Toks{}), outperforming \method{} (0.364)---because on a known-depth split, correctly predicting $K{=}2$ is near-optimal (\Cref{sec:exp-fixedk}). On the \emph{mixed stream}, \method{} (F1 0.399) outperforms LogReg-K (0.348, $+14.7\%$) and MLP-K (0.390, $+2.3\%$), because classifiers mispredict $K$ when depths are interleaved. Training-free signal-driven adaptation matches or exceeds trained routers on heterogeneous streams---without any training data.
+\Cref{tab:trained} reports the comparison. On the \emph{2-hop split}, MLP-K achieves the highest F1 (0.407 at 898 \Toks{}), outperforming \method{} (0.364)---because on a known-depth split, correctly predicting $K{=}2$ is near-optimal (\Cref{sec:exp-fixedk}). On the \emph{mixed stream}, \method{} (F1 0.399) outperforms LogReg-K (0.348, $+14.7\%$) and MLP-K (0.390, $+2.3\%$): depth-predicting routers mispredict $K$ when depths are interleaved, while \method{} adapts from the retrieval signal. We note this mixed-stream router win is against \emph{depth-predicting} routers; the full budget sweep of \Cref{sec:exp-mixed} shows a tuned global Fixed-$K{=}2,B{=}8$ dominates both \method{} and the routers under the noisy 7B judge. The router comparison thus demonstrates \method{} matches trained routers without training data, but neither signal-driven nor router-driven per-query adaptation beats a tuned global budget when the judge is noisy at depth.
 
 \begin{table}[t]
 \centering
@@ -141,10 +131,13 @@ Stream & System & F1 & Hit@1 & \Toks{} \\
 \end{tabular}
 \end{table}
 
+\paragraph{Router training details and caveats.}
+Both classifiers train on MetaQA's \texttt{train.txt} (10k questions/depth, 30k total), embedded with \texttt{all-MiniLM-L6-v2} (384-dim) + \texttt{StandardScaler}. LogReg-K reaches 98.0\% train accuracy; MLP-K (256--128, ReLU) 99.8\%. On 1{,}500 held-out questions both achieve near-oracle depth prediction (LogReg 97.1\%, MLP 98.3\%; confusion matrices in \Cref{app:router-cm}), with 2-hop hardest (LogReg recall 0.948). This near-oracle accuracy likely reflects MetaQA template structure; the comparison is conservative \emph{against} \method{}: despite near-oracle depth prediction, \method{} still wins on the mixed stream, where correct per-query depth is necessary but not sufficient. A stronger-fair baseline feeding the router first-hop online scores is left to future work.
+
 \subsection{Ablation: Each Component Contributes}
 \label{sec:exp-abl}
 
-Table~\ref{tab:abl} ablates each controller component at 7B/2-hop. The dominant mechanism is \textbf{early stopping (D3)}: disabling it forces all $K{=}3$ hops, raising \Toks{} from 853 to 1118 ($+31\%$) while \emph{lowering} F1 from 0.378 to 0.361. At this operating point D3 both cuts cost and slightly improves accuracy, because the pruned late hops carry judge noise rather than useful evidence (this is specific to the strong-judge regime; \Cref{sec:exp-boundary} shows the opposite at 1.5B/3-hop). \textbf{Adaptive beam (D2)} is a \emph{secondary, regime-dependent} mechanism: here it contributes $+0.020$ F1 at no cost (854 vs.\ 853 \Toks{}), but at 1.5B/1-hop it \emph{hurts} (App.~B, Tab.~B1: w/o D2 gets F1 0.345 vs.\ full 0.332), because narrowing the beam on confident hops occasionally over-prunes. We therefore characterize D2 as an auxiliary that helps when hop scores are genuinely uncertain (high entropy) and can hurt when they are sharp. \textbf{Use-graph (D1)} is inert under perfect linking (never fires); we isolate its conditional contribution under noisy linking in \Cref{sec:exp-2a}, where it becomes a cost--accuracy trade-off. The honest picture is that \method{} is primarily an early-stopping mechanism, augmented by two conditional levers (D2, D1) whose value depends on the linking and judging regime.
+Table~\ref{tab:abl} ablates each controller component at 7B/2-hop. The dominant mechanism is \textbf{early stopping (D3)}: disabling it forces all $K{=}3$ hops, raising \Toks{} $+31\%$ while \emph{lowering} F1 from 0.378 to 0.361---at this operating point D3 cuts cost and improves accuracy, because the pruned late hops carry judge noise rather than evidence (\Cref{sec:exp-boundary} shows the opposite at 1.5B/3-hop). \textbf{Adaptive beam (D2)} is a \emph{secondary, regime-dependent} mechanism: here it adds $+0.020$ F1 at no cost, but at 1.5B/1-hop it \emph{hurts} (App.~B: w/o D2 gets F1 0.345 vs.\ full 0.332). \textbf{Use-graph (D1)} is inert under perfect linking (never fires); its conditional contribution is isolated under noisy linking in \Cref{sec:exp-2a}. The honest picture: \method{} is primarily an early-stopping mechanism, augmented by two conditional levers whose value depends on the linking and judging regime.
 
 
 \begin{table}[t]
@@ -168,38 +161,19 @@ Fixed (baseline) & 0.343 & 0.500 & 1111 & 4.00 & 3.00 & $-0.035$ \\
 \subsection{Transfer to a Second Knowledge Graph (WebQSP)}
 \label{sec:exp-webqsp}
 
-To test transfer beyond WikiMovies, we run on WebQSP~\cite{li2023fewshot} (Freebase, thousands of relations). Each question has a pre-extracted subgraph (avg.\ 4{,}408 triples); we treat it as the per-query KG. \Cref{tab:webqsp} reports $n{=}500$ (7B). \method{} cuts cost by $19\%$ and hops by $27\%$, but F1 is slightly lower (0.099 vs.\ 0.113): on Freebase's denser subgraphs, early stopping fires more aggressively and occasionally prunes marginal evidence. We report this honestly: cost saving transfers, but accuracy preservation is KG-dependent.
-
-\begin{table}[t]
-\centering
-\caption{WebQSP/Freebase ($n{=}500$, 7B). Cost saving transfers ($-19\%$); F1 trades slightly lower on this denser KG---an honest boundary.}
-\label{tab:webqsp}
-\small
-\begin{tabular}{@{}lcccc@{}}
-\toprule
-System & F1 & Hit@1 & \Toks{} & \hops{} \\
-\midrule
-Fixed ($K{=}3$) & \best{0.113} & \best{0.166} & 2403 & 2.92 \\
-\method{} & 0.099 & 0.154 & \best{1957}$_{-19\%}$ & \best{2.12} \\
-\bottomrule
-\end{tabular}
-\end{table}
+To test transfer beyond WikiMovies, we run on WebQSP~\cite{li2023fewshot} (Freebase, thousands of relations). Each question has a pre-extracted subgraph (avg.\ 4{,}408 triples); we treat it as the per-query KG. At $n{=}500$ (7B, App.~C \Cref{tab:webqsp}), \method{} cuts cost by $19\%$ and hops by $27\%$, but F1 is slightly lower (0.099 vs.\ 0.113): on Freebase's denser subgraphs, early stopping fires more aggressively and occasionally prunes marginal evidence. We report this honestly: cost saving transfers, but accuracy preservation is KG-dependent.
 
 \subsection{Graph Retrieval Is Necessary and Multi-hop Beats Vector-RAG}
 \label{sec:exp-baselines}
 
 \Cref{tab:baselines} (App.~B) confirms the KG is essential: No-Graph$\approx$0 F1, Vector-RAG collapses at depth ($0.313{\to}0.020$), GraphRAG dominates at $10\times$.
 
-\subsection{Analysis}
+\subsection{Analysis: Boundaries, Significance, and Scope}
 \label{sec:exp-analysis}
 
-\input{sections/analysis}
+We reframe the earlier selection-biased stop-safety test with a counterfactual force-continue experiment (App.~E): on 7B/2-hop, \method{} stops early on $64\%$ of queries with a false-stop rate of only $7.8\%$, and stopping \emph{raises} F1 by $+2.1$ over forced continuation---the stopping signal is safe. We report three honest boundaries (\Cref{app:analysis-full}): (i) trivial 1-hop queries trade a small F1 loss for cost; (ii) a weak 1.5B judge at 3-hop makes graph retrieval harmful; (iii) on the 7B mixed stream a tuned Fixed-$K{=}2,B{=}8$ dominates \method{} and even Oracle-depth (\Cref{sec:exp-mixed}). The unifying \emph{judge-quality scope condition}: (D3)'s signal is reliable only when the judge's scores are; on a reliable 14B judge \method{} dominates Fixed (\Cref{sec:exp-strong}), on a noisy judge at depth it does not. Paired bootstrap significance (\Cref{app:analysis-full}, Table~8): the 7B/2-hop F1 gain ($p{=}0.049$) does not survive Bonferroni correction on F1 alone but replicates across three seeds; cost reductions are highly significant everywhere. Sensitivity to $\delta,\theta_{\text{low}},B$ and the noisy-linking (D1) study are in App.~B,\,F.
 
 \subsection{Hop-Count Distribution and Early-Stop Behavior}
 \label{sec:exp-hops}
 
-\paragraph{Hop distribution.}
-At 1.5B/2-hop, \method{} executes 2 hops for $55\%$ of queries (mean $2.45$), while Fixed always runs $3$; the stopped queries are no less accurate (\Cref{tab:main}), confirming the pruned hops carried noise.
-
-\paragraph{Discussion.}
-Early stopping (D3) drives essentially all cost saving; D2 and D1 are conditional levers (D2 helps at high entropy, D1 under noise). A per-query analysis (App.~D) shows $74\%$ of queries produce identical answers; the F1 advantage comes from the remaining $26\%$ where \method{} wins $69\%$. The 1.5B gain exceeds the 7B gain ($+23.5\%$ vs.\ $+10.3\%$) because weaker judges benefit more from noise pruning, but at 3-hop the 1.5B judge is too unreliable (\Cref{sec:exp-boundary}). The fixed-budget objection is addressed empirically (\Cref{sec:exp-fixedk,sec:exp-mixed,sec:exp-trained,sec:exp-webqsp}); cost is measured as input tokens (dominates API pricing, tracks latency).
+At 1.5B/2-hop, \method{} executes 2 hops for $55\%$ of queries (mean $2.45$), while Fixed always runs $3$; the stopped queries are no less accurate (\Cref{tab:main}), confirming the pruned hops carried noise. Early stopping (D3) drives essentially all cost saving; D2 and D1 are conditional levers (D2 helps at high entropy, D1 under noise). A per-query analysis (App.~D) shows $74\%$ of queries produce identical answers; the F1 advantage comes from the remaining $26\%$ where \method{} wins $69\%$. The 1.5B gain exceeds the 7B gain ($+23.5\%$ vs.\ $+10.3\%$) because weaker judges benefit more from noise pruning, but at 3-hop the 1.5B judge is too unreliable (\Cref{sec:exp-boundary}). Cost is measured as input tokens (dominates API pricing, tracks latency).

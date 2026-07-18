@@ -55,6 +55,12 @@ SYSTEMS = {
     "abl-nostop":  ({"name": "adaptive", "base_beam": 4, "ablate_early_stop": True},   "Abl. no (3)"),
     "nograph":     ({"name": "nograph"}, "No-Graph (pure LLM)"),
     "vector-rag":  ({"name": "vector-rag"}, "Vector-RAG (no traversal)"),
+    # reviewer-requested simple stopping heuristics (fixed beam, only stop rule differs)
+    "patience":    ({"name": "patience", "beam": 4, "patience": 1}, "Patience-stop (p=1)"),
+    "margin":      ({"name": "margin", "beam": 4, "threshold": 0.30}, "Margin-stop (t=0.30)"),
+    "conf-threshold": ({"name": "conf-threshold", "beam": 4, "threshold": 0.70}, "Conf-threshold (t=0.70)"),
+    "random-budget":  ({"name": "random-budget", "beam": 4, "seed": 0}, "Random-budget"),
+    "oracle-depth":   ({"name": "oracle-depth", "beam": 4}, "Oracle-depth (upper bound)"),
 }
 
 

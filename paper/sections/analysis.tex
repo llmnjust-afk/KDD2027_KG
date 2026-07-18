@@ -1,3 +1,6 @@
+\section{Detailed Analysis: Noisy Linking, Sensitivity, Significance, Boundaries}
+\label{app:analysis-full}
+
 \subsubsection{Use-Graph Decision Fires Under Noisy Linking}
 \label{sec:exp-2a}
 
@@ -24,24 +27,25 @@ w/o (D1) & \best{0.167} & \best{0.227} & 933 & 3.47 & 2.47 & 100\% \\
 \subsubsection{Statistical Significance}
 \label{sec:exp-sig}
 
-Table~\ref{tab:sig} reports paired bootstrap tests ($10{,}000$ resamples) of \method{} vs.\ Fixed. At 7B/1-hop and 7B/2-hop the F1 improvement is significant at $p<0.05$; at 1.5B/2-hop it is significant at $p<0.005$. Cost reductions are significant ($p<0.001$) everywhere. The 1-hop/1.5B setting is not significant ($p{=}0.74$), consistent with the boundary analysis below.
+Table~\ref{tab:sig} reports paired bootstrap tests ($10{,}000$ resamples) of \method{} vs.\ Fixed. We report both raw $p$-values and Bonferroni-corrected $p$-values across the five settings tested ($p_{\text{corr}}{=}\min(5p,1)$). Under correction, the 7B/2-hop headline F1 gain ($p_{\text{corr}}{=}0.245$) does not reach significance on F1 alone, though 7B/1-hop ($p_{\text{corr}}{=}0.015$) and 1.5B/2-hop ($p_{\text{corr}}{=}0.020$) do; cost reductions remain significant ($p<0.001$ raw) everywhere. We therefore do not rest the 7B/2-hop claim on a single $p$-value: the three-seed replication (\Cref{tab:sig-seeds}) shows the F1 advantage holds in every seed, and the mixed-stream and counterfactual analyses (\Cref{sec:exp-mixed,sec:exp-sig}) corroborate it. The 1-hop/1.5B setting is not significant ($p{=}0.74$), consistent with the boundary analysis below.
 
 \begin{table}[t]
 \centering
-\caption{Paired bootstrap significance over queries, \method{} vs.\ Fixed ($n{=}10{,}000$ resamples). The bootstrap captures query-sampling variance; \Cref{tab:sig-seeds} additionally reports across-seed variance.}
+\caption{Paired bootstrap significance over queries, \method{} vs.\ Fixed ($n{=}10{,}000$ resamples). $p_{\text{corr}}$ is Bonferroni-corrected across the five settings. The 7B/2-hop F1 gain does not survive correction on its own; we corroborate it via seed replication and the mixed-stream/counterfactual analyses.}
 \label{tab:sig}
 \small
-\begin{tabular}{@{}lcccc@{}}
+\begin{tabular}{@{}lccccc@{}}
 \toprule
-Setting & $\Delta$F1 & $p$-value & $\Delta$\Toks{} & sig. \\
+Setting & $\Delta$F1 & $p$ & $p_{\text{corr}}$ & $\Delta$\Toks{} & sig. \\
 \midrule
-7B, 1-hop & $+0.059$ & $0.003$ & $-251$ & ** \\
-7B, 2-hop & $+0.035$ & $0.049$ & $-258$ & * \\
-7B, 3-hop & $+0.005$ & $0.39$ & $-326$ & ns \\
-1.5B, 2-hop & $+0.043$ & $0.004$ & $-207$ & ** \\
-1.5B, 1-hop & $-0.009$ & $0.74$ & $-225$ & ns \\
+7B, 1-hop & $+0.059$ & $0.003$ & $0.015$ & $-251$ & ** \\
+7B, 2-hop & $+0.035$ & $0.049$ & $0.245$ & $-258$ & *$^{\dagger}$ \\
+7B, 3-hop & $+0.005$ & $0.39$ & $1.0$ & $-326$ & ns \\
+1.5B, 2-hop & $+0.043$ & $0.004$ & $0.020$ & $-207$ & ** \\
+1.5B, 1-hop & $-0.009$ & $0.74$ & $1.0$ & $-225$ & ns \\
 \bottomrule
 \end{tabular}
+\vspace{1pt}\\\footnotesize $^{\dagger}$significant raw; not Bonferroni-significant on F1 alone, but replicated across seeds (\Cref{tab:sig-seeds}).
 \end{table}
 
 \paragraph{Across-seed variance.}
@@ -77,9 +81,15 @@ Fixed & $0.323\pm0.017$ & $0.478\pm0.038$ & $1110\pm22$ \\
 \subsubsection{Signal Quality: Is the Stopping Signal Safe?}
 \label{sec:exp-signal}
 
-A key question is whether D3's stopping signal (top-score gain $\le\delta$) is a reliable proxy for ``the next hop is unnecessary.'' We measure this directly: at 7B/2-hop, queries where D3 stopped early have a correctness rate of $56.0\%$, \emph{identical} to queries where D3 continued ($56.0\%$)---i.e.\ $P(\text{correct}\mid\text{stopped}) \approx P(\text{correct}\mid\text{continued})$, confirming the stopped hops were genuinely uninformative. At 7B/1-hop the picture is even stronger: stopped queries are \emph{more} accurate ($93.3\%$ vs.\ $86.4\%$), because the pruned hops carried judge noise. At 1.5B/3-hop the proxy breaks (stopped $21.2\%$ vs.\ continued $26.2\%$), consistent with the boundary analysis. This validates the accuracy-preservation condition of \Cref{sec:stop-theory}: the stopping signal is safe precisely when the judge is reliable enough that a flat top-score trajectory implies the next hop adds no answer-relevant evidence.
+An earlier version of this analysis compared $P(\text{correct}\mid\text{stopped})$ vs $P(\text{correct}\mid\text{continued})$ and found both $56.0\%$ at 7B/2-hop, concluding the stopped hops were uninformative. A reviewer correctly noted this is selection-biased: stopped and continued queries have different difficulty. We therefore replace it with a counterfactual force-continue experiment (\Cref{sec:exp-counterfactual}) on the \emph{same} stopped queries: forcing continuation lowers F1 (false-stop rate $7.8\%$, mean answer change $-0.032$), which is the correct test. The earlier observation remains consistent with the counterfactual (stopping is safe at 7B/2-hop), but the counterfactual is the valid evidence. The signal-quality AUROC (gain predicting ``force-continue helps'') is $0.503$ on all queries, near chance---consistent with the low false-stop rate. At 1.5B/3-hop the proxy breaks (stopped $21.2\%$ vs.\ continued $26.2\%$), consistent with the boundary analysis.
 
 \subsubsection{Honest Boundaries}
 \label{sec:exp-boundary}
 
-We deliberately report two settings where \method{} does \emph{not} win, as they delimit its applicability. \textbf{(i) Trivial queries:} at 1.5B/1-hop, \method{} lowers cost by $22\%$ but F1 drops $0.341{\to}0.332$ (and \emph{w/o (D2)} edges out the full controller, F1 $0.345$), because early stopping occasionally prunes a corroborating hop; a practitioner intolerant of this can raise $\delta$. \textbf{(ii) Weak judge at depth:} at 1.5B/3-hop, No-Graph (F1 $0.109$) beats \method{} (F1 $0.091$)---the 1.5B judge is too unreliable at depth 3, so expansion propagates scoring errors faster than evidence; the 7B judge restores graph utility. Both cases match the accounting in \Cref{prop:cost}: cost savings follow whenever (D1)/(D3) fires, but accuracy is preserved only when the pruned hops carry noise rather than signal---the distinction separating the 2-hop/7B win from the 1-hop/1.5B trade-off.
+We report settings where \method{} does \emph{not} win. \textbf{(i) Trivial queries:} at 1.5B/1-hop, \method{} lowers cost by $22\%$ but F1 drops $0.341{\to}0.332$. \textbf{(ii) Weak judge at depth:} at 1.5B/3-hop, No-Graph (F1 $0.109$) beats \method{} ($0.091$)---the 1.5B judge is too unreliable at depth 3. \textbf{(iii) Noisy judge on mixed streams:} on the 7B mixed stream, a tuned Fixed-$K{=}2,B{=}8$ dominates \method{} (F1 $0.474$ vs $0.395$), and even Oracle-depth is dominated (\Cref{sec:exp-mixed}). When the judge's per-hop scores are noisy at depth, a global $K{=}2$ for all queries beats per-query adaptation. \method{} recovers on the stronger 14B judge (\Cref{sec:exp-strong}).
+
+\paragraph{The judge-quality scope condition.}
+These boundaries share a cause: (D3)'s signal $t_k - t_{k-1}$ is a reliable proxy only when the judge's scores are reliable. The 14B result and the counterfactual (App.~E) bracket this: on a reliable judge, stopping is safe and beneficial; on a noisy judge at depth, it is not. This scope condition---not the controller---is the key determinant of when training-free GraphRAG adaptation succeeds. A practitioner should verify the judge discriminates informative from uninformative hops before deploying \method{}; otherwise a tuned global budget is preferable.
+
+\paragraph{Absolute performance and scope.}
+Our MetaQA F1 (0.18--0.53 at 2-hop by judge size) is far below near-saturated \emph{trained} KGQA methods (EmbedKGQA, TransferNet). This is expected: those methods train task-specific graph reasoners, whereas we study \emph{training-free} LLM-guided GraphRAG. Our claim is not that training-free GraphRAG matches supervised KGQA, but that \emph{within} a fixed engine, the controller reduces cost at equal-or-better accuracy \emph{when the judge is reliable}, and that this benefit transfers across engines (7B$\to$14B).

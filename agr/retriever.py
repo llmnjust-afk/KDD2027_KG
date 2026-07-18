@@ -249,6 +249,11 @@ class GraphRAGRetriever:
 
         frontier: List[str] = [e for e, _ in hits if e in self.kg.entities] or \
                               [e for e, _ in hits]
+        # reset per-query rolling state on the controller (marginal-gain memory,
+        # patience counters, random budgets, etc.)
+        _reset = getattr(self.controller, "reset", None)
+        if callable(_reset):
+            _reset()
         visited_entities = set(frontier)
         collected: List[Tuple[str, str, str]] = []
         hop_signals: List[Dict] = []
@@ -293,6 +298,7 @@ class GraphRAGRetriever:
                 "n_candidates": len(cand),
                 "top_score": float(keep_scores[0]) if keep_scores else 0.0,
                 "mean_topk": float(np.mean(keep_scores)) if keep_scores else 0.0,
+                "topk_scores": [float(s) for s in keep_scores],
                 "beam": beam,
             }
             hop_signals.append(stats)

@@ -1,0 +1,6638 @@
+{
+  "adaptive": [
+    {
+      "qid": "metaqa_2-hop_0",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_1",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_2",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_3",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_4",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sport"
+      ],
+      "answer": "Sport",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_5",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_6",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "dennis miller",
+        "erika eleniak"
+      ],
+      "answer": "Dennis Miller|Erika Eleniak",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_7",
+      "n_hops": 3,
+      "f1": 0.28571428571428575,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama",
+        "comedy unknown"
+      ],
+      "answer": "Drama, comedy unknown",
+      "stop_gain": -0.8,
+      "top_scores": [
+        0.5,
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_8",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "haley bennett",
+        "chace crawford"
+      ],
+      "answer": "Haley Bennett | Chace Crawford",
+      "stop_gain": -0.5,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.5
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_9",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "adrian mitchell",
+        "peter weiss",
+        "geoffrey skelton"
+      ],
+      "answer": "Adrian Mitchell|Peter Weiss|Geoffrey Skelton",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_10",
+      "n_hops": 2,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "comedy",
+        "short unknown"
+      ],
+      "answer": "Comedy | Short unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_11",
+      "n_hops": 2,
+      "f1": 0.4347826086956522,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "comandante",
+        "talk radio",
+        "seizure",
+        "salvador",
+        "south of the border"
+      ],
+      "answer": "Comandante|Talk Radio|Seizure|Salvador|South of the Border",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_12",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "1949"
+      ],
+      "answer": "1949",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_13",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_14",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "1972"
+      ],
+      "answer": "1972 | unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_15",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_16",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "buffalo '66"
+      ],
+      "answer": "Buffalo '66",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_17",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "elina l\u00f6wensohn",
+        "marc barb\u00e9"
+      ],
+      "answer": "Elina L\u00f6wensohn|Marc Barb\u00e9",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_18",
+      "n_hops": 2,
+      "f1": 0.05128205128205127,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "bingo"
+      ],
+      "answer": "Bingo",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_19",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "comedy"
+      ],
+      "answer": "Comedy",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_20",
+      "n_hops": 3,
+      "f1": 0.14285714285714288,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "eugene levy",
+        "daryl hannah"
+      ],
+      "answer": "Eugene Levy|Daryl Hannah",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_21",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_22",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "holly hunter",
+        "viola davis"
+      ],
+      "answer": "Holly Hunter, Viola Davis",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.5,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_23",
+      "n_hops": 2,
+      "f1": 0.33333333333333337,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "thriller"
+      ],
+      "answer": "Thriller",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_24",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the kite runner",
+        "monster's ball",
+        "stay",
+        "everything put together",
+        "quantum of solitude"
+      ],
+      "answer": "The Kite Runner | Monster's Ball | Stay | Everything Put Together | Quantum of Solitude",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_25",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_26",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "horror"
+      ],
+      "answer": "Horror | unknown",
+      "stop_gain": -0.8,
+      "top_scores": [
+        0.5,
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_27",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_28",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_29",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_30",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.5,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_31",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_32",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_33",
+      "n_hops": 2,
+      "f1": 0.7499999999999999,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "raymond singer",
+        "philip lazebnik",
+        "rita hsiao"
+      ],
+      "answer": "Raymond Singer|Philip LaZebnik|Rita Hsiao",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_34",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "cilla jackert"
+      ],
+      "answer": "Cilla Jackert",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_35",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_36",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_37",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_38",
+      "n_hops": 2,
+      "f1": 0.45454545454545453,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the fly",
+        "naked lunch",
+        "rabid",
+        "the brood",
+        "videodrome"
+      ],
+      "answer": "The Fly|Naked Lunch|Rabid|The Brood|Videodrome",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_39",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_40",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_41",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "jordan nagai",
+        "edward asner"
+      ],
+      "answer": "Jordan Nagai|Edward Asner",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_42",
+      "n_hops": 3,
+      "f1": 0.9090909090909091,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "cool world",
+        "wizards",
+        "fire and ice",
+        "american pop",
+        "coonskin"
+      ],
+      "answer": "Cool World|Wizards|Fire and Ice|American Pop|Coonskin",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_43",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_44",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "mickey rose"
+      ],
+      "answer": "Mickey Rose",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_45",
+      "n_hops": 2,
+      "f1": 0.1851851851851852,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "hannah and her sisters",
+        "new york stories",
+        "alice",
+        "miami rhapsody",
+        "be kind rewind"
+      ],
+      "answer": "Hannah and Her Sisters|New York Stories|Alice|Miami Rhapsody|Be Kind Rewind",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_46",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_47",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "route 666"
+      ],
+      "answer": "Route 666",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_48",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_49",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.8,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_50",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_51",
+      "n_hops": 2,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "they live by night",
+        "thieves like us"
+      ],
+      "answer": "They Live by Night|Thieves Like Us",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_52",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "comedy",
+        "crime"
+      ],
+      "answer": "Comedy,Crime",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_53",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "kadosh",
+        "free zone"
+      ],
+      "answer": "Kadosh, Free Zone",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_54",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_55",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_56",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "richard attenborough"
+      ],
+      "answer": "Richard Attenborough",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_57",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_58",
+      "n_hops": 2,
+      "f1": 0.3333333333333333,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "witi ihimaera",
+        "niki caro"
+      ],
+      "answer": "Witi Ihimaera,Niki Caro",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_59",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "john gilling"
+      ],
+      "answer": "John Gilling",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_60",
+      "n_hops": 2,
+      "f1": 0.7499999999999999,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "gene hackman",
+        "dennis hopper",
+        "barbara hershey"
+      ],
+      "answer": "Gene Hackman|Dennis Hopper|Barbara Hershey",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_61",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama"
+      ],
+      "answer": "Drama",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_62",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sergio castellitto"
+      ],
+      "answer": "Sergio Castellitto",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_63",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "robert culp",
+        "cliff robertson",
+        "james gregory",
+        "ty hardin"
+      ],
+      "answer": "Robert Culp | Cliff Robertson | James Gregory | Ty Hardin | unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_64",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_65",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "valerie hobson",
+        "marius goring",
+        "conrad veidt"
+      ],
+      "answer": "Valerie Hobson|Marius Goring|Conrad Veidt",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_66",
+      "n_hops": 2,
+      "f1": 0.1904761904761905,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "prince of the city",
+        "the phantom",
+        "deep rising",
+        "dead heat"
+      ],
+      "answer": "Prince of the City|The Phantom|Deep Rising|Dead Heat",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_67",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "vanessa marcil"
+      ],
+      "answer": "Vanessa Marcil",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_68",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_69",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_70",
+      "n_hops": 2,
+      "f1": 0.10126582278481013,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "cast a deadly spell",
+        "the english teacher",
+        "assassins",
+        "the forgotten",
+        "the prize winner of defiance",
+        "ohio"
+      ],
+      "answer": "Cast a Deadly Spell|The English Teacher|Assassins|The Forgotten|The Prize Winner of Defiance, Ohio",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_71",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_72",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_73",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_74",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.2,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_75",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_76",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "1960",
+        "1971"
+      ],
+      "answer": "1960|1971",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_77",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "tim dutton",
+        "wesley snipes",
+        "william hope unknown"
+      ],
+      "answer": "Tim Dutton|Wesley Snipes|William Hope unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_78",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_79",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "the silencers",
+        "the big country",
+        "the wrecking crew",
+        "the violent men"
+      ],
+      "answer": "The Silencers|The Big Country|The Wrecking Crew|The Violent Men",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_80",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "jeremias herskovits",
+        "alejandro jodorowsky"
+      ],
+      "answer": "Jeremias Herskovits | Alejandro Jodorowsky",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_81",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "robert mulligan"
+      ],
+      "answer": "Robert Mulligan",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_82",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "michael stoyanov",
+        "sam pancake",
+        "kali rocha"
+      ],
+      "answer": "Michael Stoyanov|Sam Pancake|Kali Rocha",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_83",
+      "n_hops": 2,
+      "f1": 0.5882352941176471,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "desperately seeking susan",
+        "nobody's fool",
+        "gone fishin'",
+        "after hours",
+        "northern lights"
+      ],
+      "answer": "Desperately Seeking Susan|Nobody's Fool|Gone Fishin'|After Hours|Northern Lights",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_84",
+      "n_hops": 3,
+      "f1": 0.3076923076923077,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sonya levien",
+        "reginald berkeley"
+      ],
+      "answer": "Sonya Levien,Reginald Berkeley",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_85",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "terry o'quinn",
+        "cynthia preston",
+        "david hewlett"
+      ],
+      "answer": "Terry O'Quinn|Cynthia Preston|David Hewlett",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_86",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_87",
+      "n_hops": 3,
+      "f1": 0.2222222222222222,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "emeric pressburger"
+      ],
+      "answer": "Emeric Pressburger",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_88",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_89",
+      "n_hops": 2,
+      "f1": 0.8571428571428571,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "a woman rebels",
+        "skylark",
+        "so proudly we hail!",
+        "the gay divorcee",
+        "blue skies",
+        "follow the fleet",
+        "top hat"
+      ],
+      "answer": "A Woman Rebels|Skylark|So Proudly We Hail!|The Gay Divorcee|Blue Skies|Follow the Fleet|Top Hat",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_90",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "water",
+        "udaan"
+      ],
+      "answer": "Water|Udaan",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_91",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "drama unknown"
+      ],
+      "answer": "Drama unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_92",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "adventure",
+        "crime unknown"
+      ],
+      "answer": "Adventure|Crime unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_93",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_94",
+      "n_hops": 2,
+      "f1": 0.7692307692307693,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the devil-doll",
+        "dracula",
+        "the unknown",
+        "where east is east",
+        "the blackbird"
+      ],
+      "answer": "The Devil-Doll|Dracula|The Unknown|Where East Is East|The Blackbird",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_95",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.2,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_96",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "swedish"
+      ],
+      "answer": "Swedish",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_97",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_98",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2009"
+      ],
+      "answer": "2009",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_99",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "amistad"
+      ],
+      "answer": "Amistad",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_100",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "jennifer esposito",
+        "dana carvey",
+        "james brolin"
+      ],
+      "answer": "Jennifer Esposito|Dana Carvey|James Brolin",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_101",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "emilea wilson",
+        "michael nathanson"
+      ],
+      "answer": "Emilea Wilson | Michael Nathanson",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_102",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "tom stern",
+        "alex winter"
+      ],
+      "answer": "Tom Stern | Alex Winter",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_103",
+      "n_hops": 2,
+      "f1": 0.13186813186813187,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "hannah and her sisters",
+        "avalanche",
+        "see no evil",
+        "alice",
+        "be kind rewind",
+        "widows' peak"
+      ],
+      "answer": "Hannah and Her Sisters|Avalanche|See No Evil|Alice|Be Kind Rewind|Widows' Peak",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_104",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "leprechaun",
+        "scorned"
+      ],
+      "answer": "Leprechaun|Scorned",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_105",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "prehistoric"
+      ],
+      "answer": "prehistoric",
+      "stop_gain": -0.5,
+      "top_scores": [
+        0.0,
+        0.5,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_106",
+      "n_hops": 2,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "1990"
+      ],
+      "answer": "1990",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_107",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "joseph breen",
+        "maurice zimm",
+        "samuel james larsen"
+      ],
+      "answer": "Joseph Breen|Maurice Zimm|Samuel James Larsen",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_108",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_109",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_110",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_111",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -0.8,
+      "top_scores": [
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_112",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_113",
+      "n_hops": 3,
+      "f1": 0.5333333333333333,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "a kiss before dying",
+        "brainstorm",
+        "hell to eternity",
+        "the searchers",
+        "sergeant ruttle",
+        "jeffrey hunter",
+        "jeff york"
+      ],
+      "answer": "A Kiss Before Dying|Brainstorm|Hell to Eternity|The Searchers|Sergeant Ruttle|Jeffrey Hunter|Jeff York|",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.2,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_114",
+      "n_hops": 3,
+      "f1": 0.1818181818181818,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "georgia rule",
+        "labor pains unknown"
+      ],
+      "answer": "Georgia Rule | Labor Pains unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.8,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_115",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "amanda langlet",
+        "melvil poupaud"
+      ],
+      "answer": "Amanda Langlet|Melvil Poupaud",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_116",
+      "n_hops": 2,
+      "f1": 0.5,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "at sword's point",
+        "no blade of grass"
+      ],
+      "answer": "At Sword's Point, No Blade of Grass",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_117",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "1975"
+      ],
+      "answer": "1975",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_118",
+      "n_hops": 2,
+      "f1": 0.39999999999999997,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "a knight's tale",
+        "the postman",
+        "l.a. confidential",
+        "highway to hell"
+      ],
+      "answer": "A Knight's Tale|The Postman|L.A. Confidential|Highway to Hell",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_119",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2012"
+      ],
+      "answer": "2012",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_120",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_121",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_122",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2009"
+      ],
+      "answer": "2009",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_123",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_124",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "japanese"
+      ],
+      "answer": "Japanese",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_125",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_126",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_127",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "michael lowry",
+        "clayton rohner",
+        "kristin dattilo"
+      ],
+      "answer": "Michael Lowry|Clayton Rohner|Kristin Dattilo",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_128",
+      "n_hops": 2,
+      "f1": 0.4615384615384615,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "dalton james",
+        "tom berenger",
+        "amanda donohoe"
+      ],
+      "answer": "Dalton James|Tom Berenger|Amanda Donohoe",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_129",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "horror"
+      ],
+      "answer": "Horror",
+      "stop_gain": -0.19999999999999996,
+      "top_scores": [
+        1.0,
+        0.8
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_130",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_131",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_132",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "ll cool j",
+        "ray liotta unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown"
+      ],
+      "answer": "LL Cool J | Ray Liotta unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_133",
+      "n_hops": 2,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "ride along",
+        "think like a man too",
+        "think like a man",
+        "barbershop"
+      ],
+      "answer": "Ride Along|Think Like a Man Too|Think Like a Man|Barbershop",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_134",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_135",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "crime",
+        "action"
+      ],
+      "answer": "Crime|Action",
+      "stop_gain": -0.8,
+      "top_scores": [
+        0.5,
+        1.0,
+        0.2
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_136",
+      "n_hops": 2,
+      "f1": 0.7142857142857143,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "a night to remember",
+        "moon zero two",
+        "don't bother to knock",
+        "asylum",
+        "the vampire lovers"
+      ],
+      "answer": "A Night to Remember | Moon Zero Two | Don't Bother to Knock | Asylum | The Vampire Lovers",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_137",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2009"
+      ],
+      "answer": "2009",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_138",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "michael scott myers"
+      ],
+      "answer": "Michael Scott Myers",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_139",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_140",
+      "n_hops": 2,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "how to deal",
+        "american virgin unknown"
+      ],
+      "answer": "How to Deal | American Virgin unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_141",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "chasing liberty"
+      ],
+      "answer": "Chasing Liberty",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_142",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "nicolas cage",
+        "joe pantoliano unknown"
+      ],
+      "answer": "Nicolas Cage | Joe Pantoliano unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_143",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_144",
+      "n_hops": 2,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "anna muylaert"
+      ],
+      "answer": "Anna Muylaert",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_145",
+      "n_hops": 3,
+      "f1": 0.22641509433962262,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sayonara",
+        "dead silence",
+        "tank",
+        "darby's rangers",
+        "mister buddwing",
+        "duel at diablo"
+      ],
+      "answer": "Sayonara|Dead Silence|Tank|Darby's Rangers|Mister Buddwing|Duel at Diablo",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.8,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_146",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_147",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_148",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_149",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama"
+      ],
+      "answer": "Drama",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_150",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_151",
+      "n_hops": 2,
+      "f1": 0.5000000000000001,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "when trumpets fade",
+        "city of industry",
+        "widows' peak",
+        "next of kin",
+        "raw deal unknown"
+      ],
+      "answer": "When Trumpets Fade|City of Industry|Widows' Peak|Next of Kin|Raw Deal unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_152",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 1.0,
+      "top_scores": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_153",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "back in business"
+      ],
+      "answer": "Back in Business",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_154",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "dudley nichols",
+        "hagar wilde unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown"
+      ],
+      "answer": "Dudley Nichols|Hagar Wilde unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_155",
+      "n_hops": 2,
+      "f1": 0.7499999999999999,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "will patton",
+        "milla jovovich",
+        "corey johnson"
+      ],
+      "answer": "Will Patton|Milla Jovovich|Corey Johnson",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_156",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -0.2,
+      "top_scores": [
+        0.0,
+        0.2,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_157",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_158",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "comedy"
+      ],
+      "answer": "Comedy",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_159",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_160",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_161",
+      "n_hops": 2,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "dana wynter",
+        "don murray"
+      ],
+      "answer": "Dana Wynter|Don Murray",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_162",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "terraferma"
+      ],
+      "answer": "Terraferma",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_163",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -0.7,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.3
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_164",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_165",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_166",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_167",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "midway",
+        "airport 1975",
+        "the illustrated man",
+        "number one with a bullet",
+        "damnation alley"
+      ],
+      "answer": "Midway|Airport 1975|The Illustrated Man|Number One with a Bullet|Damnation Alley",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_168",
+      "n_hops": 2,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "clark gregg"
+      ],
+      "answer": "Clark Gregg",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_169",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_170",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "ram charan"
+      ],
+      "answer": "Ram Charan",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_171",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_172",
+      "n_hops": 2,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "slacker",
+        "bernie",
+        "before midnight",
+        "bad news bears",
+        "before sunset"
+      ],
+      "answer": "Slacker|Bernie|Before Midnight|Bad News Bears|Before Sunset",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_173",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "richie jen"
+      ],
+      "answer": "Richie Jen",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_174",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_175",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "city of ember",
+        "monster house"
+      ],
+      "answer": "City of Ember | Monster House",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_176",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_177",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "film"
+      ],
+      "answer": "film",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_178",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.19999999999999996,
+      "top_scores": [
+        0.8,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_179",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "andrei tarkovsky",
+        "steven soderbergh"
+      ],
+      "answer": "Andrei Tarkovsky | Steven Soderbergh",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_180",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_181",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_182",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "gujarati"
+      ],
+      "answer": "Gujarati",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_183",
+      "n_hops": 2,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "randolph scott",
+        "cary grant",
+        "nancy carroll unknown"
+      ],
+      "answer": "Randolph Scott|Cary Grant|Nancy Carroll unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_184",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "1989"
+      ],
+      "answer": "1989",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_185",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_186",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "lawless",
+        "the proposition"
+      ],
+      "answer": "Lawless|The Proposition",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_187",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_188",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "bob balaban",
+        "robert altman"
+      ],
+      "answer": "Bob Balaban, Robert Altman",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_189",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "frank de felitta"
+      ],
+      "answer": "Frank De Felitta",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_190",
+      "n_hops": 2,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "aku louhimies"
+      ],
+      "answer": "Aku Louhimies",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_191",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "chris stapp",
+        "matt heath unknown",
+        "chris stapp"
+      ],
+      "answer": "Chris Stapp | Matt Heath unknown | Chris Stapp",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_192",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_193",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama"
+      ],
+      "answer": "Drama",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_194",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "arrowsmith",
+        "elmer gantry",
+        "dodsworth",
+        "cass timberlane"
+      ],
+      "answer": "Arrowsmith|Elmer Gantry|Dodsworth|Cass Timberlane",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_195",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_196",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama",
+        "comedy",
+        "action"
+      ],
+      "answer": "drama|comedy|action",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_197",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -0.5,
+      "top_scores": [
+        0.5,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_198",
+      "n_hops": 2,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "aaron paul",
+        "juliette lewis",
+        "deke garner",
+        "josh wiggins"
+      ],
+      "answer": "Aaron Paul | Juliette Lewis | Deke Garner | Josh Wiggins",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_199",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "french"
+      ],
+      "answer": "French",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "force": [
+    {
+      "qid": "metaqa_2-hop_0",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_1",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_2",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_3",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_4",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sport"
+      ],
+      "answer": "Sport",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_5",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_6",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -0.6,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.4
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_7",
+      "n_hops": 3,
+      "f1": 0.28571428571428575,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama",
+        "comedy unknown"
+      ],
+      "answer": "Drama, comedy unknown",
+      "stop_gain": -0.8,
+      "top_scores": [
+        0.5,
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_8",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "haley bennett",
+        "chace crawford"
+      ],
+      "answer": "Haley Bennett | Chace Crawford",
+      "stop_gain": -0.5,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.5
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_9",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "adrian mitchell",
+        "peter weiss",
+        "geoffrey skelton"
+      ],
+      "answer": "Adrian Mitchell|Peter Weiss|Geoffrey Skelton",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_10",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "short",
+        "comedy"
+      ],
+      "answer": "Short|Comedy",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_11",
+      "n_hops": 3,
+      "f1": 0.3636363636363636,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "comandante",
+        "talk radio",
+        "salvador",
+        "south of the border"
+      ],
+      "answer": "Comandante|Talk Radio|Salvador|South of the Border",
+      "stop_gain": -0.30000000000000004,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.7
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_12",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "1949"
+      ],
+      "answer": "1949",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_13",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_14",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "1972 unknown"
+      ],
+      "answer": "1972 unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_15",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_16",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "buffalo '66"
+      ],
+      "answer": "Buffalo '66",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_17",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "elina l\u00f6wensohn",
+        "marc barb\u00e9"
+      ],
+      "answer": "Elina L\u00f6wensohn, Marc Barb\u00e9",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_18",
+      "n_hops": 3,
+      "f1": 0.05128205128205127,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "bingo"
+      ],
+      "answer": "Bingo",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_19",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "comedy"
+      ],
+      "answer": "Comedy",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_20",
+      "n_hops": 3,
+      "f1": 0.14285714285714288,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "eugene levy",
+        "daryl hannah"
+      ],
+      "answer": "Eugene Levy|Daryl Hannah",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_21",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_22",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "holly hunter",
+        "viola davis"
+      ],
+      "answer": "Holly Hunter, Viola Davis",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.5,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_23",
+      "n_hops": 3,
+      "f1": 0.33333333333333337,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "thriller"
+      ],
+      "answer": "Thriller",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_24",
+      "n_hops": 3,
+      "f1": 0.8333333333333333,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the kite runner",
+        "monster's ball",
+        "stay",
+        "everything put together",
+        "quantum of solace"
+      ],
+      "answer": "The Kite Runner | Monster's Ball | Stay | Everything Put Together | Quantum of Solace",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_25",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_26",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "horror"
+      ],
+      "answer": "Horror | unknown",
+      "stop_gain": -0.8,
+      "top_scores": [
+        0.5,
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_27",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_28",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_29",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_30",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.5,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_31",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_32",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_33",
+      "n_hops": 3,
+      "f1": 0.7499999999999999,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "raymond singer",
+        "philip lazebnik",
+        "rita hsiao"
+      ],
+      "answer": "Raymond Singer|Philip LaZebnik|Rita Hsiao",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_34",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "cilla jackert"
+      ],
+      "answer": "Cilla Jackert",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_35",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_36",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2009"
+      ],
+      "answer": "2009",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_37",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_38",
+      "n_hops": 3,
+      "f1": 0.45454545454545453,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the fly",
+        "naked lunch",
+        "rabid",
+        "the brood",
+        "videodrome"
+      ],
+      "answer": "The Fly|Naked Lunch|Rabid|The Brood|Videodrome",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_39",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_40",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_41",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_42",
+      "n_hops": 3,
+      "f1": 0.9090909090909091,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "cool world",
+        "wizards",
+        "fire and ice",
+        "american pop",
+        "coonskin"
+      ],
+      "answer": "Cool World|Wizards|Fire and Ice|American Pop|Coonskin",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_43",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_44",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "mickey rose"
+      ],
+      "answer": "Mickey Rose",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_45",
+      "n_hops": 3,
+      "f1": 0.039215686274509796,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "avalanche",
+        "hannah and her sisters"
+      ],
+      "answer": "|Avalanche|,|Hannah and Her Sisters|",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_46",
+      "n_hops": 3,
+      "f1": 0.2222222222222222,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "harold young"
+      ],
+      "answer": "Harold Young",
+      "stop_gain": 1.0,
+      "top_scores": [
+        0.0,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_47",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "route 666"
+      ],
+      "answer": "Route 666",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_48",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_49",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.8,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_50",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_51",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "they live by night",
+        "thieves like us"
+      ],
+      "answer": "They Live by Night | Thieves Like Us",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_52",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "comedy",
+        "crime"
+      ],
+      "answer": "Comedy,Crime",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_53",
+      "n_hops": 3,
+      "f1": 0.3333333333333333,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "kadosh",
+        "free zone unknown"
+      ],
+      "answer": "Kadosh | Free Zone unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_54",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_55",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_56",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "richard attenborough"
+      ],
+      "answer": "Richard Attenborough",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_57",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_58",
+      "n_hops": 3,
+      "f1": 0.3333333333333333,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "witi ihimaera",
+        "niki caro"
+      ],
+      "answer": "Witi Ihimaera|Niki Caro",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_59",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "john gilling"
+      ],
+      "answer": "John Gilling",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_60",
+      "n_hops": 3,
+      "f1": 0.7499999999999999,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "gene hackman",
+        "dennis hopper",
+        "barbara hershey"
+      ],
+      "answer": "Gene Hackman|Dennis Hopper|Barbara Hershey",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_61",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama"
+      ],
+      "answer": "Drama",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_62",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sergio castellitto"
+      ],
+      "answer": "Sergio Castellitto",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_63",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "robert culp",
+        "cliff robertson",
+        "james gregory",
+        "ty hardin"
+      ],
+      "answer": "Robert Culp | Cliff Robertson | James Gregory | Ty Hardin | unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_64",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_65",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "valerie hobson",
+        "marius goring",
+        "conrad veidt"
+      ],
+      "answer": "Valerie Hobson|Marius Goring|Conrad Veidt",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_66",
+      "n_hops": 3,
+      "f1": 0.1904761904761905,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "prince of the city",
+        "the phantom",
+        "deep rising",
+        "dead heat"
+      ],
+      "answer": "Prince of the City|The Phantom|Deep Rising|Dead Heat",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_67",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "vanessa marcil"
+      ],
+      "answer": "Vanessa Marcil",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_68",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_69",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_70",
+      "n_hops": 3,
+      "f1": 0.07692307692307691,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the english teacher",
+        "assassins",
+        "the forgotten",
+        "the prize winner of defiance",
+        "ohio"
+      ],
+      "answer": "The English Teacher|Assassins|The Forgotten|The Prize Winner of Defiance, Ohio",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_71",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_72",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_73",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_74",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.2,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_75",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_76",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "1960",
+        "1971"
+      ],
+      "answer": "1960,1971",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_77",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "tim dutton",
+        "wesley snipes"
+      ],
+      "answer": "Tim Dutton | Wesley Snipes",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_78",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_79",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "the silencers",
+        "the big country",
+        "the wrecking crew",
+        "the violent men"
+      ],
+      "answer": "The Silencers|The Big Country|The Wrecking Crew|The Violent Men",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_80",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "jeremias herskovits",
+        "alejandro jodorowsky"
+      ],
+      "answer": "Jeremias Herskovits | Alejandro Jodorowsky",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_81",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "robert mulligan"
+      ],
+      "answer": "Robert Mulligan",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_82",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "michael stoyanov",
+        "sam pancake",
+        "kali rocha"
+      ],
+      "answer": "Michael Stoyanov|Sam Pancake|Kali Rocha",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_83",
+      "n_hops": 3,
+      "f1": 0.5882352941176471,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "desperately seeking susan",
+        "nobody's fool",
+        "gone fishin'",
+        "after hours",
+        "northern lights"
+      ],
+      "answer": "Desperately Seeking Susan | Nobody's Fool | Gone Fishin' | After Hours | Northern Lights",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_84",
+      "n_hops": 3,
+      "f1": 0.3076923076923077,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sonya levien",
+        "reginald berkeley"
+      ],
+      "answer": "Sonya Levien,Reginald Berkeley",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_85",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "terry o'quinn",
+        "cynthia preston",
+        "david hewlett"
+      ],
+      "answer": "Terry O'Quinn | Cynthia Preston | David Hewlett",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_86",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_87",
+      "n_hops": 3,
+      "f1": 0.2222222222222222,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "emeric pressburger"
+      ],
+      "answer": "Emeric Pressburger",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_88",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_89",
+      "n_hops": 3,
+      "f1": 0.8571428571428571,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "a woman rebels",
+        "skylark",
+        "so proudly we hail!",
+        "the gay divorcee",
+        "blue skies",
+        "follow the fleet",
+        "top hat"
+      ],
+      "answer": "A Woman Rebels|Skylark|So Proudly We Hail!|The Gay Divorcee|Blue Skies|Follow the Fleet|Top Hat",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_90",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "water",
+        "udaan"
+      ],
+      "answer": "Water,Udaan",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_91",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama"
+      ],
+      "answer": "Drama",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_92",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "adventure",
+        "crime unknown"
+      ],
+      "answer": "Adventure|Crime unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown|unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_93",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_94",
+      "n_hops": 3,
+      "f1": 0.7692307692307693,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the devil-doll",
+        "dracula",
+        "the unknown",
+        "where east is east",
+        "the blackbird"
+      ],
+      "answer": "The Devil-Doll|Dracula|The Unknown|Where East Is East|The Blackbird",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_95",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.2,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_96",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "swedish"
+      ],
+      "answer": "Swedish",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_97",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_98",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "2009",
+        "metropia"
+      ],
+      "answer": "2009 | Metropia",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_99",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "amistad"
+      ],
+      "answer": "Amistad",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_100",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "jennifer esposito",
+        "james brolin"
+      ],
+      "answer": "Jennifer Esposito|James Brolin",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_101",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "emilea wilson",
+        "michael nathanson"
+      ],
+      "answer": "Emilea Wilson | Michael Nathanson",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_102",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "tom stern",
+        "alex winter"
+      ],
+      "answer": "Tom Stern | Alex Winter",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_103",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_104",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "leprechaun",
+        "scorned"
+      ],
+      "answer": "Leprechaun|Scorned",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_105",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "prehistoric"
+      ],
+      "answer": "prehistoric",
+      "stop_gain": -0.5,
+      "top_scores": [
+        0.0,
+        0.5,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_106",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "1990"
+      ],
+      "answer": "1990",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_107",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "joseph breen",
+        "maurice zimm",
+        "samuel james larsen"
+      ],
+      "answer": "Joseph Breen|Maurice Zimm|Samuel James Larsen",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_108",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_109",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_110",
+      "n_hops": 3,
+      "f1": 0.0909090909090909,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "men with guns"
+      ],
+      "answer": "Men with Guns",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_111",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 1.0,
+      "top_scores": [
+        0.8,
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_112",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_113",
+      "n_hops": 3,
+      "f1": 0.5333333333333333,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "a kiss before dying",
+        "brainstorm",
+        "hell to eternity",
+        "the searchers",
+        "sergeant ruttle",
+        "jeffrey hunter",
+        "jeff york"
+      ],
+      "answer": "A Kiss Before Dying|Brainstorm|Hell to Eternity|The Searchers|Sergeant Ruttle|Jeffrey Hunter|Jeff York|",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.2,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_114",
+      "n_hops": 3,
+      "f1": 0.1818181818181818,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "georgia rule",
+        "labor pains unknown"
+      ],
+      "answer": "Georgia Rule | Labor Pains unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.8,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_115",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "amanda langlet",
+        "melvil poupaud"
+      ],
+      "answer": "Amanda Langlet | Melvil Poupaud",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_116",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "at sword's point",
+        "no blade of grass unknown"
+      ],
+      "answer": "At Sword's Point, No Blade of Grass unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_117",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "1975"
+      ],
+      "answer": "1975",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_118",
+      "n_hops": 3,
+      "f1": 0.16666666666666669,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "the postman"
+      ],
+      "answer": "The Postman",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_119",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2012"
+      ],
+      "answer": "2012",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_120",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_121",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_122",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2009"
+      ],
+      "answer": "2009",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_123",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_124",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "japanese unknown"
+      ],
+      "answer": "Japanese unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_125",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_126",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_127",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "michael lowry",
+        "clayton rohner",
+        "kristin dattilo"
+      ],
+      "answer": "Michael Lowry|Clayton Rohner|Kristin Dattilo",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_128",
+      "n_hops": 3,
+      "f1": 0.4615384615384615,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "dalton james",
+        "tom berenger",
+        "amanda donohoe"
+      ],
+      "answer": "Dalton James,Tom Berenger,Amanda Donohoe",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_129",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "horror"
+      ],
+      "answer": "Horror",
+      "stop_gain": -0.8,
+      "top_scores": [
+        1.0,
+        0.8,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_130",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_131",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_132",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "ll cool j",
+        "ray liotta unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown"
+      ],
+      "answer": "LL Cool J | Ray Liotta unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_133",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "barbershop",
+        "think like a man",
+        "think like a man too",
+        "ride along"
+      ],
+      "answer": "Barbershop | Think Like a Man | Think Like a Man Too | Ride Along | unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_134",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_135",
+      "n_hops": 3,
+      "f1": 0.8,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "crime",
+        "action"
+      ],
+      "answer": "Crime|Action",
+      "stop_gain": -0.8,
+      "top_scores": [
+        0.5,
+        1.0,
+        0.2
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_136",
+      "n_hops": 3,
+      "f1": 0.7142857142857143,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "a night to remember",
+        "moon zero two",
+        "don't bother to knock",
+        "the vampire lovers",
+        "asylum"
+      ],
+      "answer": "A Night to Remember | Moon Zero Two | Don't Bother to Knock | The Vampire Lovers | Asylum",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_137",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "2009"
+      ],
+      "answer": "2009",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_138",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "michael scott myers"
+      ],
+      "answer": "Michael Scott Myers",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_139",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_140",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "how to deal",
+        "american virgin unknown"
+      ],
+      "answer": "How to Deal | American Virgin unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown |",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_141",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "chasing liberty"
+      ],
+      "answer": "Chasing Liberty",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_142",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "nicolas cage",
+        "joe pantoliano unknown"
+      ],
+      "answer": "Nicolas Cage | Joe Pantoliano unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown | unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_143",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_144",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "anna muylaert"
+      ],
+      "answer": "Anna Muylaert",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_145",
+      "n_hops": 3,
+      "f1": 0.22641509433962262,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "sayonara",
+        "dead silence",
+        "tank",
+        "darby's rangers",
+        "mister buddwing",
+        "duel at diablo"
+      ],
+      "answer": "Sayonara|Dead Silence|Tank|Darby's Rangers|Mister Buddwing|Duel at Diablo",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.8,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_146",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_147",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_148",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_149",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_150",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_151",
+      "n_hops": 3,
+      "f1": 0.4444444444444444,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "john irvin",
+        "when trumpets fade",
+        "city of industry",
+        "widows' peak",
+        "next of kin",
+        "raw deal unknown",
+        "the fourth angel unknown"
+      ],
+      "answer": "John Irvin|When Trumpets Fade|City of Industry|Widows' Peak|Next of Kin|Raw Deal unknown|The Fourth Angel unknown|",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_152",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 1.0,
+      "top_scores": [
+        0.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_153",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "back in business",
+        "van gogh"
+      ],
+      "answer": "Back in Business | Van Gogh",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_154",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "dudley nichols"
+      ],
+      "answer": "Dudley Nichols",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_155",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "will patton",
+        "milla jovovich",
+        "olatunde osunsanmi"
+      ],
+      "answer": "Will Patton | Milla Jovovich | Olatunde Osunsanmi",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_156",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -0.2,
+      "top_scores": [
+        0.0,
+        0.2,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_157",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_158",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "comedy"
+      ],
+      "answer": "Comedy",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_159",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_160",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_161",
+      "n_hops": 3,
+      "f1": 0.2857142857142857,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "dana wynter"
+      ],
+      "answer": "Dana Wynter",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_162",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "terraferma"
+      ],
+      "answer": "Terraferma",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_163",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -0.7,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.3
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_164",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_165",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_166",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_167",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "midway",
+        "damnation alley",
+        "number one with a bullet",
+        "airport 1975",
+        "the illustrated man"
+      ],
+      "answer": "Midway|Damnation Alley|Number One with a Bullet|Airport 1975|The Illustrated Man",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_168",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "evil"
+      ],
+      "answer": "Evil",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_169",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_170",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "ram charan"
+      ],
+      "answer": "Ram Charan",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_171",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_172",
+      "n_hops": 3,
+      "f1": 0.4210526315789474,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "slacker",
+        "before midnight",
+        "bad news bears",
+        "before sunset"
+      ],
+      "answer": "Slacker|Before Midnight|Bad News Bears|Before Sunset",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_173",
+      "n_hops": 3,
+      "f1": 0.5,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "richie jen",
+        "accident"
+      ],
+      "answer": "Richie Jen | Accident",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_174",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_175",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "city of ember"
+      ],
+      "answer": "City of Ember",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_176",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_177",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "film"
+      ],
+      "answer": "film",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_178",
+      "n_hops": 2,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.19999999999999996,
+      "top_scores": [
+        0.8,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_179",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "andrei tarkovsky"
+      ],
+      "answer": "Andrei Tarkovsky",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_180",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_181",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_182",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "gujarati"
+      ],
+      "answer": "Gujarati",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_183",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "hot saturday",
+        "stand up and fight"
+      ],
+      "answer": "Hot Saturday|Stand Up and Fight",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_184",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "1989"
+      ],
+      "answer": "1989",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_185",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_186",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "lawless",
+        "the proposition"
+      ],
+      "answer": "Lawless|The Proposition",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_187",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_188",
+      "n_hops": 3,
+      "f1": 0.28571428571428575,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "bob balaban",
+        "robert altman unknown",
+        "julian fellowes unknown"
+      ],
+      "answer": "Bob Balaban | Robert Altman unknown | Julian Fellowes unknown",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_189",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "frank de felitta"
+      ],
+      "answer": "Frank De Felitta",
+      "stop_gain": -1.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_190",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "aku louhimies"
+      ],
+      "answer": "Aku Louhimies",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_191",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [
+        "chris stapp",
+        "matt heath"
+      ],
+      "answer": "Chris Stapp | Matt Heath",
+      "stop_gain": -0.98,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.02
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_192",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_193",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama"
+      ],
+      "answer": "Drama",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_194",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "arrowsmith",
+        "cass timberlane",
+        "dodsworth",
+        "elmer gantry"
+      ],
+      "answer": "Arrowsmith | Cass Timberlane | Dodsworth | Elmer Gantry",
+      "stop_gain": -0.19999999999999996,
+      "top_scores": [
+        1.0,
+        1.0,
+        0.8
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_195",
+      "n_hops": 3,
+      "f1": 0.0,
+      "hit1": 0.0,
+      "exact": 0.0,
+      "pred": [],
+      "answer": "unknown",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_196",
+      "n_hops": 3,
+      "f1": 0.4,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "drama",
+        "comedy",
+        "action"
+      ],
+      "answer": "drama|comedy|action",
+      "stop_gain": -1.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_197",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "drama"
+      ],
+      "answer": "Drama",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.5,
+        0.0,
+        0.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_198",
+      "n_hops": 3,
+      "f1": 1.0,
+      "hit1": 1.0,
+      "exact": 1.0,
+      "pred": [
+        "aaron paul",
+        "juliette lewis",
+        "deke garner",
+        "josh wiggins"
+      ],
+      "answer": "Aaron Paul | Juliette Lewis | Deke Garner | Josh Wiggins",
+      "stop_gain": 0.0,
+      "top_scores": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "qid": "metaqa_2-hop_199",
+      "n_hops": 3,
+      "f1": 0.6666666666666666,
+      "hit1": 1.0,
+      "exact": 0.0,
+      "pred": [
+        "french"
+      ],
+      "answer": "French",
+      "stop_gain": 0.0,
+      "top_scores": [
+        0.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "n_stopped": 128,
+  "n_total": 200
+}

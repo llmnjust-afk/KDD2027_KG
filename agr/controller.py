@@ -113,6 +113,10 @@ class AdaptiveController:
     def __post_init__(self):
         self._prev_top: float | None = None
 
+    def reset(self):
+        """Reset per-query rolling state. Called by the engine at retrieval start."""
+        self._prev_top = None
+
     # ---- helpers on distributions ----
     @staticmethod
     def _norm_entropy(scores: List[float]) -> float:
@@ -195,6 +199,153 @@ class AdaptiveController:
         return False
 
 
+# --------------------------------------------------------------------------- simple stopping heuristics (reviewer-requested baselines)
+@dataclass
+class PatienceStopController:
+    """Stop if the top relevance score has not improved for `patience` hops.
+
+    A classic early-stopping heuristic. Shares the fixed beam of the baseline;
+    only the stop rule differs -- isolating 'marginal-gain' (our D3) from a
+    generic patience rule.
+    """
+    max_hops: int = 3
+    beam: int = 4
+    patience: int = 1
+
+    def __post_init__(self):
+        self._best: float | None = None
+        self._since_improve: int = 0
+
+    def reset(self):
+        self._best = None
+        self._since_improve = 0
+
+    def decide_use_graph(self, question, entity_hits, ctx):
+        return len(entity_hits) > 0
+
+    def beam_for_hop(self, question, hop_idx, frontier_size, scores, ctx):
+        return self.beam
+
+    def should_stop(self, question, hop_idx, frontier, prev_frontier, score_stats, ctx):
+        if not frontier:
+            return True
+        top = float(score_stats.get("top_score", 0.0))
+        if self._best is None or top > self._best:
+            self._best = top
+            self._since_improve = 0
+        else:
+            self._since_improve += 1
+        return hop_idx >= 1 and self._since_improve >= self.patience
+
+
+@dataclass
+class MarginStopController:
+    """Stop when the top-1/top-2 score margin exceeds `threshold` (confident).
+
+    A confidence-threshold stopping heuristic: a large margin means one
+    candidate clearly dominates, so further hops are unlikely to help.
+    """
+    max_hops: int = 3
+    beam: int = 4
+    threshold: float = 0.30
+
+    def decide_use_graph(self, question, entity_hits, ctx):
+        return len(entity_hits) > 0
+
+    def beam_for_hop(self, question, hop_idx, frontier_size, scores, ctx):
+        return self.beam
+
+    def should_stop(self, question, hop_idx, frontier, prev_frontier, score_stats, ctx):
+        if not frontier:
+            return True
+        topk = score_stats.get("topk_scores") or []
+        if len(topk) >= 2 and hop_idx >= 1:
+            margin = float(topk[0] - topk[1])
+            if margin >= self.threshold:
+                return True
+        return False
+
+
+@dataclass
+class ConfThresholdController:
+    """Stop when the top relevance score exceeds `threshold` (good enough).
+
+    A confidence-threshold stopping heuristic: once any hop retrieves a
+    highly-relevant fact, stop. Complements MarginStop (absolute vs relative).
+    """
+    max_hops: int = 3
+    beam: int = 4
+    threshold: float = 0.70
+
+    def decide_use_graph(self, question, entity_hits, ctx):
+        return len(entity_hits) > 0
+
+    def beam_for_hop(self, question, hop_idx, frontier_size, scores, ctx):
+        return self.beam
+
+    def should_stop(self, question, hop_idx, frontier, prev_frontier, score_stats, ctx):
+        if not frontier:
+            return True
+        top = float(score_stats.get("top_score", 0.0))
+        return hop_idx >= 1 and top >= self.threshold
+
+
+@dataclass
+class RandomBudgetController:
+    """Random per-query max-hops (uniform over 1..max_hops). A naive baseline
+    that adapts the budget without any signal -- controls for 'any adaptation
+    helps' vs 'signal-driven adaptation helps'."""
+    max_hops: int = 3
+    beam: int = 4
+    seed: int = 0
+
+    def __post_init__(self):
+        import random as _r
+        self._rng = _r.Random(self.seed)
+        self._cur_budget: int = self.max_hops
+
+    def reset(self):
+        # draw a fresh random budget for this query
+        self._cur_budget = self._rng.randint(1, self.max_hops)
+
+    def set_query(self):
+        self._cur_budget = self._rng.randint(1, self.max_hops)
+
+    def decide_use_graph(self, question, entity_hits, ctx):
+        return len(entity_hits) > 0
+
+    def beam_for_hop(self, question, hop_idx, frontier_size, scores, ctx):
+        return self.beam
+
+    def should_stop(self, question, hop_idx, frontier, prev_frontier, score_stats, ctx):
+        if not frontier:
+            return True
+        return hop_idx + 1 >= self._cur_budget
+
+
+@dataclass
+class OracleDepthController:
+    """Upper bound: use the TRUE hop depth as max_hops (cheating). Shows the
+    ceiling of any depth-predicting router, including trained ones."""
+    max_hops: int = 3
+    beam: int = 4
+    cur_depth: int = 1
+
+    def set_depth(self, d: int):
+        self.cur_depth = max(1, d)
+
+    def decide_use_graph(self, question, entity_hits, ctx):
+        return len(entity_hits) > 0
+
+    def beam_for_hop(self, question, hop_idx, frontier_size, scores, ctx):
+        return self.beam
+
+    def should_stop(self, question, hop_idx, frontier, prev_frontier, score_stats, ctx):
+        if not frontier:
+            return True
+        return hop_idx + 1 >= self.cur_depth
+
+
 # --------------------------------------------------------------------------- factory
 def build_controller(cfg: Dict) -> object:
     name = cfg.get("name", "adaptive")
@@ -206,6 +357,25 @@ def build_controller(cfg: Dict) -> object:
         return NoGraphController()
     if name == "vector-rag":
         return NoGraphController()  # vector-RAG handled in retriever, not controller
+    if name == "patience":
+        return PatienceStopController(max_hops=common["max_hops"],
+                                      beam=cfg.get("beam", 4),
+                                      patience=cfg.get("patience", 1))
+    if name == "margin":
+        return MarginStopController(max_hops=common["max_hops"],
+                                    beam=cfg.get("beam", 4),
+                                    threshold=cfg.get("threshold", 0.30))
+    if name == "conf-threshold":
+        return ConfThresholdController(max_hops=common["max_hops"],
+                                       beam=cfg.get("beam", 4),
+                                       threshold=cfg.get("threshold", 0.70))
+    if name == "random-budget":
+        return RandomBudgetController(max_hops=common["max_hops"],
+                                      beam=cfg.get("beam", 4),
+                                      seed=cfg.get("seed", 0))
+    if name == "oracle-depth":
+        return OracleDepthController(max_hops=common["max_hops"],
+                                     beam=cfg.get("beam", 4))
     return AdaptiveController(
         max_hops=common["max_hops"],
         theta_low=cfg.get("theta_low", 0.30),
