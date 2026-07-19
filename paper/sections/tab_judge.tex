@@ -1,18 +1,18 @@
 \begin{table}[t]
 \centering
-\caption{Embedding judge vs.\ LLM judge by reasoning depth (7B, $n{=}200$/split). The free embedding judge wins at 1-hop and on CWQ, and only clearly loses at MetaQA 2-hop---questioning the default use of the LLM judge. \Toks{}=input tokens/query.}
+\caption{Embedding vs.\ LLM judge by depth, under a naive engine (traversal-order candidate cap) and a strong ToG-2.0-style engine (embedding prefilter). 7B, $n{=}200$/setting. Under the strong engine the LLM judge wins in 3 of 4 regimes; the naive engine's apparent embedding-judge advantage is a truncation artifact. \Toks{}=input tokens/query.}
 \label{tab:judge-depth}
 \small
 \begin{tabular}{@{}lcccc@{}}
 \toprule
- & \multicolumn{2}{c}{Embedding judge} & \multicolumn{2}{c}{LLM judge} \\
+ & \multicolumn{2}{c}{Naive engine (F1)} & \multicolumn{2}{c}{Strong engine (F1)} \\
 \cmidrule(lr){2-3}\cmidrule(lr){4-5}
-Setting & F1 & \Toks{} & F1 & \Toks{} \\
+Setting & Emb & LLM & Emb & LLM \\
 \midrule
-MetaQA 1-hop & \best{0.773} & \best{140} & 0.732 & 1397 \\
-MetaQA 2-hop & 0.232 & \best{146} & \best{0.355} & 1490 \\
-MetaQA 3-hop & 0.068 & \best{169} & \best{0.097} & 1723 \\
-CWQ (Freebase) & \best{0.044} & \best{206} & 0.015 & 2347 \\
+MetaQA 1-hop & 0.787 & 0.672 & \best{0.793} & 0.685 \\
+MetaQA 2-hop & 0.250 & 0.285 & 0.209 & \best{0.248} \\
+MetaQA 3-hop & 0.095 & 0.090 & 0.056 & \best{0.083} \\
+CWQ (Freebase) & 0.046 & 0.024 & 0.062 & \best{0.085} \\
 \bottomrule
 \end{tabular}
 \end{table}

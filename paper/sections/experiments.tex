@@ -24,18 +24,18 @@ The mechanism behind this failure is that the optimal $K$ is a near-global const
 \subsection{Axes 2 \& 3: Adaptive Judge Budget and Type}
 \label{sec:exp-judge}
 
-We next adapt the \emph{judge}. \Cref{tab:judge-depth} reports embedding vs.\ LLM judge by depth on MetaQA. The result is surprising: the free embedding judge \emph{wins} at 1-hop ($0.773$ vs.\ $0.732$) and on CWQ ($0.044$ vs.\ $0.015$), and only clearly loses at MetaQA 2-hop ($0.232$ vs.\ $0.355$). The LLM judge, the default and dominant cost of GraphRAG, is thus unnecessary in most regimes we test.
+We next adapt the \emph{judge}, and use this axis to run a critical robustness check. \Cref{tab:judge-depth} reports embedding vs.\ LLM judge by depth under two engines: our naive engine (candidates truncated in traversal order) and a stronger ToG-2.0-style engine that ranks all candidates by embedding similarity before judging. Under the \emph{naive} engine, the free embedding judge appears to win in three of four regimes---but this is an artifact: traversal-order truncation hides answer triples from the LLM judge on dense graphs. Under the \emph{strong} engine the LLM judge improves sharply (CWQ: $0.024\!\to\!0.085$; 2-hop: $0.285\!\to\!0.248$ with far lower cost) and \emph{outperforms} the embedding judge in three of four regimes (all but the trivial 1-hop). We therefore do not claim the LLM judge is dispensable; we report the ablation to establish that our downstream negative result on adaptation is measured on a properly strong engine, not a crippled one.
 
 \input{sections/tab_judge}
 
 \begin{figure}[t]
 \centering
 \includegraphics[width=0.88\columnwidth]{figures/fig_judge.pdf}
-\caption{Embedding vs.\ LLM judge by depth. The free embedding judge matches or exceeds the LLM judge in three of four regimes.}
+\caption{Embedding vs.\ LLM judge by depth under the strong (ToG-2.0-style) engine. With fair candidate selection the LLM judge wins in three of four regimes; the embedding judge wins only at trivial 1-hop.}
 \label{fig:judge}
 \end{figure}
 
-Given this, can a policy adapt the judge per query? \textsc{AdaptiveJudge} (Axis 2) skips the LLM when the embedding score is confident. On the MetaQA mixed stream it is Pareto-dominated by Fixed-$K{=}2,B{=}8$ (and by the free embedding judge on cost); on CWQ it is dominated by the free embedding judge outright (\Cref{tab:depth-mixed}). Adapting the judge \emph{type} per query (Axis 3) is a routing problem, analyzed next.
+Given a properly strong engine, can a policy adapt the judge per query? \textsc{AdaptiveJudge} (Axis 2) skips the LLM when the embedding score is confident. On the MetaQA mixed stream it is Pareto-dominated by the tuned global Fixed-$K{=}2,B{=}8$ (\Cref{tab:depth-mixed}). Adapting the judge \emph{type} per query (Axis 3) is a routing problem, analyzed next; it is precisely because the LLM and embedding judges are each better on different queries (\Cref{tab:judge-depth}) that per-query routing has a large \emph{oracle} upside---which, as we show, is nonetheless unrealizable.
 
 \subsection{The Predictability Ceiling: Oracle Analysis}
 \label{sec:exp-oracle}

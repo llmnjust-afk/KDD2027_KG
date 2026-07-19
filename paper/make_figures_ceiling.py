@@ -48,8 +48,8 @@ def fig_ceiling():
 def fig_judge():
     fig, ax = plt.subplots(figsize=(5.4, 3.4))
     settings = ["MetaQA\n1-hop", "MetaQA\n2-hop", "MetaQA\n3-hop", "CWQ"]
-    emb = [0.773, 0.232, 0.068, 0.044]
-    llm = [0.732, 0.355, 0.097, 0.015]
+    emb = [0.793, 0.209, 0.056, 0.062]  # strong engine
+    llm = [0.685, 0.248, 0.083, 0.085]  # strong engine
     x = np.arange(len(settings)); w = 0.36
     b1 = ax.bar(x - w/2, emb, w, label="Embedding judge (free)", color=TEAL, ec="k", lw=.5)
     b2 = ax.bar(x + w/2, llm, w, label="LLM judge (expensive)", color=AMBER, ec="k", lw=.5)
@@ -62,7 +62,7 @@ def fig_judge():
     ax.set_xticks(x); ax.set_xticklabels(settings)
     ax.set_ylabel("Answer F1"); ax.set_ylim(0, 0.88)
     ax.legend(loc="upper right", framealpha=.9)
-    ax.set_title("A free embedding judge matches or beats the LLM judge\nin 3 of 4 regimes")
+    ax.set_title("Under a strong (ToG-2.0-style) engine, the LLM judge\nwins in 3 of 4 regimes; embedding wins only at 1-hop")
     ax.grid(True, axis="y", alpha=.25, linestyle="--")
     fig.savefig(f"{OUT}/fig_judge.pdf"); fig.savefig(f"{OUT}/fig_judge.png")
     plt.close(fig); print("saved fig_judge")

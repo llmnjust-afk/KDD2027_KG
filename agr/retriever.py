@@ -91,6 +91,7 @@ class GraphRAGRetriever:
         vector_rag_topk: int = 0,
         adaptive_judge: bool = False,
         adaptive_judge_threshold: float = 0.55,
+        strong_prefilter: bool = False,
     ):
         self.kg = kg
         self.backend = backend
@@ -102,6 +103,7 @@ class GraphRAGRetriever:
         self.vector_rag_topk = vector_rag_topk  # >0 => vector-RAG mode (no graph traversal)
         self.adaptive_judge = adaptive_judge  # adaptive judge: emb probe then maybe LLM
         self.adaptive_judge_threshold = adaptive_judge_threshold  # emb top-1 above this -> skip LLM
+        self.strong_prefilter = strong_prefilter  # ToG-2.0-style embedding prefilter
         self._judge_stats = {"emb_only": 0, "llm": 0}  # diagnostics
         self._ent_index: Optional[List[str]] = None
         self._ent_emb: Optional[np.ndarray] = None
@@ -296,8 +298,19 @@ class GraphRAGRetriever:
             cand = [c for c in cand if not (c in seen or seen.add(c))]
             if not cand:
                 break
-            # cap candidates before judging to keep prompts bounded
-            cand = cand[: max(self.score_topk_per_hop * 4, 16)]
+            cap = max(self.score_topk_per_hop * 4, 16)
+            if self.strong_prefilter and len(cand) > cap:
+                # ToG-2.0-style two-stage retrieval: instead of truncating in
+                # arbitrary traversal order, rank ALL candidates by cheap
+                # embedding similarity and keep the top-`cap` for the (expensive)
+                # judge. This removes the traversal-order truncation bias that
+                # otherwise hides relevant triples from the judge on dense KGs.
+                pre = self._embedding_scores(question, cand)
+                pre_order = np.argsort([-s for s in pre])[:cap]
+                cand = [cand[i] for i in pre_order]
+            else:
+                # cap candidates before judging to keep prompts bounded
+                cand = cand[:cap]
             scores = self._relevance_scores(question, cand)
             order = np.argsort([-s for s in scores])
             cand = [cand[i] for i in order]
