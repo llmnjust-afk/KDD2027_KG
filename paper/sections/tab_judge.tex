@@ -1,0 +1,18 @@
+\begin{table}[t]
+\centering
+\caption{Embedding judge vs.\ LLM judge by reasoning depth (7B, $n{=}200$/split). The free embedding judge wins at 1-hop and on CWQ, and only clearly loses at MetaQA 2-hop---questioning the default use of the LLM judge. \Toks{}=input tokens/query.}
+\label{tab:judge-depth}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+ & \multicolumn{2}{c}{Embedding judge} & \multicolumn{2}{c}{LLM judge} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}
+Setting & F1 & \Toks{} & F1 & \Toks{} \\
+\midrule
+MetaQA 1-hop & \best{0.773} & \best{140} & 0.732 & 1397 \\
+MetaQA 2-hop & 0.232 & \best{146} & \best{0.355} & 1490 \\
+MetaQA 3-hop & 0.068 & \best{169} & \best{0.097} & 1723 \\
+CWQ (Freebase) & \best{0.044} & \best{206} & 0.015 & 2347 \\
+\bottomrule
+\end{tabular}
+\end{table}

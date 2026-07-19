@@ -1,117 +1,22 @@
-\section{Method}
+\section{Framework: Three Axes of Training-Free Adaptation}
 \label{sec:method}
 
-\subsection{Preliminaries: GraphRAG Retrieval}
-\label{sec:prelim}
+We study a single, faithful ToG-style GraphRAG retrieval engine and vary only the \emph{adaptation policy} that governs its per-query behavior. Fixing the engine ensures that any accuracy or cost difference is attributable to the policy, not to implementation.
 
-We formalize the GraphRAG retrieval loop that our controller augments. Given a knowledge graph $\mathcal{G}=(\mathcal{E},\mathcal{R},\mathcal{T})$ with entities $\mathcal{E}$, relations $\mathcal{R}$, and triples $\mathcal{T}\subseteq\mathcal{E}\times\mathcal{R}\times\mathcal{E}$, and a natural-language question $q$, the goal is to retrieve a reasoning subgraph $\mathcal{S}\subseteq\mathcal{T}$ that, when provided as context to a generator LLM $G$, yields the correct answer.
+\subsection{The Retrieval Engine}
+Given a question $q$ and a KG $\mathcal{G}=(\mathcal{E},\mathcal{R},\mathcal{T})$, the engine (i) links $q$ to seed entities by embedding similarity, forming a frontier $\mathcal{F}_0$; then for each hop $k=0,\dots,K{-}1$ it (ii) expands one edge from every frontier entity to form candidate triples $\mathcal{C}_k$ (capped at $c_{\max}{=}16$ in traversal order), (iii) scores each candidate with a \emph{relevance judge} $J(\text{triple},q)\in[0,1]$, (iv) keeps the top-$B$ (beam) by score, and (v) updates the frontier. The retrieved subgraph is passed to the generator. The judge in step (iii) is the dominant cost: one call per hop over up to $c_{\max}$ candidates. We consider two judges: an \textbf{LLM judge} (a few-shot prompt scoring all candidates, expensive) and an \textbf{embedding judge} (cosine similarity between the question and each triple's text, free given cached embeddings).
 
-The retrieval proceeds iteratively. Let $\mathcal{F}_k\subseteq\mathcal{E}$ denote the \emph{frontier}---entities to expand---at hop $k$. The pipeline consists of four steps per hop:
+\subsection{Adaptation Axes}
+A \emph{global} policy fixes the depth $K$, beam $B$, and judge for all queries; tuning it requires only a small validation sweep. A \emph{per-query adaptive} policy chooses these per query from signals available \emph{during} retrieval. We decompose adaptation into three orthogonal axes.
 
-\textbf{(1) Entity linking} maps the question to seed entities $\mathcal{F}_0\subseteq\mathcal{E}$, either by exact match (when entity annotations are available) or by embedding nearest-neighbor search. Each linked entity carries a confidence score $\ell_i\in[0,1]$ (cosine similarity).
+\paragraph{Axis 1: Depth ($K$).}
+How many hops to run. A per-query depth policy stops early on easy queries and continues on hard ones. We test marginal-gain stopping (stop when the top relevance score stops improving by $\delta$), patience stopping (stop after $p$ non-improving hops), margin stopping (stop when the top-1/top-2 score margin exceeds a threshold), confidence-threshold stopping, random budgets, and an \textbf{oracle-depth} policy that uses the ground-truth hop count as $K$.
 
-\textbf{(2) Frontier expansion} produces candidate triples by traversing one edge from each frontier entity: $\mathcal{C}_k = \{(e,r,e') \in \mathcal{T} : e \in \mathcal{F}_k,\; e' \notin \mathcal{V}\}$, where $\mathcal{V}$ is the set of already-visited entities. To bound prompt length, $|\mathcal{C}_k|$ is capped at $c_{\max}{=}16$; because relevance scores are not yet available at expansion time, the cap retains the first $c_{\max}$ triples in traversal order (deduplicated). On dense KGs this cap can bind and shape the candidate set; we report it as an engineering constant rather than a tuned parameter.
+\paragraph{Axis 2: Judge budget.}
+Whether to invoke the LLM judge at a hop. A per-query judge-budget policy uses the free embedding judge when its score distribution is confident (a dominant candidate) and pays for the LLM judge only when uncertain. We instantiate this as \textsc{AdaptiveJudge}: at each hop, compute embedding scores; if the top-1 embedding score exceeds a threshold $\tau$, use it and skip the LLM; otherwise invoke the LLM judge. We sweep $\tau$.
 
-\textbf{(3) Relevance judging} scores each candidate triple via an LLM call: $r_{k,j} = J(\text{triple}_j, q) \in [0,1]$. This is the \emph{dominant cost}: each call consumes input tokens proportional to $|\mathcal{C}_k|$, and there is one such call per hop. The judge prompt batches all candidates into a single call to amortize the fixed overhead of the instruction tokens.
+\paragraph{Axis 3: Judge type.}
+Which judge to trust for the whole query. This is a routing problem: for each query decide between the free embedding judge and the expensive LLM judge. We evaluate gap-based routing (route to the LLM when the hop-0 embedding top-1/top-2 gap is small), threshold rules, and trained routers (logistic regression on the question embedding and/or cheap pipeline signals), against an \textbf{oracle} that picks the better judge per query.
 
-\textbf{(4) Pruning and frontier update} retains the top-$b_k$ triples by score as $\mathcal{S}_k$, adds their entities to $\mathcal{V}$, and sets $\mathcal{F}_{k+1}$ to the newly discovered entities. After $K$ hops (or an early stop), the union $\bigcup_k \mathcal{S}_k$ is the reasoning subgraph fed to $G$.
-
-A \emph{retrieval controller} $\pi$ governs three quantities per query: whether to use the graph at all ($u_0\in\{0,1\}$), the beam width ($b_k$), and whether to stop ($s_k\in\{0,1\}$). The fixed-budget baseline (ToG-style) sets $u_0{=}1$, $b_k{=}B$ constant, $s_k{=}0$ until $k{=}K$. \method{} replaces this with a training-free controller that reads distributional signals computed as by-products of steps (1)--(3). Because the retrieval engine (steps 1--4) is identical across controllers, comparing \method{} to the baseline isolates the controller as the sole variable.
-
-\subsection{Distributional Signals}
-\label{sec:signals}
-
-\method{} exploits three signals that the pipeline already computes:
-
-\textbf{(S1) Link-confidence vector.} Entity linking returns seed entities $e_1,\dots,e_m$ with cosine similarities $\bm{\ell}=(\ell_1,\dots,\ell_m)$ to the question embedding. The top value $\ell_{(1)}$ measures how reliably the seed anchor matches the question; a low $\ell_{(1)}$ signals that multi-hop expansion will amplify a wrong seed.
-
-\textbf{(S2) Hop relevance distribution.} At hop $k$, the judge produces scores $\bm{r}_k=(r_{k,1},\dots,r_{k,|\mathcal{C}_k|})$ over candidates. We use its normalized entropy $H_k=-\sum_i \hat{r}_{k,i}\log\hat{r}_{k,i}/\log|\mathcal{C}_k|$ where $\hat{r}_{k,i}=r_{k,i}/\sum_j r_{k,j}$. Low $H_k$ means one candidate dominates (confident hop); high $H_k$ means scores are flat (uncertain hop, many plausible continuations). Sum-normalization makes $H_k$ scale-invariant but not shift-invariant (adding a constant to all scores changes $H_k$); we accept this since the judge's $[0,100]$ outputs are non-negative. When $|\mathcal{C}_k|{\le}1$ we define $H_k{=}0$ (no spread to measure), and when all scores are zero we fall back to the base beam (the normalization is undefined).
-
-\textbf{(S3) Per-hop top-score trajectory.} The sequence $t_k=\max_i r_{k,i}$ tracks whether expansion is uncovering more relevant evidence. A plateau or decline in $t_k$ indicates diminishing returns.
-
-\subsection{The \method{} Controller}
-\label{sec:controller}
-
-\method{} makes three training-free decisions from (S1)--(S3).
-
-\paragraph{(D1) Use-graph decision.}
-If $\ell_{(1)}<\theta_{\text{low}}$, the seed anchor is too unreliable for multi-hop expansion to help; we route $q$ to a graph-free answer generated directly from the question. This saves all $K$ judge calls for that query. The threshold $\theta_{\text{low}}$ is the only hyperparameter governing (D1) and, as we show, is inert under perfect linking (it never fires) but decisive under noisy linking.
-
-\paragraph{(D2) Adaptive beam allocation.}
-We set the beam at hop $k$ to
-\begin{equation}
-\label{eq:beam}
-b_k = \mathrm{clip}\!\Big(\big\lfloor B\cdot\big(\tfrac{1}{2}+H_k\big)\big\rfloor,\; b_{\min},\; b_{\max}\Big),
-\end{equation}
-where $B$ is a base beam. The factor $\tfrac{1}{2}+H_k$ maps entropy $H_k\in[0,1]$ to a multiplier in $[0.5,1.5]$: when scores are concentrated ($H_k\!\to\!0$) the beam shrinks to $B/2$ since one path suffices; when scores are flat ($H_k\!\to\!1$) the beam widens to $1.5B$ to avoid pruning the true continuation among many equally-scored candidates. This entropy-to-beam map is the simplest monotone allocation consistent with the intuition that uncertainty demands exploration.
-
-\paragraph{(D3) Marginal-gain early stopping.}
-We stop after hop $k\geq 1$ when the top-score gain fails to exceed a margin:
-\begin{equation}
-\label{eq:stop}
-s_k = 1 \;\Longleftrightarrow\; \big(t_k - t_{k-1}\big) \le \delta \;\;\text{or}\;\; t_k < \tau \;\;\text{or}\;\; \mathcal{F}_{k+1}=\emptyset.
-\end{equation}
-The first condition halts when expansion stops improving the best available evidence (diminishing returns); the second is an absolute floor (nothing useful retrieved); the third is a structural frontier collapse. The default $\delta$ is chosen so that a hop whose top score does not beat the previous hop's top by a meaningful margin---indicating the new frontier is no more relevant than the old---is not worth its judge cost.
-
-\paragraph{Assumptions on the signals, and their limits.}
-Both (D2) and (D3) treat the raw LLM relevance scores as if they were meaningful across candidates and across hops, which requires care. The judge emits integers in $[0,100]$ that are \emph{not} calibrated probabilities, so the entropy $H_k$ in (D2) is a heuristic dispersion measure, not an information-theoretic quantity; we normalize per hop to reduce scale sensitivity, and when all scores are zero we fall back to the base beam $B$ (the normalization is undefined there). (D3) further assumes the per-hop top score $t_k$ is comparable across hops, which can fail: a necessary later-hop relation may have lower surface relevance than the first hop, so a score decrease does not strictly imply diminishing evidential value. We therefore do not claim these signals are optimal or calibrated; we claim only that they are \emph{informative enough} to drive useful budget decisions, and we validate this empirically---the sensitivity sweep (\Cref{fig:sensitivity}) shows the decisions are robust to the thresholds, and the 1.5B/3-hop boundary case (\Cref{sec:exp-boundary}) shows exactly where the assumption breaks: a weak judge produces an unreliable $t_k$ trajectory, so (D3) misfires. A calibrated judge or a learned score-to-decision map is a natural extension we leave to future work.
-
-\begin{remark}[Call-count accounting]
-\label{prop:cost}
-Let $C_{\text{fix}}$ and $C_{\text{ada}}$ be the expected per-query judge-call count of the fixed and \method{} controllers under the same engine. If a fraction $\rho_u$ of queries satisfy (D1)'s skip condition and the mean stopping hop under (D3) is $\bar{k}_{\text{stop}}\le K$, then $C_{\text{ada}}=(1-\rho_u)\,\bar{k}_{\text{stop}}\le(1-\rho_u)\,K=(1-\rho_u)\,C_{\text{fix}}$.
-\end{remark}
-\noindent We state this as an accounting identity rather than a theorem: it follows directly from the definitions of (D1) and (D3) and merely quantifies the call-count reduction (skipping saves a factor $\rho_u$; early stopping saves $1-\bar{k}_{\text{stop}}/K$). It makes \emph{no} claim about accuracy, about the optimality of the stopping rule, or about token cost beyond call count (token cost tracks call count only up to per-hop candidate-count variation). Whether stopping preserves accuracy is an empirical question we answer in \Cref{sec:exp}: at 2-hop with a strong judge the skipped hops carry noise, so accuracy is preserved or improved, whereas at 1.5B/3-hop the stopping signal is unreliable and accuracy suffers (\Cref{sec:exp-boundary}). We deliberately avoid framing the stopping rule as theoretically justified; its justification is empirical.
-
-\paragraph{When does stopping preserve accuracy?}
-\label{sec:stop-theory}
-We can make the accuracy-preservation condition precise. Let $A_k(q)$ denote the answer correctness (F1) if retrieval stops at hop $k$, and define the \emph{marginal evidence} $\Delta_k = A_k(q) - A_{k-1}(q)$. Stopping at $k$ is accuracy-preserving iff $\Delta_{k+1} = 0$ (the $(k{+}1)$-th hop adds no correct evidence). The D3 stopping signal $t_k - t_{k-1} \le \delta$ is a \emph{proxy} for $\Delta_{k+1} \approx 0$: if the judge's top relevance score does not improve, the hop is unlikely to add answer-relevant triples. Formally, let $\mathcal{E}_k$ be the event $\{t_k - t_{k-1} \le \delta\}$ (D3 fires) and $\mathcal{S}_k$ be $\{\Delta_{k+1} = 0\}$ (stopping is safe). Then the false-stop rate is $P(\neg\mathcal{S}_k \mid \mathcal{E}_k)$, and accuracy is preserved in expectation when this rate is low. Our signal-quality analysis (Sec.~\ref{sec:exp-analysis}) measures this empirically: at 7B/2-hop, queries where D3 stopped have the same correctness rate as queries where it continued (56.0\% vs.\ 56.0\%), i.e.\ $P(\text{correct} \mid \mathcal{E}_k) \approx P(\text{correct} \mid \neg\mathcal{E}_k)$, confirming the proxy is reliable under a strong judge. At 1.5B/3-hop the proxy breaks ($P(\text{correct} \mid \mathcal{E}_k) < P(\text{correct} \mid \neg\mathcal{E}_k)$), which is the boundary condition of \Cref{sec:exp-boundary}.
-
-\subsection{Why Training-Free Suffices}
-\label{sec:why}
-
-A learned router must estimate query difficulty from $q$ alone, before retrieval begins. \method{} instead observes difficulty \emph{during} retrieval through the score distributions the pipeline already produces. This has two consequences. First, the signal is \emph{interaction-dependent} rather than purely predictive: $H_k$ measures the judge's current uncertainty over actual retrieved candidates, not a proxy estimated from question features. A learned router that sees only $q$ cannot know whether hop $k$ will produce a confident or uncertain distribution---that depends on the KG's local neighborhood around the linked entities, which is only revealed during traversal. Second, the controller is \emph{potentially portable} across KGs and domains because it reads no domain-specific features---only normalized entropies and cosine similarities, which are defined wherever linking and judging are defined. A learned router trained on one KG's question-difficulty distribution may not transfer to a KG with different neighborhood density or relation semantics; \method{}'s signals are defined wherever the pipeline runs, though as \Cref{sec:exp-webqsp} shows, accuracy preservation is not guaranteed---the cost--accuracy trade-off depends on KG density and judge quality.
-
-\paragraph{Comparison to trained controllers.}
-A trained controller like GraphRAG-Router~\cite{fan2026graphragrouter} optimizes a routing policy via RL to minimize a cost-accuracy objective. This can in principle learn richer patterns than our three hand-designed rules, at the cost of (i) a training stage requiring cost-accuracy labels or a simulator, (ii) a policy that may overfit to the training KG's difficulty distribution, and (iii) additional inference latency for the policy network. \method{} trades expressive power for zero training cost: it cannot learn patterns our three rules miss, but it works immediately on any KG without training data. Our experiments show this suffices to reach or exceed the cost--accuracy frontier of tuned fixed baselines at the operating points where GraphRAG matters most, suggesting that a substantial part of the achievable adaptation gain does not require learning---it requires reading signals that are already computed and discarded.
-
-We verify robustness to these hyperparameters empirically by running the identical controller across both generator scales (1.5B and 7B) and all three reasoning depths without re-tuning: the same $\theta_{\text{low}}$, $\delta$, and $B$ values are used throughout. We emphasize that this establishes robustness across generators and depths \emph{on WikiMovies only}; transfer to structurally different KGs is not yet established and is left to future work (\Cref{sec:conclusion}).
-
-\Cref{fig:framework} overviews \method{}. Algorithm~\ref{alg:aqurag} states the full retrieval procedure.
-
-\begin{figure*}[t]
-\centering
-\includegraphics[width=0.92\textwidth]{figures/framework.png}
-\caption{Overview of \method{}. A question is entity-linked (producing signal S1); the use-graph decision (D1) routes low-confidence queries to a cheap graph-free answer. Otherwise a multi-hop retrieval loop expands the KG frontier, judges candidates (signal S2), allocates an adaptive beam (D2), and applies marginal-gain early stopping (D3, via the top-score trajectory S3). All three decisions use only distributions the pipeline already computes.}
-\label{fig:framework}
-\end{figure*}
-
-\begin{algorithm}[t]
-\caption{\method{} retrieval (training-free controller)}
-\label{alg:aqurag}
-\small
-\begin{algorithmic}[1]
-\Require question $q$, KG $\mathcal{G}$, judge $J$, params $\theta_{\text{low}},B,\delta,\tau,K$
-\State Link seeds: $\{(e_i,\ell_i)\}\leftarrow\textsc{Link}(q,\mathcal{G})$
-\If{$\max_i \ell_i < \theta_{\text{low}}$} \Comment{D1: skip graph}
-  \State \Return $\textsc{Generate}(q,\emptyset)$
-\EndIf
-\State $\mathcal{F}\leftarrow\{e_i\}$; $\mathcal{V}\leftarrow\emptyset$; $\mathcal{S}\leftarrow\emptyset$; $t_{-1}\leftarrow\bot$
-\For{$k=0,\dots,K-1$}
-  \State $\mathcal{C}\leftarrow\textsc{Expand}(\mathcal{F},\mathcal{G})\setminus\mathcal{V}$
-  \State $\bm{r}\leftarrow J(\mathcal{C},q)$; \quad $H\leftarrow\textsc{NormEntropy}(\bm{r})$; \quad $t\leftarrow\max\bm{r}$
-  \State $b\leftarrow\mathrm{clip}(\lfloor B(\tfrac12+H)\rfloor, b_{\min}, b_{\max})$ \Comment{D2}
-  \State $\mathcal{S}_k\leftarrow\textsc{TopB}(\mathcal{C},\bm{r},b)$; \quad $\mathcal{S}\leftarrow\mathcal{S}\cup\mathcal{S}_k$
-  \State $\mathcal{F}\leftarrow\textsc{Entities}(\mathcal{S}_k)\setminus\mathcal{V}$; \quad $\mathcal{V}\leftarrow\mathcal{V}\cup\mathcal{F}$
-  \If{$k\geq 1\;\textbf{and}\;(t-t_{k-1}\le\delta\;\textbf{or}\;t<\tau\;\textbf{or}\;\mathcal{F}=\emptyset)$} \Comment{D3}
-    \State \textbf{break}
-  \EndIf
-  \State $t_{k-1}\leftarrow t$
-\EndFor
-\State \Return $\textsc{Generate}(q,\mathcal{S})$
-\end{algorithmic}
-\end{algorithm}
-
-\subsection{Complexity Analysis}
-\label{sec:complexity}
-
-GraphRAG cost is dominated by judge calls, each over up to $c_{\max}$ candidates. The fixed controller makes $K$ such calls plus one generation call. \method{} cuts this in three ways: (D1) eliminates all $K$ judge calls for the $\rho_u$ skipped queries; (D3) terminates at hop $k^*<K$, eliminating later calls; and (D2), while not changing the call count at a hop, shrinks the frontier and hence the candidate count at the next hop. Empirically (D3) is the primary driver (\Cref{tab:abl}). Critically, the controller adds \emph{zero} overhead: $H_k$, $t_k$, and $\ell_{(1)}$ are scalar reductions of arrays the pipeline already computed, negligible beside the LLM call that produced them---so \method{} is a pure decision policy with no learned parameters and no inference cost of its own.
+\subsection{Evaluation Protocol}
+All policies run through the identical engine on the identical query subset. We report entity-level F1 and Hit@1 for accuracy, and mean input tokens per query (\Toks{}) as the cost metric, since input tokens dominate API pricing and track judge-call count. For a fair frontier, we sweep the global baseline over $K\in\{1,2,3\}$ and $B\in\{2,4,6,8\}$ and both judges, and ask whether any adaptive policy is \emph{non-dominated} relative to this tuned frontier. The oracle policies (oracle-depth, oracle-judge) are not deployable---they use ground-truth labels---but bound the maximum achievable benefit of perfect per-query adaptation, isolating whether the bottleneck is policy design or predictability.

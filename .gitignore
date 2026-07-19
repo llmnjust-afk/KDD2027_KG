@@ -1,16 +1,5 @@
-# Python
+data/
+*.parquet
+paper/main.pdf
 __pycache__/
-*.py[cod]
-*.egg-info/
-.venv/
-venv/
-.env
-
-# Data / models (regenerable, too large) -- results ARE tracked
-data/MetaQA/
-*.bin
-*.safetensors
-
-# Misc
-.DS_Store
-*.log
+*.pyc

@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{Oracle judge-routing analysis (7B, MetaQA mixed, test $n{=}150$). The oracle that picks the better judge per query has large upside (F1 $0.474$ at $27\%$ LLM calls), but every realizable policy---gap routing, trained routers---falls \emph{below} always-LLM. This is the predictability ceiling.}
+\label{tab:oracle}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+Routing policy & F1 & LLM-call rate \\
+\midrule
+Always-embedding (free)          & 0.329 & \best{0\%} \\
+Always-LLM                       & 0.411 & 100\% \\
+\textbf{Oracle (pick best/query)} & \best{0.474} & 27\% \\
+\midrule
+\multicolumn{3}{@{}l}{\emph{Realizable policies:}} \\
+Gap-routing (hop-0 margin)       & 0.354 & 63\% \\
+Trained router (question emb.)   & 0.370 & 10\% \\
+Trained router (pipeline signals) & 0.329 & 0\% \\
+\bottomrule
+\end{tabular}
+\end{table}

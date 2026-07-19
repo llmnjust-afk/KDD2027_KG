@@ -346,6 +346,109 @@ class OracleDepthController:
         return hop_idx + 1 >= self.cur_depth
 
 
+# --------------------------------------------------------------------------- Retrieve-then-Decide (RtD) — redesigned method
+@dataclass
+class RtDController:
+    """Retrieve-then-Decide: probe with 1 hop, then allocate the remaining budget.
+
+    Diagnosis of why the original AdaptiveController fails: its D3 uses the
+    top-score *gain* (t_k - t_{k-1}) as the stop signal, but this signal is
+    unreliable because (a) scores are not comparable across hops with different
+    candidate sets, and (b) a flat gain does not imply the next hop is useless.
+    On MetaQA mixed streams, the optimal K varies with true depth (1-hop→K=1-2,
+    2-hop→K=2, 3-hop→K=3), but D3 stops at the wrong point, losing to a tuned
+    global K=2.
+
+    RtD redesigns the decision rule around three observations from the per-hop
+    F1 diagnosis:
+      1. After 1 hop, the *candidate count* and *score distribution* reveal
+         query difficulty: a query with many high-scoring candidates is likely
+         multi-hop (needs more exploration); a query with one dominant candidate
+         is likely a simple lookup (K=1 suffices).
+      2. The *absolute* top score after hop 0 is a better confidence signal
+         than the *gain* (which is undefined at hop 0 and noisy afterwards).
+      3. Once we decide the budget, we run to that budget without further
+         stopping (avoiding the false-stop problem).
+
+    Decision rule (training-free):
+      - Always run hop 0 (probe).
+      - After hop 0, compute a difficulty score d in [0,1] from:
+          d = w1 * (1 - top_score_0) + w2 * H_0 + w3 * min(n_cand / cap, 1)
+        where top_score_0 is the absolute top score at hop 0, H_0 the entropy,
+        n_cand the candidate count, cap a normalizer.
+        High d (low top score, high entropy, many candidates) → hard query → more hops.
+      - Map d to a per-query budget K*(d):
+          K* = 1 if d < tau_easy
+          K* = 2 if tau_easy <= d < tau_hard
+          K* = 3 if d >= tau_hard
+      - Run to K* without early stopping.
+
+    This avoids the false-stop problem entirely (no mid-retrieval stopping) and
+    uses the hop-0 probe signal (which is reliable) rather than cross-hop gains
+    (which are not). The cost is one mandatory hop-0 judge call for every query,
+    but this is cheaper than always running K=3.
+    """
+    max_hops: int = 3
+    beam: int = 4
+    # difficulty weights
+    w_confidence: float = 0.5    # weight on (1 - top_score)
+    w_entropy: float = 0.3       # weight on normalized entropy
+    w_candidates: float = 0.2    # weight on candidate count
+    # difficulty thresholds
+    tau_easy: float = 0.3        # d < tau_easy → K*=1
+    tau_hard: float = 0.6        # d >= tau_hard → K*=3
+    # cap for normalizing candidate count
+    cand_cap: int = 32
+    # internal: per-query budget decided after hop 0
+    _decided_budget: int = 3
+    _probed: bool = False
+
+    @staticmethod
+    def _norm_entropy(scores):
+        s = np.asarray(scores, dtype=np.float64)
+        s = np.clip(s, 1e-6, None)
+        s = s / s.sum()
+        h = -float(np.sum(s * np.log(s)))
+        return h / math.log(len(s)) if len(s) > 1 else 0.0
+
+    def reset(self):
+        self._decided_budget = self.max_hops
+        self._probed = False
+
+    def decide_use_graph(self, question, entity_hits, ctx):
+        return len(entity_hits) > 0
+
+    def beam_for_hop(self, question, hop_idx, frontier_size, scores, ctx):
+        return self.beam
+
+    def should_stop(self, question, hop_idx, frontier, prev_frontier, score_stats, ctx):
+        if not frontier:
+            return True
+        # probe phase: never stop at hop 0
+        if hop_idx == 0:
+            # decide the per-query budget based on hop-0 signals
+            top_score = float(score_stats.get("top_score", 0.0))
+            topk = score_stats.get("topk_scores") or []
+            n_cand = int(score_stats.get("n_candidates", 0))
+            H = self._norm_entropy(topk) if topk else 0.0
+            d = (self.w_confidence * (1.0 - top_score)
+                 + self.w_entropy * H
+                 + self.w_candidates * min(n_cand / self.cand_cap, 1.0))
+            if d < self.tau_easy:
+                self._decided_budget = 1
+            elif d < self.tau_hard:
+                self._decided_budget = 2
+            else:
+                self._decided_budget = 3
+            self._probed = True
+            ctx["rtd_difficulty"] = d
+            ctx["rtd_budget"] = self._decided_budget
+            # at hop 0, stop only if budget is 1
+            return self._decided_budget <= 1
+        # after hop 0: stop when we reach the decided budget
+        return hop_idx + 1 >= self._decided_budget
+
+
 # --------------------------------------------------------------------------- factory
 def build_controller(cfg: Dict) -> object:
     name = cfg.get("name", "adaptive")
@@ -376,6 +479,15 @@ def build_controller(cfg: Dict) -> object:
     if name == "oracle-depth":
         return OracleDepthController(max_hops=common["max_hops"],
                                      beam=cfg.get("beam", 4))
+    if name == "rtd":
+        return RtDController(max_hops=common["max_hops"],
+                             beam=cfg.get("beam", 4),
+                             w_confidence=cfg.get("w_confidence", 0.5),
+                             w_entropy=cfg.get("w_entropy", 0.3),
+                             w_candidates=cfg.get("w_candidates", 0.2),
+                             tau_easy=cfg.get("tau_easy", 0.3),
+                             tau_hard=cfg.get("tau_hard", 0.6),
+                             cand_cap=cfg.get("cand_cap", 32))
     return AdaptiveController(
         max_hops=common["max_hops"],
         theta_low=cfg.get("theta_low", 0.30),

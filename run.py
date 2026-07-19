@@ -61,6 +61,8 @@ SYSTEMS = {
     "conf-threshold": ({"name": "conf-threshold", "beam": 4, "threshold": 0.70}, "Conf-threshold (t=0.70)"),
     "random-budget":  ({"name": "random-budget", "beam": 4, "seed": 0}, "Random-budget"),
     "oracle-depth":   ({"name": "oracle-depth", "beam": 4}, "Oracle-depth (upper bound)"),
+    "rtd":            ({"name": "rtd", "beam": 4}, "RtD (ours)"),
+    "adaptive-judge": ({"name": "fixed", "beam": 4}, "AdaptiveJudge (ours)"),
 }
 
 
@@ -144,6 +146,10 @@ def main():
                     help="probability of corrupting entity mentions in questions (simulates noisy linking)")
     ap.add_argument("--vector-rag-topk", type=int, default=0,
                     help=">0 enables vector-RAG mode (retrieve top-k triples, no traversal)")
+    ap.add_argument("--adaptive-judge", action="store_true",
+                    help="enable adaptive judge: emb probe first, skip LLM if confident")
+    ap.add_argument("--adaptive-judge-threshold", type=float, default=0.55,
+                    help="emb top-1 above this -> skip LLM judge (adaptive judge mode)")
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--seed", type=int, default=0,
                     help="random seed: shuffles the test-split order before taking --limit; "
@@ -222,6 +228,8 @@ def main():
             judge_with_llm=not args.no_llm_judge,
             noisy_linking=args.noisy_linking,
             vector_rag_topk=args.vector_rag_topk if sname == "vector-rag" else 0,
+            adaptive_judge=(args.adaptive_judge or sname == "adaptive-judge"),
+            adaptive_judge_threshold=args.adaptive_judge_threshold,
         )
         reports = run_one(retriever, backend, examples, limit=args.limit,
                           corrupt_rate=args.corrupt_rate)

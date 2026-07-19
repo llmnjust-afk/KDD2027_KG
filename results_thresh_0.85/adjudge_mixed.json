@@ -1,0 +1,35 @@
+{
+  "Fixed (LLM judge)": {
+    "f1": 0.41713445813445815,
+    "hit1": 0.52,
+    "toks": 1619.08,
+    "hops": 3.0,
+    "calls": 4.0,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 0
+    }
+  },
+  "AdaptiveJudge (ours)": {
+    "f1": 0.4177693787693788,
+    "hit1": 0.52,
+    "toks": 1598.6666666666667,
+    "hops": 3.0,
+    "calls": 3.96,
+    "judge_stats": {
+      "emb_only": 6,
+      "llm": 444
+    }
+  },
+  "Fixed (emb judge)": {
+    "f1": 0.3977740712446594,
+    "hit1": 0.48,
+    "toks": 159.47333333333333,
+    "hops": 2.88,
+    "calls": 1.0,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 0
+    }
+  }
+}

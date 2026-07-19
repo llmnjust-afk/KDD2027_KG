@@ -1,0 +1,79 @@
+{
+  "AdaptiveJudge T=0.55": {
+    "f1": 0.03983333333333333,
+    "hit1": 0.05,
+    "toks": 932.605,
+    "hops": 2.62,
+    "calls": 2.02,
+    "judge_stats": {
+      "emb_only": 1,
+      "llm": 2
+    }
+  },
+  "AdaptiveJudge T=0.75": {
+    "f1": 0.024833333333333332,
+    "hit1": 0.035,
+    "toks": 2216.475,
+    "hops": 2.875,
+    "calls": 3.715,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 3
+    }
+  },
+  "Fixed-LLM K=3 B=4": {
+    "f1": 0.015333333333333332,
+    "hit1": 0.02,
+    "toks": 2346.57,
+    "hops": 2.91,
+    "calls": 3.91,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 0
+    }
+  },
+  "Fixed-LLM K=2 B=4": {
+    "f1": 0.012,
+    "hit1": 0.015,
+    "toks": 1780.495,
+    "hops": 2.0,
+    "calls": 3.0,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 0
+    }
+  },
+  "Fixed-LLM K=2 B=8": {
+    "f1": 0.014777777777777779,
+    "hit1": 0.02,
+    "toks": 2029.585,
+    "hops": 2.0,
+    "calls": 3.0,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 0
+    }
+  },
+  "Fixed-LLM K=1 B=4": {
+    "f1": 0.012,
+    "hit1": 0.015,
+    "toks": 997.675,
+    "hops": 1.0,
+    "calls": 2.0,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 0
+    }
+  },
+  "Fixed-emb K=3": {
+    "f1": 0.04352380952380952,
+    "hit1": 0.055,
+    "toks": 205.665,
+    "hops": 2.565,
+    "calls": 1.0,
+    "judge_stats": {
+      "emb_only": 0,
+      "llm": 0
+    }
+  }
+}

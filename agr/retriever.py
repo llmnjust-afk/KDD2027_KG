@@ -89,6 +89,8 @@ class GraphRAGRetriever:
         judge_with_llm: bool = True,
         noisy_linking: bool = False,
         vector_rag_topk: int = 0,
+        adaptive_judge: bool = False,
+        adaptive_judge_threshold: float = 0.55,
     ):
         self.kg = kg
         self.backend = backend
@@ -98,6 +100,9 @@ class GraphRAGRetriever:
         self.judge_with_llm = judge_with_llm
         self.noisy_linking = noisy_linking  # strip [Entity] brackets -> test 2a
         self.vector_rag_topk = vector_rag_topk  # >0 => vector-RAG mode (no graph traversal)
+        self.adaptive_judge = adaptive_judge  # adaptive judge: emb probe then maybe LLM
+        self.adaptive_judge_threshold = adaptive_judge_threshold  # emb top-1 above this -> skip LLM
+        self._judge_stats = {"emb_only": 0, "llm": 0}  # diagnostics
         self._ent_index: Optional[List[str]] = None
         self._ent_emb: Optional[np.ndarray] = None
         self._triple_index: Optional[List[Tuple[str, str, str]]] = None
@@ -167,6 +172,20 @@ class GraphRAGRetriever:
                           candidates: List[Tuple[str, str, str]]) -> List[float]:
         if not candidates:
             return []
+        # Adaptive judge: first compute free embedding scores; if the top-1
+        # embedding score is high (confident match), skip the LLM call entirely
+        # and use embedding scores — this is free and, as our diagnosis shows,
+        # embedding judge is actually *better* than LLM judge on simple 1-hop
+        # lookups. Only invoke the expensive LLM judge when the embedding signal
+        # is uncertain (top-1 below threshold).
+        if self.adaptive_judge:
+            emb_scores = self._embedding_scores(question, candidates)
+            top1 = max(emb_scores) if emb_scores else 0.0
+            if top1 >= self.adaptive_judge_threshold:
+                self._judge_stats["emb_only"] += 1
+                return emb_scores
+            # uncertain: fall through to LLM judge
+            self._judge_stats["llm"] += 1
         if self.judge_with_llm:
             # Few-shot judge prompt: 2 examples calibrate the scoring scale,
             # improving judge accuracy and thus downstream QA F1.
@@ -191,6 +210,11 @@ class GraphRAGRetriever:
             scores = _parse_int_list(out["text"], len(candidates))
             return [s / 100.0 for s in scores]
         # cheap fallback: embedding similarity of the fact text to the question
+        return self._embedding_scores(question, candidates)
+
+    def _embedding_scores(self, question: str,
+                          candidates: List[Tuple[str, str, str]]) -> List[float]:
+        """Free embedding-similarity relevance scores (no LLM call)."""
         texts = [f"{h} {r} {t}" for (h, r, t) in candidates]
         emb = np.asarray(self.backend.embed([question] + texts), dtype=np.float32)
         q = emb[0] / (np.linalg.norm(emb[0]) + 1e-9)

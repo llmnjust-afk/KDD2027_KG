@@ -1,0 +1,20 @@
+\begin{table}[t]
+\centering
+\caption{Full Pareto comparison on the MetaQA mixed stream (7B, $n{=}240$, identical subset). A tuned global Fixed-$K{=}2,B{=}8$ is non-dominated and beats every depth-adaptive policy \emph{and} the oracle-depth policy. $\dagger$ marks dominated systems. \Toks{}=input tokens/query.}
+\label{tab:depth-mixed}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+System (7B, MetaQA mixed) & F1 & \Toks{} & dom.\ \\
+\midrule
+Fixed-emb $K{=}3$ (free judge)      & 0.397 & \best{159}  & \\
+Fixed-LLM $K{=}1,B{=}4$             & 0.254 & 398  & $\dagger$ \\
+\textsc{AdaptiveJudge} ($\tau{=}0.55$) & 0.394 & 886 & $\dagger$ \\
+Fixed-LLM $K{=}2,B{=}4$             & 0.396 & 1005 & $\dagger$ \\
+Oracle-depth (cheats)              & 0.444 & 999  & $\dagger$ \\
+\textbf{Fixed-LLM $K{=}2,B{=}8$}   & \best{0.478} & 1101 & \\
+\textsc{AdaptiveJudge} ($\tau{=}0.75$) & 0.431 & 1402 & $\dagger$ \\
+Fixed-LLM $K{=}3,B{=}4$            & 0.406 & 1610 & $\dagger$ \\
+\bottomrule
+\end{tabular}
+\end{table}
