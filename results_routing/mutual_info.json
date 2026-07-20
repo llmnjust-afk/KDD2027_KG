@@ -1,0 +1,23 @@
+{
+  "n": 300,
+  "P_Y1": 0.21666666666666667,
+  "H_Y_bits": 0.7540340561971326,
+  "mi_per_feature_bits": {
+    "top1": 0.0,
+    "top2": 0.012790084092951669,
+    "gap": 0.0,
+    "mean": 0.0,
+    "n_cand": 0.0,
+    "depth": 0.0037389586335048177
+  },
+  "mi_sum_bits": 0.016529042726456486,
+  "mi_max_bits": 0.012790084092951669,
+  "null_mean_bits": 0.07575695759172955,
+  "null_q95_bits": 0.17262718685164957,
+  "p_value": 0.924,
+  "mi_corrected_bits": 0.0,
+  "mi_corrected_frac_of_H": 0.0,
+  "always_llm_f1": 0.4129216600734571,
+  "oracle_f1": 0.4790317559500983,
+  "verdict": "CEILING FORMALIZED: I(sigma;Y*) is statistically indistinguishable from zero (p>=0.05); pre-computation signals carry essentially no information about the optimal per-query decision."
+}

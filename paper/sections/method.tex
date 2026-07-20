@@ -20,3 +20,23 @@ Which judge to trust for the whole query. This is a routing problem: for each qu
 
 \subsection{Evaluation Protocol}
 All policies run through the identical engine on the identical query subset. We report entity-level F1 and Hit@1 for accuracy, and mean input tokens per query (\Toks{}) as the cost metric, since input tokens dominate API pricing and track judge-call count. For a fair frontier, we sweep the global baseline over $K\in\{1,2,3\}$ and $B\in\{2,4,6,8\}$ and both judges, and ask whether any adaptive policy is \emph{non-dominated} relative to this tuned frontier. The oracle policies (oracle-depth, oracle-judge) are not deployable---they use ground-truth labels---but bound the maximum achievable benefit of perfect per-query adaptation, isolating whether the bottleneck is policy design or predictability.
+
+\subsection{The Predictability Ceiling, Formally}
+\label{sec:method-ceiling}
+The negative results above are empirical; we now state the structural reason they must hold. Fix an adaptation axis with two actions $a\in\{0,1\}$ (e.g., embedding vs.\ LLM judge) and let $U(a\mid q)$ be the resulting answer utility (F1) on query $q$. Write the \emph{oracle decision} $Y^\star(q)=\arg\max_a U(a\mid q)$ and let $\sigma(q)$ denote the \emph{pre-computation signal}: any statistic computable \emph{before} the expensive action is taken (question embedding, entity-linking confidences, hop-0 relevance-score distribution). A deployable training-free router is any measurable map $\pi:\sigma\mapsto a$. Let $g^\star$ be the better of the two \emph{global} policies, $g^\star=\arg\max_a \mathbb{E}_q[U(a\mid q)]$ (the tuned global budget).
+
+\begin{proposition}[Router optimality is bounded by signal information]
+\label{prop:ceiling}
+Let $\Delta(q)=U(1\mid q)-U(0\mid q)$ be the per-query action gain and let $\pi^\star_\sigma$ be the Bayes-optimal router on $\sigma$. Its expected utility gain over the best global policy satisfies
+\[
+\mathbb{E}_q\!\big[U(\pi^\star_\sigma(\sigma)\mid q)\big]-\mathbb{E}_q\!\big[U(g^\star\mid q)\big]
+\;\le\; \mathbb{E}_q\big[\,|\Delta(q)|\,\big]\cdot \rho(\sigma),
+\]
+where $\rho(\sigma)\in[0,1]$ is the fraction of queries on which $\sigma$ changes the Bayes decision away from $g^\star$. Moreover $\rho(\sigma)$ is controlled by the information $\sigma$ carries about the oracle decision: if $I(\sigma;Y^\star)=0$ then $\rho(\sigma)=0$ and the tuned global policy $g^\star$ is Bayes-optimal among all $\sigma$-measurable routers.
+\end{proposition}
+
+\begin{proof}[Proof sketch]
+Conditioned on $\sigma$, the Bayes router picks $a{=}1$ iff $\mathbb{E}[\Delta\mid\sigma]>0$; it differs from the constant policy $g^\star$ only on the event $E_\sigma=\{\operatorname{sign}\mathbb{E}[\Delta\mid\sigma]\neq g^\star\}$, whose probability is $\rho(\sigma)$, and on that event the per-query improvement is at most $|\Delta(q)|$, giving the bound. If $I(\sigma;Y^\star)=0$ then $Y^\star\perp\sigma$, so $\Pr(Y^\star{=}1\mid\sigma)=\Pr(Y^\star{=}1)$ is constant in $\sigma$; the sign of the conditional expected gain therefore does not depend on $\sigma$ and equals that of $g^\star$, so $\rho(\sigma)=0$. By the data-processing inequality any router $\pi(\sigma)$ satisfies $I(\pi(\sigma);Y^\star)\le I(\sigma;Y^\star)$, so no post-processing of $\sigma$ can recover information $\sigma$ does not contain (a Fano-type bound then limits routing accuracy to the base rate).
+\end{proof}
+
+Proposition~\ref{prop:ceiling} converts the ceiling from an observation into a testable quantity: the entire question is whether $I(\sigma;Y^\star)$ is bounded away from zero. \Cref{sec:exp-oracle} estimates it directly and finds it statistically indistinguishable from zero, which is why every router we build---and every router that \emph{could} be built on these signals---collapses to the tuned global policy.
