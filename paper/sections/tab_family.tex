@@ -1,0 +1,15 @@
+\begin{table}[t]
+\centering
+\caption{Cross-family robustness (MetaQA mixed, $n{=}180$, strong engine). Across three judge families, a tuned global Fixed-$K{=}2,B{=}8$ dominates the best training-free adaptive policy---the negative result is not Qwen-specific.}
+\label{tab:family}
+\small
+\begin{tabular}{@{}lccc@{}}
+\toprule
+Judge family & best Adaptive F1 & tuned Global F1 & global wins \\
+\midrule
+Qwen2.5-7B  & 0.394 & \best{0.478} & \checkmark \\
+Llama-3.1-8B & 0.239 & \best{0.248} & \checkmark \\
+Mistral-7B-v0.3 & 0.453 & \best{0.569} & \checkmark \\
+\bottomrule
+\end{tabular}
+\end{table}

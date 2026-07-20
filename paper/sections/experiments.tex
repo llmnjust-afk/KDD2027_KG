@@ -54,3 +54,10 @@ Why does every adaptive policy fail? We test whether the bottleneck is our polic
 Yet no realizable policy captures it. Gap-based routing (route to the LLM when the hop-0 embedding gap is small) reaches only $0.354$---\emph{below} always-LLM. A trained logistic-regression router on the question embedding reaches $0.370$; on cheap pipeline signals it degrades to $0.329$ (always-embedding). Every deployable policy falls below the trivial always-LLM baseline, despite the oracle's large headroom.
 
 We interpret this as a \emph{predictability ceiling}. The label a router must predict---whether the LLM judge would yield a better answer than the embedding judge for this query---depends on whether the correct answer triple happens to rank highly under each scorer, which is determined only by \emph{running} the scorers and the downstream generator. No signal computed \emph{before} the expensive computation (question text, entity-linking confidence, hop-0 score distribution) carries this information, because difficulty in GraphRAG is a property of the query--pipeline \emph{interaction} revealed post hoc, not a predictable property of the query. This is the same reason depth adaptation fails: whether hop $k{+}1$ helps is knowable only after running it. The three axes share one root cause.
+
+\subsection{Cross-Family Robustness}
+\label{sec:exp-family}
+
+A natural concern is that our conclusions are specific to the Qwen judge family. We repeat the mixed-stream depth comparison on two additional families---Llama-3.1-8B-Instruct and Mistral-7B-Instruct-v0.3---under the strong engine (\Cref{tab:family}). The negative result is unchanged: on all three families the tuned global Fixed-$K{=}2,B{=}8$ dominates the best training-free adaptive policy (Qwen $0.478$ vs.\ $0.394$; Llama $0.248$ vs.\ $0.239$; Mistral $0.569$ vs.\ $0.453$), and the Pareto structure is identical (a cheap embedding-only point and a tuned $K{=}2$ high-accuracy point bound the frontier). Combined with the 1.5B/7B/14B scale sweep, this shows the predictability ceiling holds across judge scale \emph{and} family.
+
+\input{sections/tab_family}

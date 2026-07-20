@@ -1,0 +1,131 @@
+=== P0.2 cross-family started Sun Jul 19 18:32:54 UTC 2026 ===
+
+###### MODEL: NousResearch/Meta-Llama-3.1-8B-Instruct ######
+Dataset: metaqa_mixed | 180 queries | model: NousResearch/Meta-Llama-3.1-8B-Instruct
+
+=== AdaptiveJudge T=0.55 ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+[transformers] Ignoring clean_up_tokenization_spaces=True for BPE tokenizer TokenizersBackend. The clean_up_tokenization post-processing step is designed for WordPiece tokenizers and is destructive for BPE (it strips spaces before punctuation). Set clean_up_tokenization_spaces=False to suppress this warning, or set clean_up_tokenization_spaces_for_bpe_even_though_it_will_corrupt_output=True to force cleanup anyway.
+  [50/180] AdaptiveJudge T=0.55         F1=0.180 toks=834 calls=2.34 (0.7s)
+  [100/180] AdaptiveJudge T=0.55         F1=0.213 toks=795 calls=2.30 (2.1s)
+  [150/180] AdaptiveJudge T=0.55         F1=0.236 toks=798 calls=2.33 (2.0s)
+  [180/180] AdaptiveJudge T=0.55         F1=0.239 toks=830 calls=2.37 (2.0s)
+
+=== AdaptiveJudge T=0.75 ===
+  [50/180] AdaptiveJudge T=0.75         F1=0.183 toks=1431 calls=3.64 (4.7s)
+  [100/180] AdaptiveJudge T=0.75         F1=0.225 toks=1331 calls=3.51 (4.7s)
+  [150/180] AdaptiveJudge T=0.75         F1=0.230 toks=1314 calls=3.49 (2.0s)
+  [180/180] AdaptiveJudge T=0.75         F1=0.234 toks=1328 calls=3.51 (2.0s)
+
+=== Fixed-LLM K=3 B=4 ===
+  [50/180] Fixed-LLM K=3 B=4            F1=0.151 toks=1566 calls=4.00 (4.7s)
+  [100/180] Fixed-LLM K=3 B=4            F1=0.203 toks=1541 calls=4.00 (4.7s)
+  [150/180] Fixed-LLM K=3 B=4            F1=0.214 toks=1540 calls=4.00 (4.7s)
+  [180/180] Fixed-LLM K=3 B=4            F1=0.215 toks=1547 calls=4.00 (4.7s)
+
+=== Fixed-LLM K=2 B=4 ===
+  [50/180] Fixed-LLM K=2 B=4            F1=0.166 toks=972 calls=3.00 (3.3s)
+  [100/180] Fixed-LLM K=2 B=4            F1=0.188 toks=953 calls=3.00 (3.3s)
+  [150/180] Fixed-LLM K=2 B=4            F1=0.188 toks=951 calls=3.00 (3.3s)
+  [180/180] Fixed-LLM K=2 B=4            F1=0.201 toks=957 calls=3.00 (3.4s)
+
+=== Fixed-LLM K=2 B=8 ===
+  [50/180] Fixed-LLM K=2 B=8            F1=0.212 toks=1062 calls=3.00 (3.4s)
+  [100/180] Fixed-LLM K=2 B=8            F1=0.254 toks=1035 calls=3.00 (3.4s)
+  [150/180] Fixed-LLM K=2 B=8            F1=0.242 toks=1038 calls=3.00 (3.4s)
+  [180/180] Fixed-LLM K=2 B=8            F1=0.248 toks=1042 calls=3.00 (3.3s)
+
+=== Fixed-LLM K=1 B=4 ===
+  [50/180] Fixed-LLM K=1 B=4            F1=0.123 toks=390 calls=2.00 (2.0s)
+  [100/180] Fixed-LLM K=1 B=4            F1=0.134 toks=382 calls=2.00 (2.0s)
+  [150/180] Fixed-LLM K=1 B=4            F1=0.150 toks=383 calls=2.00 (2.0s)
+  [180/180] Fixed-LLM K=1 B=4            F1=0.168 toks=386 calls=2.00 (2.0s)
+
+=== Fixed-emb K=3 ===
+  [50/180] Fixed-emb K=3                F1=0.164 toks=158 calls=1.00 (0.7s)
+  [100/180] Fixed-emb K=3                F1=0.189 toks=155 calls=1.00 (0.7s)
+  [150/180] Fixed-emb K=3                F1=0.207 toks=157 calls=1.00 (0.7s)
+  [180/180] Fixed-emb K=3                F1=0.223 toks=157 calls=1.00 (0.7s)
+
+================================================================================
+FULL PARETO [metaqa_mixed, n=180, NousResearch/Meta-Llama-3.1-8B-Instruct]
+================================================================================
+system                           F1  Hit@1   toks calls  hops            judge
+----------------------------------------------------------------------
+ Fixed-emb K=3                0.223  0.306    157  1.00  2.88      emb:0 llm:0
+*Fixed-LLM K=1 B=4            0.168  0.222    386  2.00  1.00      emb:0 llm:0
+ AdaptiveJudge T=0.55         0.239  0.339    830  2.37  2.90      emb:2 llm:1
+*Fixed-LLM K=2 B=4            0.201  0.306    957  3.00  2.00      emb:0 llm:0
+ Fixed-LLM K=2 B=8            0.248  0.289   1042  3.00  2.00      emb:0 llm:0
+*AdaptiveJudge T=0.75         0.234  0.344   1328  3.51  2.98      emb:2 llm:1
+*Fixed-LLM K=3 B=4            0.215  0.333   1547  4.00  3.00      emb:0 llm:0
+
+(* = dominated)
+
+Saved to ./results_p02_Meta-Llama-3.1-8B-Instruct/full_pareto_metaqa_mixed.json
+
+###### MODEL: mistralai/Mistral-7B-Instruct-v0.3 ######
+Dataset: metaqa_mixed | 180 queries | model: mistralai/Mistral-7B-Instruct-v0.3
+
+=== AdaptiveJudge T=0.55 ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  [50/180] AdaptiveJudge T=0.55         F1=0.365 toks=1013 calls=2.30 (0.1s)
+  [100/180] AdaptiveJudge T=0.55         F1=0.429 toks=989 calls=2.29 (1.5s)
+  [150/180] AdaptiveJudge T=0.55         F1=0.431 toks=1002 calls=2.33 (1.5s)
+  [180/180] AdaptiveJudge T=0.55         F1=0.453 toks=1048 calls=2.37 (1.5s)
+
+=== AdaptiveJudge T=0.75 ===
+  [50/180] AdaptiveJudge T=0.75         F1=0.472 toks=1773 calls=3.62 (2.8s)
+  [100/180] AdaptiveJudge T=0.75         F1=0.503 toks=1667 calls=3.52 (3.4s)
+  [150/180] AdaptiveJudge T=0.75         F1=0.502 toks=1631 calls=3.50 (1.5s)
+  [180/180] AdaptiveJudge T=0.75         F1=0.515 toks=1657 calls=3.52 (1.5s)
+
+=== Fixed-LLM K=3 B=4 ===
+  [50/180] Fixed-LLM K=3 B=4            F1=0.451 toks=1916 calls=3.98 (2.9s)
+  [100/180] Fixed-LLM K=3 B=4            F1=0.483 toks=1905 calls=3.99 (3.4s)
+  [150/180] Fixed-LLM K=3 B=4            F1=0.493 toks=1896 calls=3.99 (3.9s)
+  [180/180] Fixed-LLM K=3 B=4            F1=0.500 toks=1916 calls=3.99 (3.4s)
+
+=== Fixed-LLM K=2 B=4 ===
+  [50/180] Fixed-LLM K=2 B=4            F1=0.452 toks=1216 calls=3.00 (2.0s)
+  [100/180] Fixed-LLM K=2 B=4            F1=0.485 toks=1190 calls=3.00 (1.9s)
+  [150/180] Fixed-LLM K=2 B=4            F1=0.484 toks=1186 calls=3.00 (2.5s)
+  [180/180] Fixed-LLM K=2 B=4            F1=0.492 toks=1196 calls=3.00 (2.0s)
+
+=== Fixed-LLM K=2 B=8 ===
+  [50/180] Fixed-LLM K=2 B=8            F1=0.513 toks=1333 calls=3.00 (2.3s)
+  [100/180] Fixed-LLM K=2 B=8            F1=0.553 toks=1303 calls=3.00 (1.9s)
+  [150/180] Fixed-LLM K=2 B=8            F1=0.562 toks=1306 calls=3.00 (2.4s)
+  [180/180] Fixed-LLM K=2 B=8            F1=0.569 toks=1313 calls=3.00 (2.0s)
+
+=== Fixed-LLM K=1 B=4 ===
+  [50/180] Fixed-LLM K=1 B=4            F1=0.296 toks=486 calls=2.00 (0.5s)
+  [100/180] Fixed-LLM K=1 B=4            F1=0.284 toks=477 calls=2.00 (0.6s)
+  [150/180] Fixed-LLM K=1 B=4            F1=0.305 toks=479 calls=2.00 (1.2s)
+  [180/180] Fixed-LLM K=1 B=4            F1=0.300 toks=481 calls=2.00 (0.6s)
+
+=== Fixed-emb K=3 ===
+  [50/180] Fixed-emb K=3                F1=0.373 toks=193 calls=1.00 (0.1s)
+  [100/180] Fixed-emb K=3                F1=0.414 toks=190 calls=1.00 (0.1s)
+  [150/180] Fixed-emb K=3                F1=0.426 toks=193 calls=1.00 (0.1s)
+  [180/180] Fixed-emb K=3                F1=0.442 toks=193 calls=1.00 (0.1s)
+
+================================================================================
+FULL PARETO [metaqa_mixed, n=180, mistralai/Mistral-7B-Instruct-v0.3]
+================================================================================
+system                           F1  Hit@1   toks calls  hops            judge
+----------------------------------------------------------------------
+ Fixed-emb K=3                0.442  0.528    193  1.00  2.89      emb:0 llm:0
+*Fixed-LLM K=1 B=4            0.300  0.328    481  2.00  1.00      emb:0 llm:0
+ AdaptiveJudge T=0.55         0.453  0.550   1048  2.37  2.92      emb:2 llm:1
+ Fixed-LLM K=2 B=4            0.492  0.589   1196  3.00  2.00      emb:0 llm:0
+ Fixed-LLM K=2 B=8            0.569  0.644   1313  3.00  2.00      emb:0 llm:0
+*AdaptiveJudge T=0.75         0.515  0.628   1657  3.52  2.99      emb:2 llm:1
+*Fixed-LLM K=3 B=4            0.500  0.622   1916  3.99  2.99      emb:0 llm:0
+
+(* = dominated)
+
+Saved to ./results_p02_Mistral-7B-Instruct-v0.3/full_pareto_metaqa_mixed.json
+=== P0.2 COMPLETE Sun Jul 19 20:17:31 UTC 2026 ===
