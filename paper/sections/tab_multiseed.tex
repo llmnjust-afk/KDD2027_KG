@@ -1,0 +1,16 @@
+\begin{table}[t]
+\centering
+\caption{Multi-seed statistical validation (MetaQA mixed, $n{=}500$ per seed, 3 seeds, strong engine). Mean$\pm$std F1 across seeds. A paired bootstrap on the pooled $1{,}494$ queries confirms the tuned global budget significantly beats the best adaptive policy: $\Delta$F1${=}{+}0.055$, $95\%$ CI $[{+}0.039,{+}0.070]$, $P(\Delta{\le}0){<}10^{-4}$.}
+\label{tab:multiseed}
+\small
+\begin{tabular}{@{}lcc@{}}
+\toprule
+System & F1 (mean$\pm$std) & \Toks{} \\
+\midrule
+\textbf{Fixed-$K{=}2,B{=}8$ (tuned global)} & \best{0.415$\pm$0.010} & 1042 \\
+Fixed-$K{=}3$ (default) & 0.371$\pm$0.012 & 1302 \\
+\textsc{AdaptiveJudge} (best adaptive) & 0.361$\pm$0.011 & 353 \\
+Fixed-emb (cheap) & 0.357$\pm$0.013 & \best{122} \\
+\bottomrule
+\end{tabular}
+\end{table}

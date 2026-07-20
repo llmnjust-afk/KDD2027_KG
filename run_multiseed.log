@@ -1,0 +1,35 @@
+
+=== seed 0 (n=498) ===
+Warning: You are sending unauthenticated requests to the HF Hub. Please set a HF_TOKEN to enable higher rate limits and faster downloads.
+[transformers] `torch_dtype` is deprecated! Use `dtype` instead!
+  AdaptiveJudge  F1=0.375 toks=358 (816s)
+  Fixed-K2B8     F1=0.428 toks=1041 (1645s)
+  Fixed-K3       F1=0.377 toks=1303 (1918s)
+  Fixed-emb      F1=0.375 toks=122 (464s)
+
+=== seed 1 (n=498) ===
+  AdaptiveJudge  F1=0.359 toks=359 (786s)
+  Fixed-K2B8     F1=0.412 toks=1041 (1717s)
+  Fixed-K3       F1=0.382 toks=1310 (2029s)
+  Fixed-emb      F1=0.346 toks=122 (460s)
+
+=== seed 2 (n=498) ===
+  AdaptiveJudge  F1=0.347 toks=343 (783s)
+  Fixed-K2B8     F1=0.405 toks=1043 (1788s)
+  Fixed-K3       F1=0.355 toks=1294 (2039s)
+  Fixed-emb      F1=0.350 toks=121 (484s)
+
+==================================================================
+P1.3 MULTI-SEED (n=500, seeds=[0, 1, 2], strong engine)
+==================================================================
+system              F1 mean±std    toks
+AdaptiveJudge  0.361±0.011          353
+Fixed-K2B8     0.415±0.010         1042
+Fixed-K3       0.371±0.012         1302
+Fixed-emb      0.357±0.013          122
+
+Paired bootstrap (Fixed-K2B8 - AdaptiveJudge) F1 on pooled n=1494:
+  Delta=+0.055  95% CI=[+0.039,+0.070]  P(delta<=0)=0.0000
+  => tuned global is significantly better than best adaptive
+
+Saved to ./results_multiseed/multiseed.json

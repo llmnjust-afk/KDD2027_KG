@@ -61,3 +61,10 @@ We interpret this as a \emph{predictability ceiling}. The label a router must pr
 A natural concern is that our conclusions are specific to the Qwen judge family. We repeat the mixed-stream depth comparison on two additional families---Llama-3.1-8B-Instruct and Mistral-7B-Instruct-v0.3---under the strong engine (\Cref{tab:family}). The negative result is unchanged: on all three families the tuned global Fixed-$K{=}2,B{=}8$ dominates the best training-free adaptive policy (Qwen $0.478$ vs.\ $0.394$; Llama $0.248$ vs.\ $0.239$; Mistral $0.569$ vs.\ $0.453$), and the Pareto structure is identical (a cheap embedding-only point and a tuned $K{=}2$ high-accuracy point bound the frontier). Combined with the 1.5B/7B/14B scale sweep, this shows the predictability ceiling holds across judge scale \emph{and} family.
 
 \input{sections/tab_family}
+
+\subsection{Multi-Seed Statistical Validation}
+\label{sec:exp-multiseed}
+
+To ensure the gap between the tuned global budget and the best adaptive policy is not a single-run artifact, we scale the main mixed-stream comparison to $n{=}500$ per seed over three independent query subsamples (\Cref{tab:multiseed}). The ranking is stable across seeds (std $\le 0.013$), and a paired bootstrap on the pooled $1{,}494$ queries gives $\Delta$F1${=}{+}0.055$ for Fixed-$K{=}2,B{=}8$ over \textsc{AdaptiveJudge}, with a $95\%$ CI of $[{+}0.039,{+}0.070]$ and $P(\Delta{\le}0){<}10^{-4}$. The tuned global budget is thus \emph{significantly} better than the best training-free adaptive policy, not merely better on average.
+
+\input{sections/tab_multiseed}
