@@ -1,0 +1,18 @@
+\begin{table*}[t]
+\centering
+\caption{Per-regime strong-engine diagnostics (full width). Entity-level F1 and input tokens per query for the embedding vs.\ LLM judge, under the naive engine (candidates truncated in traversal order) and the strong ToG-2.0-style engine (all candidates ranked by embedding similarity before judging), across MetaQA 1/2/3-hop and CWQ. The naive engine makes the free embedding judge look competitive in three of four regimes; the strong engine reverses this---the LLM judge wins in three of four regimes (all but trivial 1-hop), and its largest gain is on the densest graph (CWQ: $0.024\!\to\!0.085$). This establishes that the downstream negative result on adaptation is measured on a properly strong engine. Winner of each strong-engine regime in \textbf{bold}.}
+\label{tab:perhop}
+\small
+\begin{tabular}{@{}lcccccccc@{}}
+\toprule
+& \multicolumn{2}{c}{\textbf{emb / naive}} & \multicolumn{2}{c}{\textbf{emb / strong}} & \multicolumn{2}{c}{\textbf{LLM / naive}} & \multicolumn{2}{c}{\textbf{LLM / strong}} \\
+\cmidrule(lr){2-3}\cmidrule(lr){4-5}\cmidrule(lr){6-7}\cmidrule(lr){8-9}
+\textbf{Regime} & F1 & Tok & F1 & Tok & F1 & Tok & F1 & Tok \\
+\midrule
+MetaQA 1-hop & $0.787$ & $159$ & $\mathbf{0.793}$ & $114$ & $0.672$ & $1633$ & $0.685$ & $1228$ \\
+MetaQA 2-hop & $0.250$ & $145$ & $0.209$ & $130$ & $0.285$ & $1443$ & $\mathbf{0.248}$ & $1305$ \\
+MetaQA 3-hop & $0.095$ & $168$ & $0.056$ & $114$ & $0.090$ & $1718$ & $\mathbf{0.083}$ & $1311$ \\
+CWQ          & $0.046$ & $205$ & $0.062$ & $150$ & $0.024$ & $2325$ & $\mathbf{0.085}$ & $2004$ \\
+\bottomrule
+\end{tabular}
+\end{table*}

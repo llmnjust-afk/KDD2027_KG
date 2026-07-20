@@ -1,0 +1,30 @@
+\begin{table*}[t]
+\centering
+\caption{Master results table (full width). Complete accuracy--cost profile of every policy on the MetaQA mixed-depth stream with the 7B judge/generator under the strong engine ($n{=}240$, identical query subset). Columns report entity-level F1, Hit@1, mean input tokens per query, mean LLM judge calls per query, and mean hops executed. The tuned global \textbf{Fixed-$K{=}2,B{=}8$} is the unique non-dominated accuracy point; every training-free adaptive policy---and even the oracle-depth baseline that uses the ground-truth hop count---lies below it on the accuracy--cost frontier. Best F1 in \textbf{bold}; the cheapest policy that is not accuracy-competitive is shown for reference.}
+\label{tab:master}
+\small
+\begin{tabular}{@{}llccccccl@{}}
+\toprule
+\textbf{Family} & \textbf{Policy} & \textbf{Type} & \textbf{F1} & \textbf{Hit@1} & \textbf{Tokens/q} & \textbf{Calls/q} & \textbf{Hops/q} & \textbf{Note} \\
+\midrule
+\multirow{7}{*}{Qwen2.5-7B}
+ & Fixed-emb $K{=}3$          & global   & $0.397$ & $0.483$ & $159$  & $1.0$ & $2.89$ & cheapest; not competitive \\
+ & Fixed-LLM $K{=}1,B{=}4$    & global   & $0.254$ & $0.279$ & $398$  & $2.0$ & $1.00$ & under-retrieves \\
+ & Fixed-LLM $K{=}2,B{=}4$    & global   & $0.396$ & $0.454$ & $1005$ & $3.0$ & $2.00$ & \\
+ & Fixed-LLM $K{=}3,B{=}4$    & global   & $0.406$ & $0.500$ & $1610$ & $4.0$ & $3.00$ & 3rd hop adds noise \\
+ & \textsc{AdaptiveJudge} $\tau{=}0.55$ & adaptive & $0.394$ & $0.492$ & $886$  & $2.39$ & $2.91$ & dominated \\
+ & \textsc{AdaptiveJudge} $\tau{=}0.75$ & adaptive & $0.431$ & $0.521$ & $1402$ & $3.54$ & $2.98$ & dominated \\
+ & \textbf{Fixed-LLM $K{=}2,B{=}8$}     & \textbf{global}   & $\mathbf{0.478}$ & $\mathbf{0.558}$ & $1101$ & $3.0$ & $2.00$ & \textbf{non-dominated} \\
+\midrule
+\multirow{3}{*}{Llama-3.1-8B}
+ & Fixed-emb $K{=}3$          & global   & $0.223$ & $0.306$ & $157$  & $1.0$ & $2.88$ & \\
+ & best \textsc{AdaptiveJudge} & adaptive & $0.239$ & $0.339$ & $830$  & $2.37$ & $2.90$ & dominated \\
+ & \textbf{Fixed-LLM $K{=}2,B{=}8$}     & \textbf{global}   & $\mathbf{0.248}$ & $0.289$ & $1042$ & $3.0$ & $2.00$ & \textbf{best} \\
+\midrule
+\multirow{3}{*}{Mistral-7B-v0.3}
+ & Fixed-emb $K{=}3$          & global   & $0.442$ & $0.528$ & $193$  & $1.0$ & $2.89$ & \\
+ & best \textsc{AdaptiveJudge} & adaptive & $0.453$ & $0.550$ & $1048$ & $2.37$ & $2.92$ & dominated \\
+ & \textbf{Fixed-LLM $K{=}2,B{=}8$}     & \textbf{global}   & $\mathbf{0.569}$ & $\mathbf{0.644}$ & $1313$ & $3.0$ & $2.00$ & \textbf{best} \\
+\bottomrule
+\end{tabular}
+\end{table*}

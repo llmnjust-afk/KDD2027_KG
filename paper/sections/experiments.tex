@@ -8,6 +8,10 @@ We use three KGQA benchmarks. \textbf{MetaQA}~\cite{zhang2017variational} provid
 \paragraph{Absolute performance, in context.}
 Our absolute F1 values are lower than the best published KGQA numbers---for instance GNN-RAG reports $71.3$/$59.4$ F1 on WebQSP/CWQ and RoG $70.8$/$56.2$~\cite{mavromatis2025gnnrag,luo2023reasoning}---and we state plainly why, to pre-empt the concern that our conclusions rest on a crippled pipeline. Those systems fine-tune the downstream LLM for KGQA, retrieve over the full pagerank-expanded Freebase subgraph, and score with exact-match Hit/Hit@1; we deliberately run a \emph{zero-shot} open-weight judge/generator over the released per-query subgraphs and score with the stricter entity-level F1, because our object of study is the \emph{relative} ordering of adaptation policies under one fixed engine, not leaderboard rank. Every comparison in this paper holds the engine, prompt, retrieval source, and query subset constant and varies only the policy, so the negative result is a within-engine statement that does not depend on matching absolute SOTA. We nonetheless verify that our engine is not pathological: under the strong prefilter the LLM judge behaves as expected (accuracy rises with depth up to the ground-truth hop count, and the tuned $K{=}2$ point on WebQSP recovers the $2$-hop structure of the benchmark), confirming the pipeline is a faithful, if unfinetuned, instance of the ToG family rather than a broken one.
 
+\Cref{tab:master} gives the complete accuracy--cost profile of every policy across all three judge families in one place; the remainder of this section dissects it axis by axis, benchmark by benchmark, with the supporting figures.
+
+\input{sections/tab_master}
+
 \subsection{Axis 1: Adaptive Depth Loses to a Tuned Global $K$}
 \label{sec:exp-depth}
 
@@ -17,8 +21,8 @@ We first ask whether adapting the hop count per query beats a tuned global $K$. 
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.92\columnwidth]{figures/fig_pareto_mixed.pdf}
-\caption{Accuracy--cost plane on the MetaQA mixed stream (7B). The tuned global Fixed-$K{=}2,B{=}8$ is non-dominated; every adaptive policy and even the oracle-depth baseline lies below the global frontier (dashed).}
+\includegraphics[width=\columnwidth]{figures/fig_pareto_rich.pdf}
+\caption{Accuracy--cost plane on the MetaQA mixed stream (7B). Each marker is a policy; the tuned global Fixed-$K{=}2,B{=}8$ ($\star$) is the unique non-dominated accuracy point and defines the horizontal frontier (dashed). Every training-free adaptive policy ($\triangle$) and every other fixed budget ($\circ$) lies strictly below it. The free embedding policy ($\blacksquare$) is far cheaper but not accuracy-competitive.}
 \label{fig:pareto-mixed}
 \end{figure}
 
@@ -30,12 +34,13 @@ The mechanism behind this failure is that the optimal $K$ is a near-global const
 We next adapt the \emph{judge}, and use this axis to run a critical robustness check. \Cref{tab:judge-depth} reports embedding vs.\ LLM judge by depth under two engines: our naive engine (candidates truncated in traversal order) and a stronger ToG-2.0-style engine that ranks all candidates by embedding similarity before judging. Under the \emph{naive} engine, the free embedding judge appears to win in three of four regimes---but this is an artifact: traversal-order truncation hides answer triples from the LLM judge on dense graphs. Under the \emph{strong} engine the LLM judge improves sharply (CWQ: $0.024\!\to\!0.085$; 2-hop: $0.285\!\to\!0.248$ with far lower cost) and \emph{outperforms} the embedding judge in three of four regimes (all but the trivial 1-hop). We therefore do not claim the LLM judge is dispensable; we report the ablation to establish that our downstream negative result on adaptation is measured on a properly strong engine, not a crippled one.
 
 \input{sections/tab_judge}
+\input{sections/tab_perhop}
 
 \begin{figure}[t]
 \centering
-\includegraphics[width=0.88\columnwidth]{figures/fig_judge.pdf}
-\caption{Embedding vs.\ LLM judge by depth under the strong (ToG-2.0-style) engine. With fair candidate selection the LLM judge wins in three of four regimes; the embedding judge wins only at trivial 1-hop.}
-\label{fig:judge}
+\includegraphics[width=\columnwidth]{figures/fig_engine.pdf}
+\caption{Strong-engine ablation across all four regimes. Faded bars are the naive engine (traversal-order truncation), solid bars the strong ToG-2.0-style engine. Fair candidate selection lets the LLM judge (pink) overtake the embedding judge (green) in three of four regimes, with the largest swing on the densest graph (CWQ). The adaptation conclusion is therefore measured on a properly strong engine.}
+\label{fig:engine}
 \end{figure}
 
 Given a properly strong engine, can a policy adapt the judge per query? \textsc{AdaptiveJudge} (Axis 2) skips the LLM when the embedding score is confident. On the MetaQA mixed stream it is Pareto-dominated by the tuned global Fixed-$K{=}2,B{=}8$ (\Cref{tab:depth-mixed}). Adapting the judge \emph{type} per query (Axis 3) is a routing problem, analyzed next; it is precisely because the LLM and embedding judges are each better on different queries (\Cref{tab:judge-depth}) that per-query routing has a large \emph{oracle} upside---which, as we show, is nonetheless unrealizable.
@@ -61,6 +66,13 @@ One might object that these routers are underpowered. We therefore stress-test t
 \paragraph{Measuring the information directly.}
 \Cref{prop:ceiling} makes the ceiling quantitative: a $\sigma$-measurable router can beat the tuned global policy only to the extent that $\sigma$ carries information about the oracle decision $Y^\star$, i.e.\ $I(\sigma;Y^\star)>0$. We estimate this mutual information on the $n{=}300$ pool, taking $\sigma$ to be the full hop-0 signal vector (top-1, top-2, gap, mean, candidate count, depth) and $Y^\star=\mathbb{1}[\text{LLM judge better}]$. The label entropy is $H(Y^\star)=0.754$ bits, so at most $0.754$ bits are available to extract. A KSG estimator yields $\hat I(\sigma;Y^\star)=0.017$ bits, but a label-permutation null (\mbox{$B{=}500$}) has mean $0.076$ bits---the estimator's finite-sample bias floor---so the observed value sits \emph{below} the null mean, giving $p{=}0.92$ and a bias-corrected estimate of $0.000$ bits ($0.0\%$ of $H(Y^\star)$). The pre-computation signal is thus statistically independent of the optimal decision. By \Cref{prop:ceiling} the tuned global policy is Bayes-optimal among all routers on these signals, which is exactly what \Cref{tab:oracle} shows empirically: no router---however rich---clears the always-on baseline.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_ceiling_info.pdf}
+\caption{The predictability ceiling, quantified. \textbf{(a)} Cross-validated AUROC of every router we build for predicting which judge is better; all sit at the $0.5$ chance line. \textbf{(b)} Mutual information $I(\sigma;Y^\star)$ between the pre-computation signal and the oracle decision: the observed estimate ($0.017$ bits) lies \emph{below} the permutation-null mean ($0.076$ bits), so the bias-corrected value is $0$ against a label entropy of $H(Y^\star){=}0.754$ bits ($p{=}0.92$). The signal is informationally independent of the optimal choice.}
+\label{fig:ceiling-info}
+\end{figure}
+
 We interpret this as a \emph{predictability ceiling}. The label a router must predict---whether the LLM judge would yield a better answer than the embedding judge for this query---depends on whether the correct answer triple happens to rank highly under each scorer, which is determined only by \emph{running} the scorers and the downstream generator. No signal computed \emph{before} the expensive computation (question text, entity-linking confidence, hop-0 score distribution) carries this information, because difficulty in GraphRAG is a property of the query--pipeline \emph{interaction} revealed post hoc, not a predictable property of the query. This is the same reason depth adaptation fails: whether hop $k{+}1$ helps is knowable only after running it. The three axes share one root cause.
 
 \subsection{Cross-Family Robustness}
@@ -70,12 +82,26 @@ A natural concern is that our conclusions are specific to the Qwen judge family.
 
 \input{sections/tab_family}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_family.pdf}
+\caption{Cross-family robustness. On all three judge families the tuned global Fixed-$K{=}2,B{=}8$ (blue) exceeds both the free embedding policy (green) and the best training-free \textsc{AdaptiveJudge} (orange). The predictability ceiling is not a Qwen-specific artifact.}
+\label{fig:family}
+\end{figure}
+
 \subsection{A Third Benchmark: WebQSP}
 \label{sec:exp-webqsp}
 
 Our evidence so far comes from MetaQA (synthetic multi-hop over WikiMovies) and CWQ. To test whether the ceiling is an artifact of these two datasets, we add WebQSP, whose RoG Freebase subgraphs are markedly denser (on average $4{,}135$ triples per query versus a few dozen for MetaQA) and whose questions are natural web queries rather than templated multi-hop chains. We run the identical depth/judge comparison under the strong engine on $n{=}120$ WebQSP questions (\Cref{tab:webqsp}). The pattern is unchanged: the tuned global Fixed-$K{=}2,B{=}8$ point reaches $0.338$ F1 and again dominates \textsc{AdaptiveJudge} at $0.293$ ($\Delta{=}{+}0.045$), which in turn merely interpolates between the cheap embedding-only policy ($0.251$) and the tuned point. Most tellingly, the per-query oracle over depth $K\!\in\!\{1,2,3\}$ reaches only $0.324$---\emph{below} the tuned Fixed-$K{=}2$ budget itself. On WebQSP there is no depth headroom to capture at all: a single well-chosen global depth already matches the best any per-query depth policy could achieve, so adaptation cannot help even in principle. That the predictability ceiling reappears on a dataset with an order-of-magnitude denser graph and a different question distribution indicates it is a structural property of GraphRAG retrieval, not a quirk of any one benchmark.
 
 \input{sections/tab_webqsp}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_benchmarks.pdf}
+\caption{Three-benchmark summary. On MetaQA, CWQ, and WebQSP the tuned global budget (blue) matches or exceeds the best adaptive policy (orange) and the free embedding policy (green), while the per-query oracle (hatched red)---the unreachable upper bound of adaptation---never opens usable headroom over the tuned point. On WebQSP the oracle even falls \emph{below} the tuned budget.}
+\label{fig:benchmarks}
+\end{figure}
 
 \subsection{Multi-Seed Statistical Validation}
 \label{sec:exp-multiseed}
@@ -84,9 +110,23 @@ To ensure the gap between the tuned global budget and the best adaptive policy i
 
 \input{sections/tab_multiseed}
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_multiseed.pdf}
+\caption{Multi-seed stability. Mean F1 $\pm$ std over three independent $n{=}500$ query subsamples; faint points are individual seeds. The tuned global Fixed-$K{=}2,B{=}8$ (blue) separates cleanly from every other policy; a paired bootstrap on the pooled $1{,}494$ queries gives $\Delta{=}{+}0.055$ over \textsc{AdaptiveJudge} ($95\%$ CI $[.039,.070]$, $p{<}10^{-4}$).}
+\label{fig:multiseed}
+\end{figure}
+
 \subsection{Cost--Accuracy Trade-off}
 \label{sec:exp-cost}
 
 A final rebuttal remains: perhaps adaptation is worthwhile because it trades a negligible amount of accuracy for a large efficiency gain. We measure this directly on the mixed stream under the strong engine, recording wall-clock latency, the number of LLM relevance-judge calls (the dominant marginal cost), and F1 for three representative policies (\Cref{tab:cost}). We report the trade-off honestly. \textsc{AdaptiveJudge} \emph{is} cheaper than the tuned global point---$1.30$s versus $3.16$s per query and $0.31$ versus $2.00$ judge calls---because it escalates to the LLM judge only when the embedding probe is uncertain. What it is not, is accuracy-competitive or Pareto-dominant: it scores $0.371$ F1, still below the tuned Fixed-$K{=}2,B{=}8$ point at $0.380$, while the pure embedding policy already offers an even cheaper operating point ($0.89$s, zero judge calls) at $0.323$. Adaptation therefore only \emph{interpolates} between two tuned static budgets on the cost--accuracy plane; it does not reach the ``best of both worlds'' the oracle's headroom (\Cref{sec:exp-oracle}) suggests should exist. This is exactly what the predictability ceiling predicts: because the router cannot tell in advance which queries need the LLM judge, escalating on the embedding gap saves calls on many queries that would have benefited and spends calls on many that would not, landing strictly inside the static frontier rather than above it. Efficiency does not rescue per-query adaptation; it merely reproduces, at a worse accuracy, a point a practitioner could pick by tuning a single global budget.
 
 \input{sections/tab_cost}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\columnwidth]{figures/fig_cost.pdf}
+\caption{Cost--latency view. Bubble area is proportional to LLM judge calls per query. \textsc{AdaptiveJudge} (orange) is cheaper and lower-latency than the tuned global point (blue) but scores lower F1, while the free embedding policy (green) is cheaper still. Adaptation interpolates the static frontier rather than dominating it.}
+\label{fig:cost}
+\end{figure}
