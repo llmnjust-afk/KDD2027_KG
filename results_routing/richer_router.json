@@ -1,0 +1,33 @@
+{
+  "results": {
+    "signals(5)|LogReg": {
+      "auroc": 0.5585597381342062,
+      "routed_f1": 0.36559323384730974
+    },
+    "signals(5)|MLP(256,128)": {
+      "auroc": 0.5585597381342062,
+      "routed_f1": 0.36559323384730974
+    },
+    "signals(5)|RandomForest": {
+      "auroc": 0.5288197334580313,
+      "routed_f1": 0.3741535001043502
+    },
+    "signals+depth(6)|LogReg": {
+      "auroc": 0.5585597381342062,
+      "routed_f1": 0.36559323384730974
+    },
+    "signals+depth(6)|MLP(256,128)": {
+      "auroc": 0.5585597381342062,
+      "routed_f1": 0.36559323384730974
+    },
+    "signals+depth(6)|RandomForest": {
+      "auroc": 0.5333120567375886,
+      "routed_f1": 0.37859397096608577
+    }
+  },
+  "best_auroc": 0.5585597381342062,
+  "best_routed_f1": 0.37859397096608577,
+  "always_llm": 0.4129216600734571,
+  "oracle": 0.4790317559500983,
+  "verdict": "CEILING CONFIRMED: even the richest router is near-random and cannot beat always-LLM"
+}
