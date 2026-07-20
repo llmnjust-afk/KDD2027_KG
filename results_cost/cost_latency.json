@@ -1,0 +1,29 @@
+{
+  "results": {
+    "Fixed-emb K=3": {
+      "f1": 0.32254629629629633,
+      "latency_s_mean": 0.8900825307432872,
+      "latency_s_p50": 0.6303507089614868,
+      "llm_judge_calls_mean": 0.0,
+      "llm_judge_calls_total": 0,
+      "n": 120
+    },
+    "Fixed-LLM K=2 B=8": {
+      "f1": 0.38034359771398013,
+      "latency_s_mean": 3.1581684090585136,
+      "latency_s_p50": 2.944020465016365,
+      "llm_judge_calls_mean": 2.0,
+      "llm_judge_calls_total": 240,
+      "n": 120
+    },
+    "AdaptiveJudge T=0.55": {
+      "f1": 0.37110734785273025,
+      "latency_s_mean": 1.2996024258784018,
+      "latency_s_p50": 0.8275062774773687,
+      "llm_judge_calls_mean": 0.30833333333333335,
+      "llm_judge_calls_total": 37,
+      "n": 120
+    }
+  },
+  "verdict": "EFFICIENCY REBUTTAL FAILS: tuned global is at least as accurate and not appreciably more expensive than adaptation"
+}

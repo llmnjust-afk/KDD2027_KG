@@ -1,0 +1,15 @@
+\begin{table}[tb]
+\centering
+\caption{Cost--accuracy trade-off on the mixed MetaQA stream under the strong engine ($n{=}120$, Qwen-7B). \emph{judge/q} is the mean number of LLM relevance-judge calls per query. \textsc{AdaptiveJudge} is cheaper than the tuned global point but less accurate, and the embedding-only policy is cheaper still---adaptation merely interpolates between two tuned static budgets rather than dominating them.}
+\label{tab:cost}
+\small
+\begin{tabular}{lcccc}
+\toprule
+Policy & F1 & lat.\ mean (s) & lat.\ p50 (s) & judge/q \\
+\midrule
+Fixed-emb $K{=}3$        & $0.323$ & $0.89$ & $0.63$ & $0.00$ \\
+\textsc{AdaptiveJudge} $T{=}0.55$ & $0.371$ & $1.30$ & $0.83$ & $0.31$ \\
+Fixed-LLM $K{=}2,B{=}8$  & $\mathbf{0.380}$ & $3.16$ & $2.94$ & $2.00$ \\
+\bottomrule
+\end{tabular}
+\end{table}
