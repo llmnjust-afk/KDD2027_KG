@@ -3,7 +3,7 @@
 
 \subsection{Setup}
 \label{sec:exp-setup}
-We use two KGQA benchmarks. \textbf{MetaQA}~\cite{zhang2017variational} provides 1/2/3-hop questions over the WikiMovies KG; we build a \emph{mixed-depth stream} of equal parts 1/2/3-hop questions sharing one KG to model a realistic heterogeneous workload. \textbf{ComplexWebQuestions (CWQ)}~\cite{talmor2018knowledgebase} provides naturally heterogeneous questions (1--4 hop compositions, comparatives, superlatives) over Freebase, with a pre-extracted subgraph per query (avg.\ 3{,}400 triples); this tests whether natural difficulty heterogeneity---rather than MetaQA's templated splits---makes per-query adaptation pay off. The judge/generator is Qwen2.5-\{1.5B, 7B, 14B\}-Instruct; embeddings use \texttt{all-MiniLM-L6-v2}. We report F1, Hit@1, and input tokens/query, all on identical query subsets per comparison.
+We use three KGQA benchmarks. \textbf{MetaQA}~\cite{zhang2017variational} provides 1/2/3-hop questions over the WikiMovies KG; we build a \emph{mixed-depth stream} of equal parts 1/2/3-hop questions sharing one KG to model a realistic heterogeneous workload. \textbf{ComplexWebQuestions (CWQ)}~\cite{talmor2018knowledgebase} provides naturally heterogeneous questions (1--4 hop compositions, comparatives, superlatives) over Freebase, with a pre-extracted subgraph per query (avg.\ 3{,}400 triples); this tests whether natural difficulty heterogeneity---rather than MetaQA's templated splits---makes per-query adaptation pay off. \textbf{WebQSP} provides natural web questions over Freebase; following recent KGQA work we use the dense per-query subgraphs released by RoG~\cite{luo2023reasoning} (avg.\ 4{,}135 triples/query), a third and independent testbed whose question style and graph density differ sharply from the other two. The judge/generator is Qwen2.5-\{1.5B, 7B, 14B\}-Instruct; embeddings use \texttt{all-MiniLM-L6-v2}. We report F1, Hit@1, and input tokens/query, all on identical query subsets per comparison.
 
 \subsection{Axis 1: Adaptive Depth Loses to a Tuned Global $K$}
 \label{sec:exp-depth}
@@ -63,6 +63,13 @@ We interpret this as a \emph{predictability ceiling}. The label a router must pr
 A natural concern is that our conclusions are specific to the Qwen judge family. We repeat the mixed-stream depth comparison on two additional families---Llama-3.1-8B-Instruct and Mistral-7B-Instruct-v0.3---under the strong engine (\Cref{tab:family}). The negative result is unchanged: on all three families the tuned global Fixed-$K{=}2,B{=}8$ dominates the best training-free adaptive policy (Qwen $0.478$ vs.\ $0.394$; Llama $0.248$ vs.\ $0.239$; Mistral $0.569$ vs.\ $0.453$), and the Pareto structure is identical (a cheap embedding-only point and a tuned $K{=}2$ high-accuracy point bound the frontier). Combined with the 1.5B/7B/14B scale sweep, this shows the predictability ceiling holds across judge scale \emph{and} family.
 
 \input{sections/tab_family}
+
+\subsection{A Third Benchmark: WebQSP}
+\label{sec:exp-webqsp}
+
+Our evidence so far comes from MetaQA (synthetic multi-hop over WikiMovies) and CWQ. To test whether the ceiling is an artifact of these two datasets, we add WebQSP, whose RoG Freebase subgraphs are markedly denser (on average $4{,}135$ triples per query versus a few dozen for MetaQA) and whose questions are natural web queries rather than templated multi-hop chains. We run the identical depth/judge comparison under the strong engine on $n{=}120$ WebQSP questions (\Cref{tab:webqsp}). The pattern is unchanged: the tuned global Fixed-$K{=}2,B{=}8$ point reaches $0.338$ F1 and again dominates \textsc{AdaptiveJudge} at $0.293$ ($\Delta{=}{+}0.045$), which in turn merely interpolates between the cheap embedding-only policy ($0.251$) and the tuned point. Most tellingly, the per-query oracle over depth $K\!\in\!\{1,2,3\}$ reaches only $0.324$---\emph{below} the tuned Fixed-$K{=}2$ budget itself. On WebQSP there is no depth headroom to capture at all: a single well-chosen global depth already matches the best any per-query depth policy could achieve, so adaptation cannot help even in principle. That the predictability ceiling reappears on a dataset with an order-of-magnitude denser graph and a different question distribution indicates it is a structural property of GraphRAG retrieval, not a quirk of any one benchmark.
+
+\input{sections/tab_webqsp}
 
 \subsection{Multi-Seed Statistical Validation}
 \label{sec:exp-multiseed}

@@ -25,7 +25,7 @@ The most dangerous alternative explanation is that adaptation fails only because
 
 \paragraph{Contributions.}
 \begin{itemize}[leftmargin=*,nosep]
-  \item We formalize training-free GraphRAG adaptation along three orthogonal axes (depth, judge budget, judge type) and evaluate the strongest training-free policy on each against tuned global budgets, on two benchmarks and three judge scales, with a shared retrieval engine so the policy is the only variable (\Cref{sec:method,sec:exp}).
+  \item We formalize training-free GraphRAG adaptation along three orthogonal axes (depth, judge budget, judge type) and evaluate the strongest training-free policy on each against tuned global budgets, on three benchmarks and three judge scales, with a shared retrieval engine so the policy is the only variable (\Cref{sec:method,sec:exp}).
   \item We establish a consistent negative result: tuned global budgets are Pareto-optimal or better on every axis, dominating even oracle-depth (\Cref{sec:exp-depth,sec:exp-judge}).
   \item We introduce an oracle analysis showing the adaptation upside is large but unrealizable, and articulate the \emph{predictability ceiling} that explains why (\Cref{sec:exp-oracle}).
   \item We provide a strong-engine ablation (ToG-2.0-style two-stage retrieval) confirming the negative result is not caused by a weak engine, and give an actionable deployment recommendation---tune one global budget---plus an open, reproducible testbed (\Cref{sec:exp-judge,sec:discussion}).

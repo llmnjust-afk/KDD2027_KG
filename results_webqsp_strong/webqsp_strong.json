@@ -1,0 +1,15 @@
+{
+  "results": {
+    "Fixed-emb K=3": 0.2511688011015133,
+    "Fixed-LLM K=2 B=8": 0.3378749273602215,
+    "AdaptiveJudge T=0.55": 0.2930488090341032,
+    "oracle-depth": 0.3238008961220479,
+    "per_k": {
+      "K=1": 0.23838243502529216,
+      "K=2": 0.30372346436632147,
+      "K=3": 0.30773740405855576
+    }
+  },
+  "verdict": "CEILING HOLDS ON WEBQSP: tuned global >= adaptive, oracle unrealized",
+  "n": 120
+}

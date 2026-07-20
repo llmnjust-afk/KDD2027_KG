@@ -1,0 +1,16 @@
+\begin{table}[tb]
+\centering
+\caption{Third benchmark. Depth/judge comparison on WebQSP (RoG Freebase subgraphs, avg.\ $4{,}135$ triples/query) under the strong engine, $n{=}120$, Qwen-7B. The tuned global Fixed-$K{=}2,B{=}8$ point again dominates \textsc{AdaptiveJudge}, and the per-query depth oracle falls \emph{below} the tuned fixed budget---there is no adaptation headroom to capture.}
+\label{tab:webqsp}
+\small
+\begin{tabular}{lc}
+\toprule
+Policy & F1 \\
+\midrule
+Fixed-emb $K{=}3$            & $0.251$ \\
+\textsc{AdaptiveJudge} $T{=}0.55$ & $0.293$ \\
+Oracle-depth (best $K$/query) & $0.324$ \\
+Fixed-LLM $K{=}2,B{=}8$      & $\mathbf{0.338}$ \\
+\bottomrule
+\end{tabular}
+\end{table}
