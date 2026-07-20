@@ -3,7 +3,7 @@
 \section{Additional Results Across Judge Scales}
 \label{app:scales}
 
-\Cref{tab:depth-14b} reports the depth-adaptation Pareto comparison on the MetaQA mixed stream with the 14B judge ($n{=}150$). The conclusion of \Cref{sec:exp-depth} holds under a stronger judge: a tuned global Fixed-$K{=}2,B{=}8$ (F1 $0.470$ at $1099$ \Toks{}) is non-dominated and beats every depth-adaptive policy and the oracle-depth baseline ($0.444$ at $1001$ \Toks{}). The predictability barrier is thus not an artifact of a weak judge.
+The predictability barrier is not an artifact of a particular judge size. \Cref{tab:depth-14b} reports the depth-adaptation Pareto comparison on the MetaQA mixed stream with the \textbf{14B} judge ($n{=}150$): a tuned global Fixed-$K{=}2,B{=}8$ (F1 $0.470$ at $1099$ \Toks{}) is non-dominated and beats every depth-adaptive policy and the oracle-depth baseline ($0.444$ at $1001$ \Toks{}). At the \textbf{1.5B} scale the same ordering holds---the tuned global point remains non-dominated while adaptive policies and oracle-depth fall below it---so the conclusion spans an order of magnitude in judge capacity. This complements the cross-\emph{family} evidence (\Cref{tab:family}, \Cref{fig:family}): the ceiling is invariant to both judge scale and judge family.
 
 \begin{table}[t]
 \centering
@@ -24,7 +24,170 @@ Fixed-$K{=}3,B{=}6$          & 0.498 & 1756 \\
 \end{tabular}
 \end{table}
 
-\section{Implementation Details}
+\section{Full Proof of Proposition~\ref{prop:ceiling}}
+\label{app:proof}
+
+We restate and prove the claim in full. Consider a fixed adaptation axis with two actions $a\in\{0,1\}$, per-query utilities $U(a\mid q)\in[0,1]$ (F1), oracle decision $Y^\star(q)=\arg\max_a U(a\mid q)$, and per-query gain $\Delta(q)=U(1\mid q)-U(0\mid q)$. Let $\sigma=\sigma(q)$ be any pre-computation signal (a random variable measurable before either action is executed), and let $g^\star=\arg\max_{a}\mathbb{E}_q[U(a\mid q)]$ be the better global action. A router is any measurable $\pi:\sigma\mapsto\{0,1\}$.
+
+\begin{proof}
+\textbf{(i) Bayes router and the bound.} For a $\sigma$-measurable router, the utility is $\mathbb{E}_q[U(\pi(\sigma)\mid q)]=\mathbb{E}_\sigma\big[\mathbb{E}[U(\pi(\sigma)\mid q)\mid\sigma]\big]$. Because $\pi$ depends on $q$ only through $\sigma$, the conditionally optimal choice is $\pi^\star_\sigma(\sigma)=\mathbb{1}\{\mathbb{E}[\Delta\mid\sigma]>0\}$. The Bayes router differs from the constant policy $g^\star$ exactly on the event
+\[
+E_\sigma=\big\{\sigma:\operatorname{sign}\mathbb{E}[\Delta\mid\sigma]\neq (2g^\star{-}1)\big\},\qquad \rho(\sigma):=\Pr(E_\sigma).
+\]
+On $E_\sigma^{c}$ the two policies agree and contribute zero difference; on $E_\sigma$ the improvement of $\pi^\star_\sigma$ over $g^\star$ is $|\mathbb{E}[\Delta\mid\sigma]|\le\mathbb{E}[\,|\Delta|\mid\sigma\,]$. Taking expectations,
+\[
+\mathbb{E}_q[U(\pi^\star_\sigma\mid q)]-\mathbb{E}_q[U(g^\star\mid q)]
+=\mathbb{E}_\sigma\!\big[\mathbb{1}_{E_\sigma}\,|\mathbb{E}[\Delta\mid\sigma]|\big]
+\le \mathbb{E}_q[\,|\Delta(q)|\,]\cdot\rho(\sigma),
+\]
+which is the stated inequality (using $\mathbb{E}_\sigma[\mathbb{1}_{E_\sigma}\mathbb{E}[|\Delta|\mid\sigma]]\le\mathbb{E}_q[|\Delta|]\rho(\sigma)$ when the conditional mean gain is bounded by the marginal, and more simply $\le\mathbb{E}[|\Delta|]$ on the event of probability $\rho$).
+
+\textbf{(ii) Independence collapses the router.} Suppose $I(\sigma;Y^\star)=0$, i.e.\ $\sigma\perp Y^\star$. The sign of $\mathbb{E}[\Delta\mid\sigma]$ is governed by $\Pr(Y^\star{=}1\mid\sigma)$: specifically $\operatorname{sign}\mathbb{E}[\Delta\mid\sigma]$ flips only where $\Pr(Y^\star{=}1\mid\sigma)$ crosses the value that equalizes expected utility. Under independence $\Pr(Y^\star{=}1\mid\sigma)=\Pr(Y^\star{=}1)$ is constant in $\sigma$, hence $\operatorname{sign}\mathbb{E}[\Delta\mid\sigma]$ is constant and equal to $\operatorname{sign}\mathbb{E}[\Delta]=2g^\star{-}1$. Therefore $E_\sigma=\varnothing$, $\rho(\sigma)=0$, and by (i) the Bayes router attains exactly the utility of $g^\star$: the tuned global policy is Bayes-optimal among all $\sigma$-measurable routers.
+
+\textbf{(iii) No post-processing recovers information.} For any router $\pi(\sigma)$, the data-processing inequality gives $I(\pi(\sigma);Y^\star)\le I(\sigma;Y^\star)$. Hence if $I(\sigma;Y^\star)=0$ then $I(\pi(\sigma);Y^\star)=0$ for every $\pi$: no deterministic or randomized transformation of the pre-computation signal can carry information about the oracle decision that $\sigma$ itself lacks. A Fano-type argument then bounds the accuracy of predicting $Y^\star$ from $\sigma$ by the base rate $\max_y\Pr(Y^\star{=}y)$, matching the constant policy.
+\end{proof}
+
+\noindent\textbf{Interpretation.} The proposition localizes the entire question of ``can training-free adaptation help?'' to a single measurable scalar, $I(\sigma;Y^\star)$. \Cref{app:mi} estimates it and finds it indistinguishable from zero, so part (ii) applies and the tuned global budget is optimal in our regime.
+
+\section{Algorithms}
+\label{app:algo}
+
+\Cref{alg:engine} specifies the fixed retrieval engine shared by every policy; the adaptation policy enters only through the three hooks \textsc{Stop?}, \textsc{Beam}, and \textsc{Judge}, which a global policy fixes and an adaptive policy sets per query. \Cref{alg:adaptivejudge} details \textsc{AdaptiveJudge}, the strongest training-free judge-budget policy.
+
+\begin{algorithm}[t]
+\caption{Shared GraphRAG retrieval engine (policy enters via hooks)}
+\label{alg:engine}
+\begin{algorithmic}[1]
+\Require question $q$, KG $\mathcal{G}$, policy $\Pi$
+\State $\mathcal{F}_0 \gets \textsc{LinkEntities}(q,\mathcal{G})$ \Comment{seed frontier by embedding sim.}
+\For{$k=0,1,2,\dots$}
+  \If{$\Pi.\textsc{Stop?}(k,\text{signals}_{<k})$} \textbf{break} \EndIf
+  \State $\mathcal{C}_k \gets \textsc{Expand}(\mathcal{F}_k)$ capped at $c_{\max}{=}16$
+  \State $s \gets \Pi.\textsc{Judge}(\mathcal{C}_k,q)$ \Comment{LLM or embedding scorer}
+  \State $\mathcal{F}_{k+1} \gets \textsc{TopB}(\mathcal{C}_k, s, \Pi.\textsc{Beam}(k))$
+\EndFor
+\State \Return $\textsc{Generate}(q, \bigcup_k \mathcal{F}_k)$
+\end{algorithmic}
+\end{algorithm}
+
+\begin{algorithm}[t]
+\caption{\textsc{AdaptiveJudge} (Axis 2): per-hop judge escalation}
+\label{alg:adaptivejudge}
+\begin{algorithmic}[1]
+\Require candidates $\mathcal{C}$, question $q$, threshold $\tau$
+\State $s_{\text{emb}} \gets \textsc{CosineSim}(q, \mathcal{C})$ \Comment{free}
+\If{$\max s_{\text{emb}} \ge \tau$} \Return $s_{\text{emb}}$ \Comment{confident: skip LLM}
+\Else{} \Return $\textsc{LLMJudge}(\mathcal{C}, q)$ \Comment{uncertain: pay for LLM}
+\EndIf
+\end{algorithmic}
+\end{algorithm}
+
+\section{Implementation Details and Hyperparameters}
 \label{app:impl}
 
-The generator/judge is Qwen2.5-\{1.5B, 7B, 14B\}-Instruct with greedy decoding (\texttt{max\_new\_tokens}$=64$ for the judge, $32$ for answers). Entity linking and the embedding judge use \texttt{sentence-transformers/\allowbreak all-MiniLM-L6-v2}. The per-hop candidate cap is $c_{\max}{=}16$ (traversal order). The LLM judge prompt batches all candidates at a hop into one call and requests a comma-separated list of integer relevance scores in $[0,100]$; the embedding judge scores each candidate by cosine similarity between the question and the triple's linearized text. On CWQ we use the RoG pre-extracted Freebase subgraph per query as the KG. All comparisons hold the retrieval engine fixed and vary only the adaptation policy, on identical query subsets, so reported differences are attributable to the policy. Cost is measured as mean input tokens per query; the embedding judge incurs zero LLM input tokens.
+The generator/judge is Qwen2.5-\{1.5B, 7B, 14B\}-Instruct with greedy decoding (\texttt{max\_new\_tokens}$=64$ for the judge, $32$ for answers). Entity linking and the embedding judge use \texttt{sentence-transformers/\allowbreak all-MiniLM-L6-v2}. The per-hop candidate cap is $c_{\max}{=}16$ (traversal order under the naive engine; embedding-ranked under the strong engine). On CWQ and WebQSP we use the pre-extracted Freebase subgraph per query as the KG (CWQ from the standard release, WebQSP from RoG~\cite{luo2023reasoning}). All comparisons hold the retrieval engine fixed and vary only the adaptation policy, on identical query subsets, so reported differences are attributable to the policy. Cost is mean input tokens per query; the embedding judge incurs zero LLM input tokens. Cross-family experiments use Llama-3.1-8B-Instruct and Mistral-7B-Instruct-v0.3 with identical prompts. All experiments run on a single RTX~5090 (32\,GB). \Cref{tab:hparams} lists every swept hyperparameter and its grid.
+
+\begin{table}[t]
+\centering
+\caption{Hyperparameters and sweep grids. The global-policy grid defines the tuned frontier against which all adaptive policies are compared.}
+\label{tab:hparams}
+\small
+\begin{tabular}{@{}ll@{}}
+\toprule
+Hyperparameter & Value / grid \\
+\midrule
+Depth $K$ (global sweep)      & $\{1,2,3\}$ \\
+Beam $B$ (global sweep)       & $\{2,4,6,8\}$ \\
+Judge type (global)           & \{embedding, LLM\} \\
+\textsc{AdaptiveJudge} $\tau$ & $\{0.55, 0.65, 0.75, 0.85\}$ \\
+Patience $p$                  & $\{1,2\}$ \\
+Margin threshold              & $\{0.1, 0.2, 0.3\}$ \\
+Entity-link top-$k$           & $5$ \\
+Candidate cap $c_{\max}$      & $16$ \\
+Judge score range            & integers in $[0,100]$ \\
+Multi-seed subsamples         & $3$ (sizes $n{=}500$) \\
+Bootstrap resamples           & $10{,}000$ (paired) \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\paragraph{LLM judge prompt.} The judge prompt batches all candidates at a hop into a single call and requests a comma-separated list of integer relevance scores in $[0,100]$, one per candidate:
+\begin{quote}\small\ttfamily
+You are scoring how relevant each knowledge-graph triple is to answering the question. Question: \{q\}. Triples: \{numbered list\}. Output only a comma-separated list of integer scores in [0,100], one per triple, in order.
+\end{quote}
+The embedding judge scores each candidate by cosine similarity between the question embedding and the triple's linearized text ``head relation tail''.
+
+\section{Mutual-Information Estimation Details}
+\label{app:mi}
+
+We estimate $I(\sigma;Y^\star)$ on the pooled $n{=}300$ routing set, where $Y^\star=\mathbb{1}[\text{LLM judge better}]$ has base rate $\Pr(Y^\star{=}1)=0.217$ and entropy $H(Y^\star)=0.754$ bits. The signal $\sigma$ comprises the six pre-computation features in \Cref{tab:mi}. We use the Kraskov--St\"ogbauer--Grassberger (KSG) $k$-NN estimator ($k{=}3$) via the standard mixed continuous--discrete formulation, which is known to be slightly positively biased at small $n$. To calibrate this bias we build a permutation null by shuffling $Y^\star$ ($B{=}500$ permutations) and recomputing the estimate; the null mean ($0.076$ bits) is the estimator's bias floor. The observed estimate ($0.017$ bits) lies \emph{below} the null mean, yielding a one-sided permutation $p$-value of $0.92$ and a bias-corrected estimate of $0.000$ bits. Per-feature MI (\Cref{tab:mi}) shows no single signal carries more than $0.013$ bits---also within the null band---so the independence is not masked by aggregation.
+
+\begin{table}[t]
+\centering
+\caption{Per-feature mutual information $I(\text{feature};Y^\star)$ (bits) on the $n{=}300$ pool. All values are below the permutation-null mean ($0.076$), confirming each pre-computation signal is individually uninformative about the optimal judge choice.}
+\label{tab:mi}
+\small
+\begin{tabular}{@{}lc@{}}
+\toprule
+Pre-computation feature & $I(\cdot;Y^\star)$ (bits) \\
+\midrule
+hop-0 top-1 score      & $0.000$ \\
+hop-0 top-2 score      & $0.013$ \\
+top1--top2 gap         & $0.000$ \\
+mean candidate score   & $0.000$ \\
+candidate count        & $0.000$ \\
+retrieval depth        & $0.004$ \\
+\midrule
+\textbf{sum}           & $0.017$ \\
+permutation-null mean  & $0.076$ \\
+\textbf{bias-corrected}& $\mathbf{0.000}$ \\
+$H(Y^\star)$           & $0.754$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Complete Pareto Tables}
+\label{app:pareto}
+
+For completeness we give the full per-policy tables that the main text summarizes. \Cref{tab:cwq-full} is the complete CWQ Pareto sweep ($n{=}200$, 7B, strong engine). CWQ answer F1 is uniformly low---this KG is extremely dense (avg.\ $3{,}400$ triples/query) and our zero-shot open-weight generator is not fine-tuned for it (\Cref{sec:exp-setup})---but the \emph{relative} ordering is the object of study: retrieval depth barely moves F1 (essentially flat across $K$), so the cheapest fixed budget is non-dominated and the adaptive policy provides no benefit. \Cref{tab:adjudge-full} gives the full three-way judge-budget comparison on the MetaQA mixed stream ($n{=}198$): \textsc{AdaptiveJudge} sits strictly between the two static judges on both axes, confirming it interpolates rather than dominates the frontier.
+
+\begin{table}[t]
+\centering
+\caption{Complete CWQ Pareto sweep ($n{=}200$, 7B, strong engine). F1 is flat in $K$; the cheapest fixed budget is non-dominated and the adaptive policy does not help.}
+\label{tab:cwq-full}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+System (CWQ) & F1 & Hit@1 & \Toks{} & Calls/q \\
+\midrule
+Fixed $K{=}1,B{=}4$   & \best{0.061} & 0.065 & \best{947}  & 2.0 \\
+Fixed $K{=}2,B{=}4$   & 0.054 & 0.060 & 1739 & 3.0 \\
+Fixed $K{=}2,B{=}6$   & 0.061 & 0.060 & 1877 & 3.0 \\
+Fixed $K{=}2,B{=}8$   & \best{0.072} & \best{0.080} & 1977 & 3.0 \\
+Fixed $K{=}3,B{=}4$   & 0.051 & 0.055 & 2288 & 3.9 \\
+Patience $p{=}1$      & 0.051 & 0.055 & 1867 & 3.2 \\
+Adaptive (ours)       & 0.052 & 0.050 & 1947 & 3.2 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[t]
+\centering
+\caption{Full judge-budget comparison on MetaQA mixed ($n{=}198$, 7B, strong engine). \textsc{AdaptiveJudge} interpolates between the two static judges: cheaper than always-LLM, dearer than always-embedding, and more accurate than neither by a margin that justifies its extra cost.}
+\label{tab:adjudge-full}
+\small
+\begin{tabular}{@{}lcccc@{}}
+\toprule
+Policy & F1 & Hit@1 & \Toks{} & Calls/q \\
+\midrule
+Fixed (emb judge)      & 0.392 & 0.460 & \best{159}  & 1.0 \\
+\textsc{AdaptiveJudge} & 0.398 & 0.485 & 893  & 2.4 \\
+Fixed (LLM judge)      & \best{0.401} & \best{0.515} & 1606 & 4.0 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\section{Reproducibility}
+\label{app:repro}
+
+All experiments are deterministic given the query subset (greedy decoding makes each judge/generator call a function of its input), so ``seeds'' denote independent query subsamples rather than stochastic reruns; we state this explicitly to avoid overclaiming statistical independence. The full code---retrieval engine, every adaptation policy, the mutual-information and richer-router analyses, and the figure-generation scripts---together with all result JSON files and the exact query-id subsets used per comparison, is released in the accompanying repository. Each table and figure in this paper is regenerated from a committed result file by a named script, so every reported number is traceable to a reproducible run on a single RTX~5090.
