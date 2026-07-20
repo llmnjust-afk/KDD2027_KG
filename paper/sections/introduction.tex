@@ -1,6 +1,13 @@
 \section{Introduction}
 \label{sec:intro}
 
+\begin{figure*}[t]
+\centering
+\includegraphics[width=\textwidth]{figures/fig1_motivation.pdf}
+\caption{The predictability ceiling of training-free adaptive GraphRAG. \textbf{(a)} The appealing hypothesis: a per-query controller routes each question to a cheap embedding judge or an expensive LLM judge, spending compute only where it helps. \textbf{(b)} What we actually measure on the MetaQA mixed stream (7B, strong engine): a tuned global budget (Fixed-$K{=}2,B{=}8$, blue star) defines the accuracy--cost frontier, and every training-free adaptive policy (orange) and fixed budget (grey) lies below it. \textbf{(c)} Why: the per-query oracle has real upside ($+0.063$ F1 over always-LLM) but no realizable router reaches it, because the pre-computation signal $\sigma$ carries essentially no information about the optimal decision $Y^\star$ ($I(\sigma;Y^\star)\approx0$)---the deciding information is revealed only \emph{after} the expensive step is run.}
+\label{fig:motivation}
+\end{figure*}
+
 Large language models (LLMs) answer knowledge-intensive questions more faithfully when grounded in external evidence, and the graph-structured variant of retrieval-augmented generation---GraphRAG---reasons over multi-hop paths in a knowledge graph (KG)~\cite{sun2023thinkongraph,mavromatis2025gnnrag,sun2025searchongraph}. The canonical retrieval loop, exemplified by Think-on-Graph (ToG)~\cite{sun2023thinkongraph} and its successors~\cite{ma2024thinkongraph,sun2025searchongraph,liang2025fast}, iteratively expands a frontier of candidate triples, invokes an LLM as a relevance \emph{judge} to score each candidate, prunes to a fixed beam, and repeats for a predetermined number of hops. The dominant cost of this loop is the LLM judge: one call per hop, each consuming input tokens proportional to the candidate set.
 
 Because questions vary in difficulty---a one-hop lookup versus a three-hop composition---a natural and widely pursued hypothesis is that a \emph{query-adaptive} controller can cut cost by spending expensive retrieval only where it helps. Recent work trains routers or reinforcement-learned policies for this purpose~\cite{dong2026graph,fan2026graphragrouter}, and an appealing alternative is to adapt \emph{without training}, using signals the pipeline already computes (entity-linking confidences, hop-level relevance-score distributions). Training-free adaptation would preserve GraphRAG's plug-and-play promise and transfer across KGs for free. This paper asks a simple question: \emph{does it actually work?}
