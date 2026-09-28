@@ -1,0 +1,16 @@
+{
+  "source": "lab /data/lab/adaptive_graphrag/results_tog/tog.json",
+  "run": "P5: scripts/p456_experiments.py --mode tog --limit 240 (A100 80GB, bf16, strong engine, n=240 mixed stream seed 0, P5_EXIT=0 2026-09-28 17:41)",
+  "mechanism": "Faithful reproduction of ToG's published early-termination mechanism: after judging each hop, one extra short LLM call asks whether the collected facts are sufficient (Yes/No); retrieval stops on Yes. Identical stream, engine, and beam settings as the compared rows.",
+  "results": {
+    "ToG-Stop B=4": { "f1": 0.37038395204825225, "hit1": 0.43333333333333335, "toks": 1230.1458333333333, "calls_per_q": 5.083333333333333, "hops": 2.0416666666666665 },
+    "ToG-Stop B=8": { "f1": 0.4591454702294765,  "hit1": 0.5416666666666666, "toks": 1512.6833333333334, "calls_per_q": 5.241666666666666, "hops": 2.120833333333333 }
+  },
+  "dominance_within_same_run": {
+    "ToG-Stop B=4 (0.370@1230)": "discretely dominated by Fixed K=2 B=8 (0.440@1041, same cap-sweep run): higher F1 at fewer tokens",
+    "ToG-Stop B=8 (0.459@1513)": "discretely dominated by Fixed K=2 B=12 (0.485@1080, same run): +0.026 F1 at -433 tokens",
+    "call_hunger": "ToG-Stop uses 5.1-5.2 LLM calls/query - the most call-hungry policy tested (all other systems: <= 4.0)"
+  },
+  "reading": "The closest published training-free adaptive-depth controller, reproduced faithfully on identical subsets, lands on the dominated side of the tuned-global frontier and pays ~1 extra LLM call per executed hop for the privilege. Answers V9mY-W3.",
+  "use_in": "V9mY-W3, V9mY-Q3"
+}

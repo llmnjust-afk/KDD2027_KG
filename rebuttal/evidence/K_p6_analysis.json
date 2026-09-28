@@ -1,0 +1,30 @@
+{
+  "source": "lab /data/lab/adaptive_graphrag/results_p6_analysis/p6_analysis.json (raw per-query matrix: /data/lab/adaptive_graphrag/results_p6_features/features.json, 4.0 MB, kept on lab machine for release)",
+  "run": "P6: scripts/p456_experiments.py --mode features (verify_routing seed-1 pool, n=300, default engine, per-hop post-expansion feature logging + 5-arm outcome matrix) then scripts/p6_router_analysis.py (CPU, cross-validated; P6_EXIT=0 / P6_ANALYSIS_EXIT=0 2026-09-28 19:16)",
+  "pool_arm_summary": {
+    "K1B4_llm": { "f1": 0.27286574244499207, "toks": 398.66 },
+    "K2B4_llm": { "f1": 0.4114810824394226,  "toks": 1008.00 },
+    "K2B8_llm": { "f1": 0.46333810687065125, "toks": 1109.51 },
+    "K3B4_llm": { "f1": 0.4103524684906006,  "toks": 1607.84 },
+    "K3_emb":   { "f1": 0.35587647557258606, "toks": 157.24 }
+  },
+  "taskA_judge_router": {
+    "cv_auroc": {
+      "hop0_signals/logreg": 0.5206, "hop0_signals/rf": 0.5528,
+      "hop0_plus_qemb/logreg": 0.6219, "hop0_plus_qemb/rf": 0.6114,
+      "mid_retrieval/logreg": 0.4902, "mid_retrieval/rf": 0.5289,
+      "mid_retrieval_plus_qemb/logreg": 0.6217, "mid_retrieval_plus_qemb/rf": 0.6013
+    },
+    "mid_router_vs_rate_matched_mixture": { "router_f1": 0.3592, "mixture_f1": 0.3589, "llm_rate": 0.02, "delta": 0.00033, "ci": [-0.0071, 0.0081], "p_two_sided_approx": 0.977 },
+    "reading": "Hop-1 post-expansion statistics, frontier-overlap, and expansion-size dynamics add no judge-routing signal beyond hop-0 statistics (mid-only AUROC 0.529 vs hop-0-only 0.553; with question embeddings both 0.60-0.62 - the small signal lives in the question embedding, not the retrieval features). The mid-retrieval router tracks but does not exceed the rate-matched mixture (delta +0.0003, CI [-0.007,+0.008], p~0.98)."
+  },
+  "taskB_joint_router": {
+    "always_best_arm": "K2B8_llm", "always_best_f1": 0.4633, "always_best_toks": 1109.5,
+    "joint_oracle_f1": 0.5423, "joint_oracle_toks": 611.1,
+    "router_f1": 0.2784,
+    "router_arm_usage": { "K1B4_llm": 0.9933, "K2B4_llm": 0.0033, "K2B8_llm": 0.0033, "K3B4_llm": 0.0, "K3_emb": 0.0 },
+    "router_vs_always_best": { "delta": -0.1849, "ci": [-0.2329, -0.1375], "p_two_sided_approx": 0.0 },
+    "reading": "Joint (K,B,judge) headroom on the pool is real and large: oracle 0.542@611 vs always-best K2B8 0.463@1110 (+0.079 F1 at -45% cost). But the trained RF joint router (mid-retrieval features + question embedding) collapses to the cheapest arm for 99.3% of queries and lands at 0.278 - far BELOW the always-best global config (delta -0.185, CI [-0.233,-0.138]). Headroom exists; learned routing over mid-retrieval features captures none of it."
+  },
+  "use_in": "31Rd-Q1 (joint router realized), 31Rd-Q4 (mid-retrieval router), xxtL-W4, f7vF-W2 (ceiling strengthened on the joint axis)"
+}

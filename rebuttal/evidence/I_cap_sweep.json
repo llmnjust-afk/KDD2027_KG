@@ -1,0 +1,27 @@
+{
+  "source": "lab /data/lab/adaptive_graphrag/results_cap_sweep/cap_sweep.json",
+  "run": "P4: scripts/p456_experiments.py --mode cap-sweep --limit 240 (A100 80GB, bf16, strong engine, n=240 mixed stream seed 0, P4_EXIT=0 2026-09-28 17:04)",
+  "results_f1_at_toks": {
+    "Fixed-emb K=3":            { "c16": "0.378@125",  "c32": "0.378@125",  "c64": "0.378@125" },
+    "AdaptiveJudge T=0.55":     { "c16": "0.394@339",  "c32": "0.405@398",  "c64": "0.395@469" },
+    "AdaptiveJudge T=0.75":     { "c16": "0.414@878",  "c32": "0.407@1045", "c64": "0.396@1345" },
+    "Oracle-depth B=4 (annot)": { "c16": "0.399@762",  "c32": "0.379@872",  "c64": "0.374@1045" },
+    "Fixed-LLM K=2 B=8":        { "c16": "0.452@863",  "c32": "0.440@1041", "c64": "0.441@1354" },
+    "Fixed-LLM K=2 B=12":       { "c16": null,         "c32": "0.485@1080", "c64": "0.479@1395" }
+  },
+  "raw_f1": {
+    "c16/AdaptiveJudge T=0.55": 0.39418747428635864, "c32/AdaptiveJudge T=0.55": 0.40506710391598827, "c64/AdaptiveJudge T=0.55": 0.395344881693766,
+    "c16/AdaptiveJudge T=0.75": 0.4144954798466462,  "c32/AdaptiveJudge T=0.75": 0.40739211172354123, "c64/AdaptiveJudge T=0.75": 0.39646186993803634,
+    "c16/Oracle-depth B=4 (annot)": 0.39915895305110294, "c32/Oracle-depth B=4 (annot)": 0.37942975679795105, "c64/Oracle-depth B=4 (annot)": 0.373533592776787,
+    "c16/Fixed-LLM K=2 B=8": 0.4520579750385591, "c32/Fixed-LLM K=2 B=8": 0.4401744352043921, "c64/Fixed-LLM K=2 B=8": 0.44135545774938517,
+    "c32/Fixed-LLM K=2 B=12": 0.4851837781328942, "c64/Fixed-LLM K=2 B=12": 0.47881133112826324
+  },
+  "reading": {
+    "cap_invariance_of_emb_arm": "Fixed-emb K=3 identical to 4 decimals at every cap (0.378@125): the embedding judge ranks the candidate set itself, so the cap does not change the kept top-beam triples.",
+    "cap_sensitivity": "F1 essentially flat in cap within run-to-run jitter (same-config cross-run spread up to +-0.027 F1, cf. P2 vs P4 c32 K2B8 0.467 vs 0.440); cost grows monotonically with cap (K2B8: 863 -> 1041 -> 1354 tokens).",
+    "sweet_spot": "c_max=16 is the efficiency sweet spot under the strong prefilter: annotated 0.399@762 (vs 0.379@872 at c32, 0.374@1045 at c64); AdaptiveJudge T=0.75 0.414@878 (best across caps). Tight caps do not prevent exploiting depth.",
+    "beam_channel": "The engine's extra-budget channel is beam width, not candidate cap: K=2 B=12 = 0.485@1080 (c32) vs K=2 B=8 = 0.440@1041 in the same run (+0.045 F1 at +4% tokens). The tuned-global frontier rises with beam; dominance conclusions for adaptive policies strengthen.",
+    "caveat": "Cross-run CUDA/bf16 decode jitter ~+-0.02-0.03 F1 at n=240; cross-cap contrasts should be read directionally; paired per-query CIs require a report-saving re-run (planned for the revision tables).",
+    "use_in": "f7vF-Q (larger caps), V9mY-Q3 (tight caps)"
+  }
+}

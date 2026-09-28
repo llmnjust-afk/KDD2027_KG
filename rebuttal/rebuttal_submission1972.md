@@ -3,10 +3,11 @@
 > **Author note (not for reviewers).** Every number below marked **[new]** was computed from the
 > released per-query logs in `KDD2027_KG` by `scripts/rebuttal_analysis.py` (outputs in
 > `results_rebuttal/*.json`), or measured in new GPU executions on a single A100 80GB (runs
-> P1–P3, archived in `rebuttal/evidence/`); all other numbers are quoted from the submission.
-> Items still requiring GPU runs (candidate-cap sweep, ToG reproduction, mid-retrieval logging)
-> are marked **[pending-GPU]** and are phrased in the reviewer-facing text as commitments. Three
-> data issues we found and resolved before submitting are listed at the very end.
+> P1–P6, archived in `rebuttal/evidence/`); all other numbers are quoted from the submission.
+> The only remaining optional GPU item is the P7 full latency sweep (the rebuttal's latency
+> statements rest on the CPU-verified Table-9 chord); it is marked **[pending-GPU]** and phrased
+> in the reviewer-facing text as a commitment. Three data issues we found and resolved before
+> submitting are listed at the very end.
 
 ---
 
@@ -61,11 +62,12 @@ logs or launched new experiments:
   further retrieval helps (AUROC **0.520** over 299 continuation pairs; score↔gain correlation
   **0.082**; monotonicity **1/3**), while on the homogeneous 2-hop stream the adaptive policy is
   **+0.021 F1 at −32% tokens** vs. the fixed baseline — adaptive wins exactly where depth is real.
-  Still running and to be included in the revision: the candidate-cap/beam sweep ($c_{\max}\in\{16,32,64\}$,
-  $B\le12$; V9mY-Q3, f7vF), a published training-free adaptive-depth controller reproduced on our
-  subsets (V9mY-W3), and mid-retrieval (post-expansion, pre-judge) signal routers implementing the
-  direction we previously only proposed (31Rd-Q4, xxtL-W4).
-- **R7 — Presentation (QwzZ).** A formal problem definition, explicit RQ1–RQ3, a notation table,
+  All three remaining experiments are now **measured [new]** (details in the individual responses):
+  the candidate-cap/beam sweep shows F1 is flat in $c_{\max}$ while cost grows monotonically, and
+  the tuned-global frontier rises further at $B{=}12$ (0.485@1080); the published ToG
+  early-termination mechanism, reproduced faithfully on identical subsets, is discretely dominated
+  by tuned fixed configurations; and mid-retrieval-feature routers capture none of the joint
+  headroom (routed F1 0.278 vs. always-best 0.463).- **R7 — Presentation (QwzZ).** A formal problem definition, explicit RQ1–RQ3, a notation table,
   and clearly flagged take-home messages.
 
 ---
@@ -85,9 +87,16 @@ embedding for 16, $K{=}3,B{=}4$ for 14). Joint headroom over the tuned global po
 $+0.102$ F1 **[new]** — larger than the judge-only oracle headroom, confirming that the three
 decisions interact and that the joint space is where the remaining headroom lives. On the complete
 12-configuration $(K,B)$ grid (LLM judge) the joint oracle reaches **0.591** at 693 tokens/q
-**[new]**. A trained joint router over these 24 action–outcome pairs requires per-query feature
-logging across the grid, which is running now; we will report the joint router next to the joint
-oracle in the revision, together with the full outcome matrix.
+**[new]**. The promised per-query feature logging is now **done [new]**: on the 300-query routing
+pool (same construction as our released routing data) we logged mid-retrieval features and measured
+the 5-arm outcome matrix $\{K1B4, K2B4, K2B8, K3B4\}\times\{\text{LLM}\}\cup\{\text{emb }K{=}3\}$.
+The pool joint oracle reaches **0.542 @ 611** tokens/q vs. **0.463 @ 1110** for the always-best
+single arm ($K{=}2,B{=}8$) — headroom $+0.079$ F1 at $-45\%$ cost. A trained random-forest joint
+router on these features (5-fold out-of-fold) **collapses to the cheapest arm for 99.3% of queries**
+and lands at routed F1 **0.278**, far below the always-best global configuration
+($\Delta{=}{-}0.185$, 95% CI $[-0.233,-0.138]$). Headroom on the joint axis is real; learned
+routing over currently available features captures none of it. The revision reports the full
+outcome matrix and this router next to the joint oracle.
 
 **Q2 (re retrieval-level metrics).** We agree final-answer F1 conflates retrieval quality with
 generation behavior. The revision adds: (i) **answer-entity recall** (fraction of gold answer
@@ -116,17 +125,21 @@ this explicitly in §5.1. For CWQ/WebQSP over full Freebase, linking and travers
 is beyond the rebuttal window; the revision scopes those conclusions to the released-subgraph
 setting and marks full-corpus transfer as open.
 
-**Q4 (learned router on intermediate post-hop signals).** In progress. The features our current
-routers use (hop-0 embedding-score statistics of the expanded candidate set: top-1/top-2/gap/mean,
-candidate count, depth) are already computed *after expansion but before the LLM judge*; the
-richer mid-retrieval feature set (hop-1 statistics, frontier overlap with hop-0, expansion-size
-dynamics) requires a logging run across the routing pool, which is queued **[pending-GPU]**. The
-new judge-reliability measurement (Q2) sharpens the motivation: the *current* mid-retrieval signal
-(the judge score) is chance-level at predicting where continued retrieval helps (AUROC 0.520,
-gain correlation 0.082), so richer post-hop features are exactly where informative signal must
-come from if it exists. We will report the AUROC/routed-F1 of this router against the
-pre-computation feature set (best cross-validated AUROC 0.559, routed F1 ≤ 0.379 vs. always-LLM
-0.413) in the revision.
+**Q4 (learned router on intermediate post-hop signals).** Now **implemented and measured [new]**.
+The features our current routers use (hop-0 embedding-score statistics of the expanded candidate
+set: top-1/top-2/gap/mean, candidate count, depth) are already computed *after expansion but before
+the LLM judge*; we have now logged the richer mid-retrieval feature set (hop-1 statistics, frontier
+overlap with hop-0, expansion-size dynamics) on the 300-query routing pool together with the full
+5-arm outcome matrix. The cross-validated answer is negative: mid-retrieval features add **no
+judge-routing signal** beyond the hop-0 statistics (RF AUROC 0.529 vs. 0.553 for hop-0-only;
+adding the question embedding lifts both to 0.60–0.62, so the small signal lives in the question,
+not the retrieval dynamics), and the router's F1 at its own operating point matches the
+rate-matched static mixture within noise ($\Delta{=}{+}0.0003$, CI $[-0.007,+0.008]$, $p{=}0.98$).
+The direction the reviewer proposed is thus tested, not merely proposed: richer post-hop features
+from this engine do not unlock predictive routing. The joint $(K,B,\text{judge})$ router trained
+on the same features likewise fails (Q1: routed F1 0.278 vs. always-best 0.463). We will report
+both routers with per-feature importances in the revision, next to the pre-computation feature set
+(best cross-validated AUROC 0.559, routed F1 ≤ 0.379 vs. always-LLM 0.413).
 
 **W1 (ceiling not fundamental), W2 (narrow policy space).** Agreed; R3 re-scopes the claim, Q1
 adds the joint axis, Q4 adds richer signals, and the new utility-aware routers (R4) add the
@@ -294,10 +307,33 @@ operating point, the tuned global configuration dominates or mixture-dominates t
 in every family (Qwen: 0.478@1101 vs. 0.431@1402; Mistral: 0.569@1313 vs. 0.515@1657; Llama:
 0.248@1042 vs. 0.234@1328).
 
-**Q (larger candidate cap / stronger candidate recall).** Running **[pending-GPU]**:
-$c_{\max}\in\{16,32,64\}$ and $B\in\{2,\dots,12\}$ on MetaQA mixed and WebQSP; the revision will
-report the sweep and narrow the claim's scope if the adaptive gap narrows materially at larger
-caps, exactly as the reviewer suggests.
+**Q (larger candidate cap / stronger candidate recall).** Now **measured [new]**: on the MetaQA
+mixed stream ($n{=}240$, strong engine, same 240 queries as Table 2) we swept
+$c_{\max}\in\{16,32,64\}$ with the tuned configs, the adaptive judges, and the annotated-depth
+oracle, plus $B{=}12$:
+
+| System | $c_{\max}{=}16$ | $c_{\max}{=}32$ (default) | $c_{\max}{=}64$ |
+|---|---|---|---|
+| Fixed-emb $K{=}3$ | 0.378 @ 125 | 0.378 @ 125 | 0.378 @ 125 |
+| \textsc{AdaptiveJudge} $\tau{=}0.55$ | 0.394 @ 339 | 0.405 @ 398 | 0.395 @ 469 |
+| \textsc{AdaptiveJudge} $\tau{=}0.75$ | 0.414 @ 878 | 0.407 @ 1045 | 0.396 @ 1345 |
+| Annotated-depth oracle | 0.399 @ 762 | 0.379 @ 872 | 0.374 @ 1045 |
+| Fixed-$K{=}2,B{=}8$ | 0.452 @ 863 | 0.440 @ 1041 | 0.441 @ 1354 |
+| Fixed-$K{=}2,B{=}12$ | — | **0.485 @ 1080** | 0.479 @ 1395 |
+
+Four findings. (i) *Accuracy is flat in cap; cost is not*: F1 varies within run-to-run jitter
+(±0.02–0.03; e.g., the identical $K{=}2,B{=}8$ configuration measures 0.467 in the Table-2 run vs.
+0.440 here, so we read the sweep directionally), while tokens grow monotonically (863 → 1041 →
+1354). (ii) *Tight caps do not prevent exploiting depth* — the concern the question probes is
+refuted under the strong engine: the embedding prefilter concentrates relevance, and $c_{\max}{=}16$
+is actually the efficiency sweet spot (annotated 0.399@762; $\tau{=}0.75$ 0.414@878). (iii) *The
+extra-budget channel is beam, not cap*: $K{=}2,B{=}12$ reaches 0.485@1080 in the same run as
+$K{=}2,B{=}8$ at 0.440@1041 ($+0.045$ F1 at $+4\%$ tokens) — when the reviewer's "stronger
+candidate recall" is given room, it is the *tuned global* policy that exploits it, which
+strengthens rather than narrows our headline claim. (iv) The free embedding arm is exactly
+cap-invariant (identical to 4 decimals at every cap). The revision adds this sweep as a
+cap-sensitivity table. A paired per-query CI version of the table (one report-saving re-run) is
+planned for the revision.
 
 ---
 
@@ -365,19 +401,26 @@ predictability ceiling as an empirical construct whose scope is stated in the ab
 keep the identity because it correctly motivates measuring $m(\sigma)$-relevant information rather
 than binary AUROC — which is precisely what the new gain-regression routers (f7vF-W3) implement.
 
-**Q3 (tight caps; engine may be unable to exploit correct depth).** Two answers. First, on
+**Q3 (tight caps; engine may be unable to exploit correct depth).** Three answers. First, on
 *homogeneous* depth streams under the strong engine, accuracy rises monotonically with depth up to
 the ground-truth hop count, and the tuned $K{=}2$ point on WebQSP recovers the benchmark's 2-hop
 structure — so the engine does exploit correct depth when the query population is homogeneous. On
 the mixed stream the third hop injects judge noise for *all* depth groups (the per-hop analysis),
-which is why fixed $K{=}2$ beats matching each query's true depth. Second, we directly test the
-cap sensitivity: $c_{\max}\in\{16,32,64\}$, $B\in\{2,\dots,12\}$ on MetaQA mixed and WebQSP is
-running **[pending-GPU]**, and the revision adds the cap-sensitivity table, narrowing the scope of
-any cap-dependent conclusion. We also reproduce a published training-free adaptive-depth
-controller — ToG's confidence-based early stopping, the closest published representative of the
-evaluated class — on our identical subsets **[pending-GPU]**; on the complete grid run, the
-patience/margin/confidence family it corresponds to is discretely dominated by tuned fixed
-configurations (response to f7vF). Learned routing methods (Dong et al.; Fan et al.) are outside
+which is why fixed $K{=}2$ beats matching each query's true depth. Second, the cap sweep is now
+**measured [new]** (full table in our response to f7vF): under the strong engine, accuracy is flat
+in $c_{\max}\in\{16,32,64\}$ within run-to-run jitter while cost grows monotonically, tight caps do
+*not* prevent exploiting depth ($c_{\max}{=}16$ is the efficiency sweet spot: annotated 0.399@762,
+$\tau{=}0.75$ 0.414@878), and the engine's extra-budget channel is beam width — $K{=}2,B{=}12$
+raises the tuned-global frontier to 0.485@1080. The revision adds the cap-sensitivity table. Third,
+we have now **reproduced a published training-free adaptive-depth controller [new]** — ToG's
+early-termination mechanism (a per-hop LLM sufficiency check, one extra Yes/No call per executed
+hop), the closest published representative of the evaluated class — on our identical mixed stream,
+engine, and beam settings: ToG-Stop $B{=}4$ reaches 0.370@1230 (5.1 calls/q) and $B{=}8$ reaches
+0.459@1513 (5.2 calls/q); **both points are discretely dominated by tuned fixed configurations in
+the same run** ($B{=}4$ ← $K{=}2,B{=}8$ 0.440@1041; $B{=}8$ ← $K{=}2,B{=}12$ 0.485@1080), and they
+are the most LLM-call-hungry policies we test. The published mechanism lands on the same side of
+the frontier as our patience/margin/confidence family, exactly as the complete-grid analysis
+predicts. Learned routing methods (Dong et al.; Fan et al.) are outside
 the training-free class we test; the related-work section now delimits this class explicitly with
 a taxonomy table.
 
@@ -394,8 +437,12 @@ an engine-diagnostic result (depth-insensitivity of F1), (ii) adds judge-agreeme
 retrieval-recall metrics on CWQ (31Rd-Q2) showing the low F1 is generator-limited, and (iii)
 removes CWQ from any predictability claim.
 
-**W3 (does not reproduce published adaptive methods).** Addressed by the ToG confidence-stopping
-reproduction (above, running) and by precisely delimiting the class: our negative result covers
+**W3 (does not reproduce published adaptive methods).** Now addressed **with a reproduction
+[new]**: ToG's early-termination mechanism (per-hop LLM sufficiency check) is implemented
+faithfully and measured on identical subsets — both operating points ($B{=}4$: 0.370@1230;
+$B{=}8$: 0.459@1513) are discretely dominated by tuned fixed configurations and use the most
+LLM calls of any tested policy (details in Q3). We additionally delimit the class precisely: our
+negative result covers
 *training-free control of retrieval effort under a shared engine*; learned policies and
 backend-selection routers are outside it, and the revision says so.
 
@@ -430,10 +477,13 @@ exactly the dimensions the reviewer lists.
 **W4 (zero-shot models, restricted candidates, low absolute performance; proposed direction
 unimplemented).** The scope statement is added (within-engine claims for ToG-lineage iterative
 engines with zero-shot open-weight judges; no transfer claim to fine-tuned production systems).
-The candidate-cap sweep tests the restricted-setting concern (running). MetaQA is already run on
-the full knowledge graph (31Rd-Q3). The proposed direction is now *implemented*: mid-retrieval
-(post-expansion, pre-judge) signal routers are being logged and will be reported against the
-pre-computation baseline (best AUROC 0.559; routed F1 ≤ 0.379 vs. always-LLM 0.413).
+The candidate-cap sweep is now **measured** (response to f7vF): the restricted-cap concern is
+refuted under the strong engine — tight caps cost nothing and the tuned-global frontier rises at
+$B{=}12$. MetaQA is already run on the full knowledge graph (31Rd-Q3). The proposed direction is
+now *implemented and measured*: mid-retrieval (post-expansion, pre-judge) signal routers are
+logged on the routing pool with the full 5-arm outcome matrix, and they add no routing signal
+beyond the pre-computation features (RF AUROC 0.529 vs. 0.553; joint router 0.278 vs. always-best
+0.463; details in 31Rd-Q1/Q4).
 
 **W5 (small subsets; tuning/eval separation; latency coverage).** Held-out validation protocol and
 per-table subset documentation added (R2); the latency table will be extended to all policies with
@@ -465,9 +515,9 @@ added to every headline contrast.
 | ~~P1~~ | **DONE** (see "Completed on GPU" below) | `python3 scripts/mixed_pareto.py --gen-model Qwen/Qwen2.5-7B-Instruct --per 80 --seed 0 --out-dir results_unified_pareto` |
 | P2 | Annotated-depth baseline on the strong engine (resolves the Table-2 7B row) | **DONE** — patched `full_pareto.py --strong`, 8 systems, n=240 (`results_p2_strong_7b`); see "Completed on GPU" |
 | P3 | Retrieval-level metrics (answer-entity recall, gold-chain recall, judge agreement) | **DONE** — `judge_reliability.py --split 2-hop --limit 150` (`results_judge_reliability`); see "Completed on GPU" |
-| P4 | Candidate-cap/beam sweep $c_{\max}\in\{16,32,64\}$, $B\le12$ (needs a `--c-max` flag in the retriever) | small code change + MetaQA mixed + WebQSP |
-| P5 | ToG confidence-based early stopping reproduction on identical subsets | new controller in `agr/controller.py` |
-| P6 | Mid-retrieval feature logging (hop-1 stats, frontier overlap) + joint router over the grid | extend report schema; train joint router on logged features |
+| P4 | Candidate-cap/beam sweep $c_{\max}\in\{16,32,64\}$, $B\le12$ (needs a `--c-max` flag in the retriever) | **DONE** — `candidate_cap` override in `GraphRAGRetriever` + `p456_experiments.py --mode cap-sweep`; MetaQA mixed, strong engine (WebQSP arm not run: raw WebQSP subgraphs unavailable on the lab machine; MetaQA is the master stream of all dominance claims) |
+| P5 | ToG confidence-based early stopping reproduction on identical subsets | **DONE** — ToG sufficiency-check mechanism implemented in `GraphRAGRetriever` (`tog_sufficiency_stop`), `--mode tog`, strong engine, identical stream |
+| P6 | Mid-retrieval feature logging (hop-1 stats, frontier overlap) + joint router over the grid | **DONE** — `--mode features` (300-query seed-1 pool, per-hop logging, 5-arm outcome matrix) + `p6_router_analysis.py` (CPU) |
 | P7 | Full latency sweep for the extended cost table | reuse P1 with timing instrumentation |
 | — | Full-Freebase CWQ/WebQSP | out of scope; scope the claim instead |
 
@@ -480,6 +530,16 @@ added to every headline contrast.
 | P3 | Judge reliability / retrieval-level metrics, 2-hop split, n=150, 299 continuation pairs (`results_judge_reliability`) | **Judge scores are retrieval-uninformative**: continue-helps **AUROC 0.520** (chance), gain-correlation **0.082**, score monotonicity **1/3**. On 2-hop the adaptive system is **+0.021 F1 at −32% tokens** vs fixed (0.325@887 vs 0.304@1305) — adaptive helps exactly where depth is real. Answers 31Rd-Q2; strengthens the predictability-ceiling thesis (f7vF-W2); motivates 31Rd-Q4 (stronger mid-retrieval signals for learned routers). Evidence archived as `rebuttal_evidence/F_judge_reliability.json`. |
 
 **All planned GPU runs P1–P3 complete. Remaining optional: P4 (c_max sweep, needs retriever flag), P5 (ToG early-stopping reproduction), P6 (mid-retrieval feature logging + joint router).**
+
+## Completed on GPU — P4–P6 (lab 1× A100 80GB, bf16, HF backends, 2026-09-28)
+
+| ID | Run | Key results |
+|---|---|---|
+| P4 | Candidate-cap sweep, strong engine, n=240 (`results_cap_sweep`; evidence `I_cap_sweep.json`) | F1 flat in $c_{\max}\in\{16,32,64\}$ within run-to-run jitter (±0.02–0.03; same-config cross-run spread up to 0.027), cost monotone (K2B8: 863→1041→1354 tokens); **c16 is the efficiency sweet spot** (annotated 0.399@762; T0.75 0.414@878); free-emb arm exactly cap-invariant (0.378@125 at every cap); **beam is the extra-budget channel: K2B12 = 0.485@1080 vs K2B8 = 0.440@1041 in the same run (+0.045 F1 at +4% tokens)** — tuned-global frontier rises further, dominance conclusions strengthen. WebQSP arm not run (raw subgraphs unavailable on lab; scoped in checklist). |
+| P5 | ToG early-termination reproduction, strong engine, n=240 (`results_tog`; evidence `J_tog.json`) | Faithful ToG mechanism (per-hop LLM sufficiency check, +1 call/hop): **ToG-Stop B=4 = 0.370@1230 (5.1 calls/q), B=8 = 0.459@1513 (5.2 calls/q)**; both discretely dominated in the same run (B=4 ← K2B8 0.440@1041; B=8 ← K2B12 0.485@1080); most call-hungry policies tested (all others ≤4.0 calls/q). Answers V9mY-W3. |
+| P6 | Mid-retrieval feature logging + joint outcome matrix, 300-query seed-1 pool, weak engine (`results_p6_features` 4.0 MB on lab + `results_p6_analysis`; evidence `K_p6_analysis.json`) | **Mid-retrieval features add no routing signal**: RF AUROC mid-only 0.529 vs hop-0-only 0.553 (with qemb both 0.60–0.62 — signal lives in the question embedding); router vs rate-matched mixture Δ=+0.0003, CI [−0.007,+0.008], p=0.98. **Joint (K,B,judge) router fails**: pool joint oracle 0.542@611 vs always-best K2B8 0.463@1110 (+0.079 headroom at −45% cost), but the trained RF router collapses to the cheapest arm for 99.3% of queries → routed F1 0.278, Δ=−0.185 vs always-best, CI [−0.233,−0.138]. Strongest confirmation of the predictability-ceiling thesis on the joint axis. |
+
+**ALL GPU runs P1–P6 complete (P7 latency sweep and the WebQSP cap arm remain optional).**
 
 ## Data issues — found and RESOLVED before submitting (author note)
 

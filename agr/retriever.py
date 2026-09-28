@@ -92,6 +92,8 @@ class GraphRAGRetriever:
         adaptive_judge: bool = False,
         adaptive_judge_threshold: float = 0.55,
         strong_prefilter: bool = False,
+        candidate_cap: Optional[int] = None,
+        tog_sufficiency_stop: bool = False,
     ):
         self.kg = kg
         self.backend = backend
@@ -104,6 +106,8 @@ class GraphRAGRetriever:
         self.adaptive_judge = adaptive_judge  # adaptive judge: emb probe then maybe LLM
         self.adaptive_judge_threshold = adaptive_judge_threshold  # emb top-1 above this -> skip LLM
         self.strong_prefilter = strong_prefilter  # ToG-2.0-style embedding prefilter
+        self.candidate_cap = candidate_cap  # explicit cap override (P4 sweep); None = default rule
+        self.tog_sufficiency_stop = tog_sufficiency_stop  # ToG-style LLM sufficiency check per hop
         self._judge_stats = {"emb_only": 0, "llm": 0}  # diagnostics
         self._ent_index: Optional[List[str]] = None
         self._ent_emb: Optional[np.ndarray] = None
@@ -298,7 +302,7 @@ class GraphRAGRetriever:
             cand = [c for c in cand if not (c in seen or seen.add(c))]
             if not cand:
                 break
-            cap = max(self.score_topk_per_hop * 4, 16)
+            cap = self.candidate_cap if self.candidate_cap is not None else max(self.score_topk_per_hop * 4, 16)
             if self.strong_prefilter and len(cand) > cap:
                 # ToG-2.0-style two-stage retrieval: instead of truncating in
                 # arbitrary traversal order, rank ALL candidates by cheap
@@ -337,9 +341,27 @@ class GraphRAGRetriever:
                 "mean_topk": float(np.mean(keep_scores)) if keep_scores else 0.0,
                 "topk_scores": [float(s) for s in keep_scores],
                 "beam": beam,
+                "frontier_overlap": (len(set(new_frontier) & set(frontier)) / max(1, len(new_frontier))) if new_frontier else 0.0,
             }
             hop_signals.append(stats)
             n_hops = hop + 1
+
+            # ToG-style sufficiency check: after judging each hop, ask the LLM
+            # whether the collected facts are already sufficient (published
+            # early-termination mechanism of ToG; costs one extra short call).
+            if self.tog_sufficiency_stop and collected:
+                facts = "\n".join(f"- {h} | {r} | {t}" for (h, r, t) in collected)
+                suff_prompt = (
+                    f"Question: {question}\n\n"
+                    f"Retrieved facts so far:\n{facts}\n\n"
+                    "Do you already have sufficient information to answer the question? "
+                    "Answer with exactly one word, Yes or No."
+                )
+                resp = self.backend.generate(suff_prompt, max_new_tokens=8)
+                if "yes" in str(resp.get("text", "")).strip().lower()[:8]:
+                    frontier = new_frontier
+                    prev_frontier = frontier
+                    break
 
             # Innovation 3: early stop
             if self.controller.should_stop(question, hop, new_frontier, frontier, stats, ctx):
