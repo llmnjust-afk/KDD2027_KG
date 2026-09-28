@@ -1,0 +1,25 @@
+{
+  "source": "lab /data/lab/adaptive_graphrag/results_judge_reliability/judge_reliability.json",
+  "run": "P3: scripts/judge_reliability.py --split 2-hop --gen-models Qwen/Qwen2.5-7B-Instruct --limit 150 (A100 80GB, bf16, 2026-09-28, P3_EXIT=0)",
+  "Qwen/Qwen2.5-7B-Instruct": {
+    "judge_metrics": {
+      "continue_helps_auroc": 0.5202894767968061,
+      "n_pairs": 299,
+      "n_helped": 86,
+      "gain_f1_corr": 0.0820547545500785,
+      "score_monotonicity": 0.3333333333333333,
+      "mean_top_scores_by_hop": [0.7066666666666667, 1.07, 0.36778523489932885]
+    },
+    "fixed": { "f1": 0.30435306703871967, "toks": 1304.74 },
+    "adaptive": { "f1": 0.32493979969989134, "toks": 887.44 },
+    "delta_f1": 0.02058673266117167,
+    "delta_cost": 0.31983383662645426
+  },
+  "reading": {
+    "continue_helps_auroc": "LLM-judge score's ability to predict where CONTINUING retrieval helps: 0.520 over 299 continuation pairs (86 helped) — chance-level.",
+    "gain_f1_corr": "Pearson corr between judge score and realized F1 gain: 0.082 — effectively zero.",
+    "score_monotonicity": "Fraction of hop transitions where higher judge score maps to higher realized gain: 1/3.",
+    "adaptive_vs_fixed_2hop": "On the 2-hop split the adaptive judge system is +0.021 F1 at -32% tokens vs the fixed K=2/B=4-style baseline — adaptive helps where depth is real.",
+    "use_in": "31Rd-Q2 (retrieval-level metrics), f7vF-W2 (ceiling claim strengthened), 31Rd-Q4 motivation for learned routers over stronger signals."
+  }
+}

@@ -1,0 +1,7 @@
+{
+ "chord_f1_at_adaptive_latency": 0.332982032015988,
+ "adaptive_f1": 0.37110734785273025,
+ "gain_over_chord": 0.038125315836742224,
+ "mixture_f1_at_matched_calls": 0.3314567135981893,
+ "gain_over_matched_mixture": 0.03965063425454096
+}

@@ -1,0 +1,37 @@
+{
+ "action_set": [
+  "Fixed-LLM K=1 B=4",
+  "Fixed-LLM K=2 B=4",
+  "Fixed-LLM K=2 B=8",
+  "Fixed-LLM K=3 B=4",
+  "Fixed-emb K=3"
+ ],
+ "joint_f1": 0.579707171495923,
+ "joint_toks": 676.3958333333334,
+ "llm_rate": 0.9333333333333333,
+ "choice_dist": {
+  "Fixed-LLM K=2 B=8": 47,
+  "Fixed-emb K=3": 16,
+  "Fixed-LLM K=1 B=4": 122,
+  "Fixed-LLM K=2 B=4": 41,
+  "Fixed-LLM K=3 B=4": 14
+ },
+ "tuned_global_f1": 0.47822454290573635,
+ "headroom": 0.10148262859018664,
+ "action_set_12": [
+  "Fixed_K1_B2",
+  "Fixed_K1_B4",
+  "Fixed_K1_B6",
+  "Fixed_K1_B8",
+  "Fixed_K2_B2",
+  "Fixed_K2_B4",
+  "Fixed_K2_B6",
+  "Fixed_K2_B8",
+  "Fixed_K3_B2",
+  "Fixed_K3_B4",
+  "Fixed_K3_B6",
+  "Fixed_K3_B8"
+ ],
+ "joint12_f1": 0.5911127669710844,
+ "joint12_toks": 692.6833333333333
+}

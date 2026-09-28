@@ -66,16 +66,27 @@ def load_cwq(data_dir, limit, seed=0):
 
 def run_system(backend, kg, examples, cfg, label, max_hops=3, beam=4,
                judge_with_llm=True, adaptive_judge=False, adj_threshold=0.55,
-               per_query_kg=None, limit=None):
+               per_query_kg=None, limit=None, strong=False, depth_aware=False):
     controller = build_controller(cfg)
     reports = []
     n = len(examples) if limit is None else min(limit, len(examples))
     for i, ex in enumerate(examples[:n]):
         qkg = per_query_kg[i] if per_query_kg is not None else kg
+        if depth_aware:
+            sd = getattr(controller, "set_depth", None)
+            if callable(sd):
+                hop = getattr(ex, "n_hop", None)
+                if hop is None:
+                    try:
+                        hop = int(ex.qid.split("_")[1].split("-")[0])
+                    except Exception:
+                        hop = 3
+                sd(int(hop))
         retriever = GraphRAGRetriever(qkg, backend, controller, link_topk=5,
                                       judge_with_llm=judge_with_llm,
                                       adaptive_judge=adaptive_judge,
-                                      adaptive_judge_threshold=adj_threshold)
+                                      adaptive_judge_threshold=adj_threshold,
+                                      strong_prefilter=strong)
         t0 = time.time(); c0 = backend.usage.n_calls; tk0 = backend.usage.n_input_tokens
         ret = retriever.retrieve(ex.question)
         ans = generate_answer(backend, ex.question, ret)
@@ -106,6 +117,8 @@ def main():
     ap.add_argument("--limit", type=int, default=240)
     ap.add_argument("--seed", type=int, default=0)
     ap.add_argument("--out-dir", default="./results_full_pareto")
+    ap.add_argument("--strong", action="store_true",
+                    help="enable the ToG-2.0-style embedding prefilter (strong engine)")
     args = ap.parse_args()
     os.makedirs(args.out_dir, exist_ok=True)
 
@@ -135,6 +148,7 @@ def main():
         ("Fixed-LLM K=2 B=8", {"name":"fixed","beam":8,"max_hops":2}, 2, 8, True, False, 0.55),
         ("Fixed-LLM K=1 B=4", {"name":"fixed","beam":4,"max_hops":1}, 1, 4, True, False, 0.55),
         ("Fixed-emb K=3", {"name":"fixed","beam":4,"max_hops":3}, 3, 4, False, False, 0.55),
+        ("Oracle-depth B=4 (annotated)", {"name":"oracle-depth","beam":4,"max_hops":3}, 3, 4, True, False, 0.55),
     ]
 
     results = {}
@@ -147,7 +161,9 @@ def main():
         agg, reps, stats = run_system(backend, kg, examples, cfg, label,
                                       max_hops=mh, beam=bm, judge_with_llm=jllm,
                                       adaptive_judge=adj, adj_threshold=at,
-                                      per_query_kg=per_query_kg, limit=args.limit)
+                                      per_query_kg=per_query_kg, limit=args.limit,
+                                      strong=args.strong,
+                                      depth_aware=("Oracle-depth" in label))
         if agg:
             results[label] = {"f1":agg.mean_f1, "hit1":agg.mean_hit1,
                               "toks":agg.mean_n_input_tokens, "hops":agg.mean_n_hops,

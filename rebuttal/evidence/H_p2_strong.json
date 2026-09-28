@@ -1,0 +1,21 @@
+{
+  "source": "lab /data/lab/adaptive_graphrag/results_p2_strong_7b/full_pareto_metaqa_mixed.json",
+  "run": "P2: scripts/full_pareto.py --dataset metaqa --mixed --limit 240 --strong --out-dir ./results_p2_strong_7b (A100 80GB, bf16, strong_prefilter=True wired into the retriever, n=240 mixed stream, P2_EXIT=0 2026-09-28)",
+  "systems": {
+    "AdaptiveJudge T=0.55":         { "f1": 0.3856119757108601,  "hit1": 0.44166666666666665, "toks": 394.06666666666666, "hops": 2.441666666666667,  "calls": 1.6166666666666667 },
+    "AdaptiveJudge T=0.75":         { "f1": 0.4115726387988051,  "hit1": 0.48333333333333334, "toks": 1037.9416666666666, "hops": 2.5791666666666666, "calls": 3.0416666666666665 },
+    "Fixed-LLM K=3 B=4":            { "f1": 0.3870620413787249,  "hit1": 0.4666666666666667,  "toks": 1318.7208333333333, "hops": 2.6375, "calls": 3.6375 },
+    "Fixed-LLM K=2 B=4":            { "f1": 0.3798237091771574,  "hit1": 0.425,               "toks": 975.5291666666667,  "hops": 2.0, "calls": 3.0 },
+    "Fixed-LLM K=2 B=8":            { "f1": 0.46661957555094496, "hit1": 0.5291666666666667,  "toks": 1040.1291666666666, "hops": 2.0, "calls": 3.0 },
+    "Fixed-LLM K=1 B=4":            { "f1": 0.2577346224975535,  "hit1": 0.2791666666666667,  "toks": 398.2583333333333,  "hops": 1.0, "calls": 2.0 },
+    "Fixed-emb K=3":                { "f1": 0.37790033549921986, "hit1": 0.43333333333333335, "toks": 125.025,            "hops": 2.4208333333333334, "calls": 1.0 },
+    "Oracle-depth B=4 (annotated)": { "f1": 0.38863950465243563, "hit1": 0.45416666666666666, "toks": 855.8166666666667,  "hops": 1.8208333333333333, "calls": 2.8208333333333333 }
+  },
+  "dominance_summary": {
+    "corrected_table2_row": "7B annotated-hop on the strong engine = 0.389 @ 856 tokens (submission printed 0.444 @ 999, which is the 14B value — transcription slip)",
+    "discretely_dominated": ["Fixed-LLM K=1 B=4 (0.258@398) <- AdaptiveJudge T=0.55 (0.386@394)", "Fixed-LLM K=2 B=4 (0.380@976) <- Fixed-LLM K=2 B=8 (0.467@1040)", "Fixed-LLM K=3 B=4 (0.387@1319) <- Fixed-LLM K=2 B=8"],
+    "not_discretely_dominated": ["Oracle-depth B=4 (annotated) 0.389@856", "Fixed-emb K=3 0.378@125", "AdaptiveJudge T=0.55 0.386@394", "AdaptiveJudge T=0.75 0.412@1038", "Fixed-LLM K=2 B=8 0.467@1040"],
+    "mixture_dominance": "AdaptiveJudge T=0.55 (0.386@394) <-> Fixed K=2 B=8 (0.467@1040) chord: F1 0.444 at 856 tokens > 0.389 (annotated point still mixture-dominated)",
+    "invariance": "Conclusions invariant under the engine change: annotated point not discretely dominated, still mixture-dominated; tuned global (K=2,B=8) remains the accuracy king"
+  }
+}
